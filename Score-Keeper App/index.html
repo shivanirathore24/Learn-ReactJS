@@ -15,8 +15,12 @@
     let score = 0;
     let wicket = 0;
 
-    function clickOne() {
-        alert("1 is clicked!");
+    function addOne(){
+        score += 1;
+        //Everytime you make changes in your main component. that should be re-rendered.
+        rootElement.render(<App/>);  
+        console.log(score);
+
     }
 
     const App = () => (
@@ -24,7 +28,7 @@
         <h1>SCORE KEEPER</h1>
         <h2> SCORE: {score}/{wicket} </h2>
         <div>
-            <button onClick ={clickOne}>1</button>
+            <button onClick ={addOne}>1</button>
             <button>2</button>
             <button>3</button>
             <button>4</button>
@@ -36,8 +40,20 @@
     )
     const rootElement = ReactDOM.createRoot(document.getElementById("root"));
     rootElement.render(<App/>)
+
+    /*
+    When you click "1" button -> inspect -> element -> check only one node is getting changes instead of 
+    re-painting whole DOM. That's is possible due to "Virtual DOM" concept in React which helps the app to get 
+    rendered faster.
+    Virtual DOM works by comparing changes in the Virtual DOM and updates the only changed objects in the Real DOM
+    which causes screen to change.
+    */
 </script>
 </body>
 </html>
+
+
+
+
 
 
