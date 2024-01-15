@@ -47,11 +47,25 @@
         </div>
     )
 
+    const Result = () => (
+        <div>
+
+            {ballWiseRes.map((res, index) => (
+                <>
+                {index% 6 === 0 ? <br/> : null}
+                <span key = {index}>{res === 0 ? <strong>*</strong> : res}</span> &nbsp; &nbsp; &nbsp;
+                </>
+    ))}
+        </div>
+    )
+
+
     const App = () => (
         <>
         <h1>SCORE KEEPER</h1>
         <h2> SCORE: {score}/{wicket} </h2>
         <ScoreButtons />
+        <Result />
         </>
     )
     const rootElement = ReactDOM.createRoot(document.getElementById("root"));
@@ -65,6 +79,9 @@
     which causes screen to change.
     3. When you want to pass parameters in event handlers in React, we use : inline arrow function
     i.e onClick = {(e) => handleClick(e, id)}
+    4. "Result" function will display score over-wise : In, 1 over there is 6 balls, here we have displayed the score in 
+    an array "allWiseRes" from index [0-5] in one line, then break the line and display score from index [6-11] and so on.. 
+    So, break the line if starting index is multiple of 6. Display dot '*' for scoring zero.
     */
 </script>
 </body>
