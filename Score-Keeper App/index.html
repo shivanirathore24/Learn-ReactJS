@@ -15,23 +15,18 @@
     let score = 0;
     let wicket = 0;
     let ballWiseRes = [];
+    let hit = 0; //whenever scoreButton is clicked hit variable will get score
 
     function addScore(num){
-        if(wicket < 10){
-            ballWiseRes.push(num);
-            score += num;
-            rootElement.render(<App/>); 
-            console.log(ballWiseRes);
-        }  
+        hit = num;
+        rootElement.render(<App/>);   
+        console.log(hit);
     }
 
     function addWicket(){
-        if(wicket < 10){
-            ballWiseRes.push("W");
-            wicket += 1;
-            rootElement.render(<App/>); 
-            console.log(ballWiseRes);
-        }
+        hit = "W";
+        rootElement.render(<App/>); 
+        console.log(hit);
     }
 
     const ScoreButtons = () => (
@@ -65,7 +60,7 @@
 
     const Form = () =>(
         <form onSubmit = {handleSubmit}>
-            <input/>
+            <input value ={hit}/>
             <input/>
             <button> Submit </button>
         </form>
@@ -82,7 +77,11 @@
         </>
     )
     const rootElement = ReactDOM.createRoot(document.getElementById("root"));
-    rootElement.render(<App/>)
+    rootElement.render(<App/>);
+
+
+
+
 
     /*
     1. When you click "1" button -> inspect -> element -> check only one node is getting changes instead of 
