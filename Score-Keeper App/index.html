@@ -56,6 +56,9 @@
 
     function handleSubmit(event){
         event.preventDefault();
+        ballWiseRes.unshift(hit);
+        console.log(ballWiseRes);
+        rootElement.render(<App/>);
     }
 
     const Form = () =>(
@@ -74,14 +77,13 @@
         <br/>
         <Form />
         <hr/>
+        {ballWiseRes.map((res, index) => (
+            <p key = {index}>{res}</p>
+        ))}
         </>
     )
     const rootElement = ReactDOM.createRoot(document.getElementById("root"));
     rootElement.render(<App/>);
-
-
-
-
 
     /*
     1. When you click "1" button -> inspect -> element -> check only one node is getting changes instead of 
@@ -99,6 +101,7 @@
     data to the backend. But we can control the native behaviour of HTML elements using React library -> Synthetic events.
     6. Synthetic events are a wrapper around the event objects of the real DOM. We can stop the default behaviour of a 
     synthetic event by calling "preventDefault" on the event object.
+    7. push() adds elements at the end of array whereas unshift() adds element at the start of array.
     */
 </script>
 </body>
