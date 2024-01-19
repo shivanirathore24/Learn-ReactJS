@@ -16,6 +16,7 @@
     let wicket = 0;
     let ballWiseRes = [];
     let hit = 0; //whenever scoreButton is clicked hit variable will get score
+    let inputRef = React.createRef();
 
     function addScore(num){
         hit = num;
@@ -56,15 +57,21 @@
 
     function handleSubmit(event){
         event.preventDefault();
+        if(hit === "W"){
+            wicket += 1;
+        }
+        else{
+            score += hit;
+        }
         ballWiseRes.unshift(hit);
-        console.log(ballWiseRes);
+        console.log(inputRef.current.value);
         rootElement.render(<App/>);
     }
 
     const Form = () =>(
         <form onSubmit = {handleSubmit}>
             <input value ={hit}/>
-            <input/>
+            <input ref = {inputRef} placeholder="Add a comment"/>
             <button> Submit </button>
         </form>
     )
@@ -102,6 +109,9 @@
     6. Synthetic events are a wrapper around the event objects of the real DOM. We can stop the default behaviour of a 
     synthetic event by calling "preventDefault" on the event object.
     7. push() adds elements at the end of array whereas unshift() adds element at the start of array.
+    8. Refs are used to directly access DOM elements. 
+       Refs are created using React.createRef(); and attached to the element via the 'ref' attribute.
+       We can use 'ref.current.value' to access or modify the value of the input element associated with that ref.
     */
 </script>
 </body>
