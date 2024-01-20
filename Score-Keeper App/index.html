@@ -63,9 +63,20 @@
         else{
             score += hit;
         }
-        ballWiseRes.unshift(hit);
+        ballWiseRes.unshift(
+            //<span>{hit}{", "}{inputRef.current.value}</span>
+            <span>{`${hit}, ${inputRef.current.value}`}</span>
+        );
+        hit = 0;
+        inputRef.current.value = "";
+
         console.log(inputRef.current.value);
         rootElement.render(<App/>);
+        /* if we comment re-rendering means nothing should change but element using ref getting empty value 
+        after submit i.e not dependent on react component whether app is re-rendered or not , actually going to 
+        normal state that we have set - inputRef.current.value = ""; -> directly accessing node from the DOM ->
+        ref is uncontrolled component which React doesn't suggest to use.
+        */
     }
 
     const Form = () =>(
@@ -111,7 +122,7 @@
     7. push() adds elements at the end of array whereas unshift() adds element at the start of array.
     8. Refs are used to directly access DOM elements. 
        Refs are created using React.createRef(); and attached to the element via the 'ref' attribute.
-       We can use 'ref.current.value' to access or modify the value of the input element associated with that ref.
+       We can use 'ref.current.value' to access or modify the value of the input element associated with that ref. 
     */
 </script>
 </body>
