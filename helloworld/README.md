@@ -1,70 +1,77 @@
 # Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+### Instructions to create react app:
+1. Go to the desktop using cd Desktop or your project root directory
+where you want to create the project.
+2. Use command ```npx create-react-app <app_name>```, to create the
+react app.
+3. Use the command ```cd <app_name>``` and go to the app.
+4. Use ```ls``` to display the list of files in the current directory.
+5. And now open the file in VS Code.
+6. Use ```npm start``` to start your first react project.
 
-In the project directory, you can run:
+Create-React-App can also be installed globally so that you can create a react
+project anywhere inside your system. ```npm install -g create-react-app```
+is used to install CRA globally. But it is not recommended as versions may
+change, and you may have two projects going that use two different versions.
+It's not even needed to install create-react-app as you can do ```npx
+create-react-app <app_name>``` and always use the latest version without
+polluting your system.
 
-### `npm start`
+### Folder & File structure
+The React application automatically creates required folders, as shown below.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+1. node_modules -> This folder will contain all the third party libraries and
+other react js dependencies.
+2. index.html -> It is the html file which gets loaded on the browser. It
+contains html tags.
+3. manifest.json -> It contains information about your app like name,
+description, icon, etc.
+4. src folder -> src is one of the main folders in react project. You can
+delete or modify any file of this folder except index.js as it is the entry
+point for webpack.
+5. index.js -> index.js is the file that will be called once we will run the
+project.
+6. app.js -> App.js is a component that will get loaded under index.js file.
+7. .gitignore -> This file is used by source control tool to identify which files
+and folders should be included or ignored during code commit
+8. package.json -> This file contains dependencies and scripts required for
+the project.
+9. package.lock.json -> It is created for locking the dependency with the
+installed version. It will install the exact latest version of that package in
+your application and save it in the package.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Imports/Exports
+If you declare some value/function in some file, and you try to access that in another
+file, you won’t be able to do so. As, each individual has its own local scope. To make
+all these available in another file, we can use export and import.
 
-### `npm test`
+The export and import are the keywords to utilize the code of one file to other files.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+#### Export
+Export keyword is used to provide code to other files.There are two types of
+exports:
 
-### `npm run build`
+1. **Named Exports**: This syntax allows you to individually import values
+that have been exported by their name. It can be done in two ways: _Export Individually & Export all at once at the bottom_
+2. **Default Exports**: You can export multiple named exports and imported
+them individually or as one object with each export as a method on the
+object. But, files can also contain a default export, using the default
+keyword. A default export will not be imported with curly brackets, but
+will be directly imported into a named identifier. It can be done in two
+ways: Export Individually & Export at the bottom.
+Remember -> You can have multiple named exports per module but only one default export.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+#### Import
+Import keyword is used to read code exported from another files. The as keyword is
+used to create an alias to import under different names. Import can be done in three
+ways:
+1. Importing named exports:
+import {x, ...} from "file"
+2. Importing the default export:
+import x from "file"
+3. Import all:
+import * as obj from "file"
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
