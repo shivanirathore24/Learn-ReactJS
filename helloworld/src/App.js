@@ -1,4 +1,22 @@
-// NAMED EXPORT
+/* Functional Component */
+// function App() {
+//   return <h1>Functional Component</h1>;
+// }
+// export default App;
+
+/* Class Component */
+import React from "react"; //import should be in first line of code
+class App extends React.Component {
+  render() {
+    return <h1>Class Component</h1>;
+  }
+}
+
+export default App;
+
+
+/* NAMED EXPORT */
+/*
 // 1. Export Individually
 export let a1 = 7;
 export var arr1 = [1, 2, 3, 4, 5];
@@ -18,8 +36,10 @@ function greet2() {
 }
 
 export { a2 as b2, arr2, obj2, greet2 };
+*/
 
-//DEFAULT EXPORT
+/* DEFAULT EXPORT */
+/*
 //1. Export Individually
 // export default function greet3() {
 //   console.log("Greeting 3");
@@ -32,3 +52,5 @@ function greet4() {
 
 export default greet4;
 //Only one default export allowed per module
+*/
+

@@ -75,3 +75,44 @@ import x from "file"
 import * as obj from "file"
 
 
+### Components
+A component is a small, reusable chuck of code. It lets you split the UI into
+independent, reusable pieces, and think about each piece in isolation.
+
+We can create components with JavaScript classes or functions. To use
+React's properties and methods in our class components we must subclass
+the Component class from React. This way we can use the code from the
+React library without having to write it over and over again.
+
+A function is a valid React component if it accepts a single props object
+argument with data and returns a React element. We call these functions as
+functional components because they are simple JavaScript functions.
+
+#### Functional Component
+1. Functional components cannot extend
+from any class
+2. Do not require the render function 
+3. Do not support a constructor
+4. Create and Maintain state information
+with hooks
+
+#### Class Component
+1. Class components must extend from
+the React.Component class
+2. Require a render function that returns
+an HTML element
+3. Require a constructor to store state
+4. Create and Maintain state information
+with lifecycle methods
+
+#### Why use Functional Components?
+1. Make code more reusable and readable
+2. Are easy to test and debug
+3. Yield better performance
+4. Low coupling and cross dependency in code
+5. Easy to separate code into container and presentational components
+
+#### Why use Class Components?
+1. If you prefer working with classes
+2. Still used in some legacy projects
+
