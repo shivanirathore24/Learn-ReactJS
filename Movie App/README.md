@@ -1,70 +1,57 @@
-# Getting Started with Create React App
+## Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### 1. Instructions to create react app:
 
-## Available Scripts
+1. Go to the desktop using cd Desktop or your project root directory
+   where you want to create the project.
+2. Use command `npx create-react-app <app_name>`, to create the
+   react app.
+3. Use the command `cd <app_name>` and go to the app.
+4. Use `ls` to display the list of files in the current directory.
+5. And now open the file in VS Code.
+6. Use `npm start` to start your first react project.
 
-In the project directory, you can run:
+### 2. Designing the Movie Card
+**2.1 -> Created 'Moviecard.js' file as Class Component**
+1. Imports: 
+`import { Component } from "react";` -> This line imports the Component class from the React library. It allows the creation of class-based components.
 
-### `npm start`
+2. Moviecard Class Component: `class Moviecard extends Component { ... }` -> Defines a class named Moviecard that extends React's Component class. This is a class-based component.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+3. render Method: `render() { ... }`: The render method is required in class-based components. It returns the JSX that defines the component's UI.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+4. JSX Structure: JSX is a syntax in React for writing HTML-like elements within JavaScript, allowing for seamless UI component creation.
+    - `<div className="main"> ... </div>`: The outermost div element, with a class of "main," serves as the main container for the component.
 
-### `npm test`
+    - `<div className="movie-card"> ... </div>`: This div acts as the main card container, grouping the movie content.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+    - Left Section:
+        - `<div className="left"> ... </div>`: Contains the movie poster.
+        - `<img alt="Poster" src="..."/>`: An image element displaying the movie poster, with a provided source URL and alt text.
 
-### `npm run build`
+    - Right Section:
+        - `<div className="right"> ... </div>`: Contains the details about the movie.
+        - `<div className="title"> ... </div>`: Displays the movie title.
+        - `<div className="plot"> ... </div>`: Provides a brief plot description.
+        - `<div className="price"> ... </div>`: Shows the price of the movie.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+    - Footer Section:
+        - `<div className="footer"> ... </div>`: Contains the rating, star icons, and buttons.
+        - `<div className="rating"> ... </div>`: Displays the movie rating.
+        - `<div className="star-dis"> ... </div>`: A container for star-related elements.
+        - `<img alt="decrease" src="..."/>`: An image for a "decrease" button.
+        - `<img alt="star" src="..."/>`: An image displaying a star.
+        - `<img alt="increase" src="..."/>`: An image for an "increase" button.
+        - `<span>0</span>`: Displays the number of stars (currently set to 0).
+        - `<button className="favourite-btn">Favourite</button>`: A button to mark the movie as a favorite.
+        - `<button className="cart-btn">Add To Cart</button>`: A button to add the movie to the cart.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+    - Export: `export default Moviecard;`: Exports the Moviecard component as the default export, making it available for import in other files.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+    **2.2 Created file 'index.css'** -> This CSS styles a movie card layout with a main container, left (image) and right (details) sections, and a footer. It includes global body styles, responsive flexbox layout, and buttons for favorite, add-to-cart, and unfavorite actions.
 
-### `npm run eject`
+    **2.3 Added Moviecard component in 'App.js'** -> used to display a movie card with details like title and rating. It promotes reusability and modularity in the app's UI.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+    **2.4 Imported 'index.css' file in 'index.js'** ->The index.css file is imported to apply global styles to the entire React application
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
