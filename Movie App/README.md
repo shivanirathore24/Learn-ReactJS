@@ -61,16 +61,24 @@
    **2.4 Imported 'index.css' file in 'index.js'** ->The index.css file is imported to apply global styles to the entire React application
 
 ### 3. State in React
+
 1. State -> is a built-in object in React that is used to contain dynamic information about a
    component. Unlike props that are passed from the outside, a component maintains
    its own state. A component's state is mutable and it can change over time. Whenever it changes,
    the component re-renders.
-3. Adding an initial state -> To add an initial state to a component instance we give that component a state
+2. Adding an initial state -> To add an initial state to a component instance we give that component a state
    property. This property should be declared inside of the class constructor and should
    be set to an object with key and value pairs. We must also call super with props
    inside of the constructor to access common properties of the built-in Component
    class.
-4. Super -> The super keyword calls the constructor of the parent class. In our case the call to
+3. Super -> The super keyword calls the constructor of the parent class. In our case the call to
    super passes the props argument to the constructor of React.Component class and
    saves the return value for the derived class component.
-- ```this.state = { ... }: ``` This line initializes the component's state. In React, state is an object that holds data that may change over the lifecycle of the component. Setting the initial state in the constructor is a common practice.
+
+- `this.state = { ... }: ` This line initializes the component's state. In React, state is an object that holds data that may change over the lifecycle of the component. Setting the initial state in the constructor is a common practice.
+
+### 4. Binding "this"
+
+1. Way-1 Binding in JSX: `<button onClick={this.addStars.bind(this)}>...</button>` -> This binds 'this' to 'addStars' each time the button is clicked, but it is less efficient than the other methods since it creates a new function on every render.
+2. Way-2 Binding in Constructor : `this.addStars = this.addStars.bind(this);` -> binds the 'addStars' method to the component instance in the constructor. This ensures that this consistently refers to the component, providing reliable access to the component's state and methods, regardless of how the function is called.
+3. Way-3 Arrow Function: `addStars = () => { ... }` -> Defining 'addStars' as an arrow function automatically binds 'this' to the component's instance, so no additional binding is needed.
