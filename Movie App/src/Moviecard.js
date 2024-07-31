@@ -11,16 +11,31 @@ class Moviecard extends Component {
       plot: "SuperNatural power shown in the movie.",
       price: 199,
       rating: 8.9,
+      stars: 0,
     };
     this.addStars = this.addStars.bind(this); //Way-2 Binding
   }
 
   //Way-3 Arrow Function
   addStars = () => {
-    console.log("this: ", this);
-  }
+    //form-1 : When prevState is not required
+    // this.setState(
+    //   {
+    //   stars: this.state.stars + 0.5
+    //   }
+    // );
+
+    //form-2 -> uses callback function when prevState is required
+    this.setState((prevState) => {
+      return {
+        stars : prevState.stars + 0.5
+      }
+    });
+    // this.state.stars += 0.5;
+    // console.log("this.state.stars :  ", this.state.stars);
+  };
   render() {
-    const { title, plot, price, rating } = this.state;
+    const { title, plot, price, rating, stars } = this.state;
     return (
       <div className="main">
         <div className="movie-card">
@@ -56,7 +71,7 @@ class Moviecard extends Component {
                   //onClick={this.addStars.bind(this)}  //Way-1 Binding
                   onClick={this.addStars.bind(this)}
                 />
-                <span>0</span>
+                <span>{stars}</span>
               </div>
               <button className="favourite-btn">Favourite</button>
               <button className="cart-btn">Add To Cart</button>

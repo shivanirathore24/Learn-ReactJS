@@ -82,3 +82,10 @@
 1. Way-1 Binding in JSX: `<button onClick={this.addStars.bind(this)}>...</button>` -> This binds 'this' to 'addStars' each time the button is clicked, but it is less efficient than the other methods since it creates a new function on every render.
 2. Way-2 Binding in Constructor : `this.addStars = this.addStars.bind(this);` -> binds the 'addStars' method to the component instance in the constructor. This ensures that this consistently refers to the component, providing reliable access to the component's state and methods, regardless of how the function is called.
 3. Way-3 Arrow Function: `addStars = () => { ... }` -> Defining 'addStars' as an arrow function automatically binds 'this' to the component's instance, so no additional binding is needed.
+
+### 5. Increasing stars using setState()
+- Updated 'Moviecard.js' class component -> In the 'addStars' function, the this.setState method is used to update the component's state in React. It has two forms:
+   - Direct Update (form-1): This approach directly updates the stars state by adding 0.5 to the current value. It's used when the new state doesn't depend on the previous state.
+
+   - Callback Function (form-2): This method uses a function that receives the previous state (prevState) and returns the new state. It's useful when the new state depends on the previous state, ensuring that updates are done correctly even when multiple updates happen in quick succession.
+- In both cases, this.setState triggers a re-render of the component with the updated state.
