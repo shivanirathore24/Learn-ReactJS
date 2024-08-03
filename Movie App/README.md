@@ -105,3 +105,16 @@ access to previous state values to update the current state.
 setState the this.state variable is not immediately changed.
 So If we want to perform an action after the state value is updated we can pass a
 callback function as a second parameter to the setState method.
+
+### Toggle the favourite button
+1. Approach 1 -> uses a ternary operator to conditionally render one of the two buttons based on the fav state.
+   - Explanation: Depending on the value of fav, either the "Un-Favourite" or "Favourite" button is rendered.
+   - Pros: Clearly separates the two states.
+   - Cons: Repeats the button element and onClick handler.
+2. Approach 2 -> uses a single button element, with the class and text dynamically set using a ternary operator.
+   - Explanation: A single button element changes its class and text based on the fav state.
+   - Pros: More concise and reduces repetition by using only one button element.
+   - Cons: Slightly less explicit about the two different states.
+3. When the button is clicked, 'handleFav' method is executed, toggling the fav state:
+   - 'this.setState' updates the fav state to its opposite value (true to false or false to true).
+   - This change triggers a re-render of the component, updating the button's appearance and text accordingly.
