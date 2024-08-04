@@ -12,7 +12,8 @@ class Moviecard extends Component {
       price: 199,
       rating: 8.9,
       stars: 0,
-      fav: false
+      fav: false,
+      isInCart: false
     };
     this.addStars = this.addStars.bind(this); //Way-2 Binding
   }
@@ -54,10 +55,16 @@ class Moviecard extends Component {
       fav: !this.state.fav,
     });
   };
+
+  handleAddToCart = () => {
+    this.setState({
+      isIncart: !this.state.isInCart,
+    });
+  };
   
   render() {
     console.log("Rendered the component");
-    const { title, plot, price, rating, stars, fav } = this.state;
+    const { title, plot, price, rating, stars, fav, isIncart } = this.state;
     return (
       <div className="main">
         <div className="movie-card">
@@ -100,7 +107,10 @@ class Moviecard extends Component {
               <button className="favourite-btn" onClick={this.handleFav}>Favourite</button>} */}
               <button className= {fav? "unfavourite-btn" : "favourite-btn" } 
               onClick={this.handleFav}>{fav? "Unfavourite" : "Favourite" }</button>
-              <button className="cart-btn">Add To Cart</button>
+
+              <button className= {isIncart? "removecart-btn" : "cart-btn" } 
+              onClick={this.handleAddToCart}>{isIncart? "Remove from Cart" : "Add to cart" }</button>
+
             </div>
           </div>
         </div>

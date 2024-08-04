@@ -106,7 +106,7 @@ setState the this.state variable is not immediately changed.
 So If we want to perform an action after the state value is updated we can pass a
 callback function as a second parameter to the setState method.
 
-### Toggle the favourite button
+### Toggle the Favourite & Cart button 
 1. Approach 1 -> uses a ternary operator to conditionally render one of the two buttons based on the fav state.
    - Explanation: Depending on the value of fav, either the "Un-Favourite" or "Favourite" button is rendered.
    - Pros: Clearly separates the two states.
@@ -118,3 +118,9 @@ callback function as a second parameter to the setState method.
 3. When the button is clicked, 'handleFav' method is executed, toggling the fav state:
    - 'this.setState' updates the fav state to its opposite value (true to false or false to true).
    - This change triggers a re-render of the component, updating the button's appearance and text accordingly.
+- Similarly did for Cart Button.
+
+
+### Creating MovieList
+1. Create 'Movielist.js' file as component in React that imports the 'Moviecard component' and renders four Moviecard components within it.
+2. Now 'App component' renders the 'Movielist component', which in turn renders multiple Moviecard components.
