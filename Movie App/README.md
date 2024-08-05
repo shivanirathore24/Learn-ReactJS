@@ -124,3 +124,17 @@ callback function as a second parameter to the setState method.
 ### Creating MovieList
 1. Create 'Movielist.js' file as component in React that imports the 'Moviecard component' and renders four Moviecard components within it.
 2. Now 'App component' renders the 'Movielist component', which in turn renders multiple Moviecard components.
+
+### Props in React
+1. Props in React
+   - A component can pass information to other components. Information that gets
+passed from one component to another is known as props short for properties. A
+component's props is an object which holds information about that component.
+   - Props are passed down from parent to child components as a key and value pair. If
+we want to pass information that is not string we have to wrap it with curly braces.
+This information will be stored inside of the props object of the child component.
+   - The most common use of props is to pass data and event handlers down to the child
+components.
+2. Rules of Props
+   - There is only one strict rule in regard to props in React. Props are read-only. A
+component should never try to mutate or change the value of its props.
