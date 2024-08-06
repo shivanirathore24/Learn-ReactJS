@@ -10,10 +10,16 @@ function App() {
       <Student stuname="Siri" marks={89} /> */}
 
       <Student stuname="Shiv" marks={91} />
-      <Student stuname="Alexa" marks={89} />
       <Student stuname="Siri" marks={89} />
+      <Student marks={89} />
+      <Student />
     </>
   );
 }
+
+Student.defaultProps = {
+  stuname: "Student",
+  marks: "N.A",
+};
 
 export default App;

@@ -138,3 +138,9 @@ components.
 2. Rules of Props
    - There is only one strict rule in regard to props in React. Props are read-only. A
 component should never try to mutate or change the value of its props.
+3. Default Props
+   - Default props can be used to define any props that you want to be set for a
+component. They can be used to ensure that props will have a value if it was not
+specified by the parent component.
+   - We can set default values for the props by assigning to the special defaultProps
+property on the component class.
