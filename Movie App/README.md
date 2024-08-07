@@ -144,3 +144,16 @@ component. They can be used to ensure that props will have a value if it was not
 specified by the parent component.
    - We can set default values for the props by assigning to the special defaultProps
 property on the component class.
+
+### Passing data through props
+Updated 'Movielist' and 'Moviecard' Component
+1. Cut constructor part from 'MovieCard' component & paste it in 'Movielist' Component.
+   - constructor() is a special method used to initialize an object created with a class.
+   - The super() function calls the constructor of the parent class (Component in this case). This is necessary to access this in the constructor.
+   - State Initialization: 'this.state' is an object that holds the state variables for the Movielist component.
+2. Passing State as Props:
+   - this.state refers to the state object defined in the Movielist component.
+   - {this.state} is the value being passed to the movies prop of the Moviecard component.
+3. Props in Moviecard:
+   - The Moviecard component receives movies as a prop.
+   - Inside Moviecard, you can access the state values via this.props.movies.
