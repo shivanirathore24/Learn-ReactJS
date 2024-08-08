@@ -157,3 +157,7 @@ Updated 'Movielist' and 'Moviecard' Component
 3. Props in Moviecard:
    - The Moviecard component receives movies as a prop.
    - Inside Moviecard, you can access the state values via this.props.movies.
+
+### Displaying data through props
+1.  First initializes the state of the Movielist component with a movies array containing three movie objects. Each movie object includes properties such as title, plot, poster, rating, price, star, fav, and isInCart, which store relevant details about each movie
+2. For each 'movie' object in the array, a new 'Moviecard' component is created. The movie object is passed as a prop to the Moviecard component with the name movies.

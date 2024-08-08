@@ -25,7 +25,7 @@ import React from "react";
 function Student(props) {
   const { stuname, marks } = props; 
   //Props are read-only. A component should never try to mutate or change the value of its props
-  props.stuname = "Google"; 
+  //props.stuname = "Google"; 
   return (
     <>
       <h1>Hello, {stuname}</h1>
