@@ -4,51 +4,9 @@ import { Component } from "react";
 
 // class Moviecard extends React.Component {
 class Moviecard extends Component {
-  decStars = () => {
-    if (this.state.stars <= 0) {
-      return;
-    }
-    this.setState({
-      stars: this.state.stars - 0.5,
-    });
-  };
-
-  //Way-3 Arrow Function
-  addStars = () => {
-    if (this.state.stars >= 5) {
-      return;
-    }
-    //form-1 : When prevState is not required
-    this.setState(
-      {
-        stars: this.state.stars + 0.5,
-      },
-      () => console.log("stars inside callback:  ", this.state.stars)
-    );
-
-    //form-2 -> uses callback function when prevState is required
-    // this.setState((prevState) => {
-    //   return {
-    //     stars : prevState.stars + 0.5
-    //   }
-    // });
-    // this.state.stars += 0.5;
-    // console.log("this.state.stars :  ", this.state.stars);
-  };
-
-  handleFav = () => {
-    this.setState({
-      fav: !this.state.fav,
-    });
-  };
-
-  handleAddToCart = () => {
-    this.setState({
-      isIncart: !this.state.isInCart,
-    });
-  };
 
   render() {
+    const {movies, onIncStars} = this.props;
     console.log("Rendered the component");
     // const {movies: data} = this.props;   //renaming movies to data
     // console.log(data);
@@ -57,7 +15,9 @@ class Moviecard extends Component {
     // const { title, plot, price, rating, stars, fav, isIncart } = this.props;
 
     //Way-2
-    const { title, plot, price, rating, stars, fav, isIncart } = this.props.movies;
+    const { title, plot, price, rating, stars, fav, isIncart } =
+      this.props.movies;
+
     return (
       <div className="main">
         <div className="movie-card">
@@ -92,7 +52,7 @@ class Moviecard extends Component {
                   src="https://cdn-icons-png.flaticon.com/128/992/992651.png"
                   className="str-btn"
                   //onClick={this.addStars.bind(this)}  //Way-1 Binding
-                  onClick={this.addStars}
+                  onClick={() => onIncStars(movies)}
                 />
                 <span>{stars}</span>
               </div>

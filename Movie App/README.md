@@ -161,3 +161,21 @@ Updated 'Movielist' and 'Moviecard' Component
 ### Displaying data through props
 1.  First initializes the state of the Movielist component with a movies array containing three movie objects. Each movie object includes properties such as title, plot, poster, rating, price, star, fav, and isInCart, which store relevant details about each movie
 2. For each 'movie' object in the array, a new 'Moviecard' component is created. The movie object is passed as a prop to the Moviecard component with the name movies.
+
+### Handling "increase stars" events
+
+Updated "Movielist' component ->
+1. handleIncStar Function:
+   - This function increments the stars rating for a movie when called.
+   - It checks if the stars value is less than 5; if it is, it increases the stars by 0.5.
+   - It then updates the state with the modified movies list.
+2. Render Method:
+   - It maps over the movies array in the state and renders a Moviecard component for each movie.
+   - Each Moviecard is passed a unique key (using the index of the movie in the array) and the movie object itself as a prop (movies).
+   - The onIncStars prop is passed to handle the stars increment functionality.
+
+Updated 'Moviecard' Component -> Removed Handling related function & updated 'Increase' Button onClick event: onClick={() => onIncStars(movies)}:
+   - This is an event handler for the onClick event on the image.
+   - When the user clicks on the image, an anonymous arrow function (() => { ... }) is executed.
+   - Inside this function, the onIncStars function is called with the movies object as an argument.
+   - This triggers the handleIncStar function in the parent component (Movielist), which increases the star rating for the corresponding movie.
