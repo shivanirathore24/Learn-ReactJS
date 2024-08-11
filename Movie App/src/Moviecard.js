@@ -6,7 +6,6 @@ import { Component } from "react";
 class Moviecard extends Component {
 
   render() {
-    const {movies, onIncStars} = this.props;
     console.log("Rendered the component");
     // const {movies: data} = this.props;   //renaming movies to data
     // console.log(data);
@@ -15,7 +14,8 @@ class Moviecard extends Component {
     // const { title, plot, price, rating, stars, fav, isIncart } = this.props;
 
     //Way-2
-    const { title, plot, price, rating, stars, fav, isIncart } =
+    const {movies, onIncStars, onClickFav, onClickAddtocart, onDecStars} =  this.props;
+    const { title, plot, price, rating, stars, fav, isInCart } =
       this.props.movies;
 
     return (
@@ -40,12 +40,13 @@ class Moviecard extends Component {
                   alt="decrease"
                   src="https://cdn-icons-png.flaticon.com/128/992/992683.png"
                   className="str-btn"
-                  onClick={this.decStars}
+                  onClick={() => onDecStars(movies)}
                 />
                 <img
                   alt="star"
                   src="https://cdn-icons-png.flaticon.com/128/1828/1828884.png"
                   className="stars"
+                  
                 />
                 <img
                   alt="increase"
@@ -60,16 +61,16 @@ class Moviecard extends Component {
               <button className="favourite-btn" onClick={this.handleFav}>Favourite</button>} */}
               <button
                 className={fav ? "unfavourite-btn" : "favourite-btn"}
-                onClick={this.handleFav}
+                onClick={() => onClickFav(movies)}
               >
                 {fav ? "Unfavourite" : "Favourite"}
               </button>
 
               <button
-                className={isIncart ? "removecart-btn" : "cart-btn"}
-                onClick={this.handleAddToCart}
+                className={isInCart ? "removecart-btn" : "cart-btn"}
+                onClick={() => onClickAddtocart(movies)}
               >
-                {isIncart ? "Remove from Cart" : "Add to cart"}
+                {isInCart ? "Remove from Cart" : "Add to cart"}
               </button>
             </div>
           </div>

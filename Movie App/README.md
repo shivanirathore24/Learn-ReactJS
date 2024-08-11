@@ -179,3 +179,5 @@ Updated 'Moviecard' Component -> Removed Handling related function & updated 'In
    - When the user clicks on the image, an anonymous arrow function (() => { ... }) is executed.
    - Inside this function, the onIncStars function is called with the movies object as an argument.
    - This triggers the handleIncStar function in the parent component (Movielist), which increases the star rating for the corresponding movie.
+
+Similarly added events for "Decrease stars", "Toggle Favourite/ Unfavourite", "Add to Cart/ Remove from Cart".
