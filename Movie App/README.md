@@ -181,3 +181,17 @@ Updated 'Moviecard' Component -> Removed Handling related function & updated 'In
    - This triggers the handleIncStar function in the parent component (Movielist), which increases the star rating for the corresponding movie.
 
 Similarly added events for "Decrease stars", "Toggle Favourite/ Unfavourite", "Add to Cart/ Remove from Cart".
+
+### Creating the Navbar Component
+1. This React component defines a Navbar class that extends React.Component. 
+2. Inside the render method, it returns a div containing two other div elements: 
+   - one for a title and another for a cart icon with a count (initially set to 0). 
+3. The component is then exported for use in other parts of the application.
+4. The <Navbar /> component is added to the App component to display a navigation bar at the top of the application.
+
+
+
+
+
+
+
