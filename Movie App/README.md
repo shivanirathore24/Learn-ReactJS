@@ -189,6 +189,46 @@ Similarly added events for "Decrease stars", "Toggle Favourite/ Unfavourite", "A
 3. The component is then exported for use in other parts of the application.
 4. The <Navbar /> component is added to the App component to display a navigation bar at the top of the application.
 
+### Styling in React
+Styling is one of the most important aspects of the React application. There
+are various ways to follow when planning to style React components. Some of
+the most popular and modern styling strategies are:
+- CSS Stylesheets
+- Inline Styling
+- Styled Components
+- CSS Modules
+1. CSS Style sheets
+   - This is the conventional way of styling websites. In this method, we separate the
+CSS part into an external file with a .css extension which is simply imported into the
+React component. After that, we can give className and id to point which styles
+should point to which element.
+   - Note: class attribute is used in HTML, whereas className is used in React. This
+is because class is a reserved keyword in JavaScript and since React uses JSX, which is a syntax extension to JavaScript, we must use className instead of the
+class attribute.
+   - Advantages:
+      -  Styles of numerous documents can be organized from one single file.
+      -  Good performance as it is easy for the browser to optimize and cache the files
+locally for repeated visits.
+      -  You can very easily rip out the entire stylesheet and create a new one to
+refresh the look and feel of your app.
+   - Disadvantages:
+      -  If not properly structured, It can become long and difficult to navigate through
+as the application becomes complex.
+      - CSS Stylesheets have global scopes and can cause conflicts in styles if the
+same selector names are used in the codebase
+
+2. Inline Styling
+   - Inline CSS is the widely preferred but less recommended way to style your website.
+In React, you will write your style using the style attribute followed by = and then
+CSS properties enclosed by double curly braces {{ }} instead of quotes “ ”. React
+uses JSX, In JSX for evaluation of any variable, state object , expression etc has to
+be enclosed in {}. The style attribute in React only accepts a JavaScript object with
+camelCased properties and values enclosed with quotes rather than a CSS string.
+This is the reason there are two pairs of curly braces.
+   - Note: Inline styles have got more priority, and they will overwrite any other styles
+given to them in any manner.
+
+
 
 
 
