@@ -227,6 +227,9 @@ camelCased properties and values enclosed with quotes rather than a CSS string.
 This is the reason there are two pairs of curly braces.
    - Note: Inline styles have got more priority, and they will overwrite any other styles
 given to them in any manner.
+   - Method 1 (inline styling)
+   - Method 2 (internal style object) -> The styles object is a JavaScript object that defines inline CSS for your React component. Each key in the object represents a CSS class, and its value is an object containing CSS properties and their corresponding values.
+
 
 
 
