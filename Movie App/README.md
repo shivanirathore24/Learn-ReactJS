@@ -230,6 +230,21 @@ given to them in any manner.
    - Method 1 (inline styling)
    - Method 2 (internal style object) -> The styles object is a JavaScript object that defines inline CSS for your React component. Each key in the object represents a CSS class, and its value is an object containing CSS properties and their corresponding values.
 
+### Styled Components
+'styled-components' is a library for React that allows you to use
+component-level styles in your application that are written with a mixture of
+JavaScript and CSS using a technique called CSS-in-JS. This is done using
+the tagged template literal syntax. Follow the following steps to implement
+styling using styles-components:
+1. First, we need to install the styled-components library by running
+`npm install styled-components`.
+2. We then need to import the styled component library into our
+component by writing ```import styled from 'styled-components'```.
+3. Now we can create a variable by selecting a particular HTML element
+where we store our style keys.
+4. Then we use the name of the variable we created as a wrapper around
+our JSX elements
+
 
 
 
