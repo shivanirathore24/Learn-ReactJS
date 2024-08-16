@@ -244,6 +244,24 @@ component by writing ```import styled from 'styled-components'```.
 where we store our style keys.
 4. Then we use the name of the variable we created as a wrapper around
 our JSX elements
+5. _Dynamic Styling with props_
+   - One of the advantages of styled-components is that the components themselves are
+functional, as in you can use props within the CSS. You can also use conditional
+statements to change styles based on a state or prop
+6. Advantages:
+   - Styled components eliminate specificity problems as it encapsulates CSS
+inside a component.
+   - styled-components allow you to combine CSS and JS in the same file.
+   - You can make use of props to dynamically change the styles in any way.
+7. Disadvantages:
+   - Writing CSS in JS means separating the two in the future will be difficult,
+which is terrible for maintainability.
+   - Differentiating between styled and React components can be difficult
+   - For applications that use styled components, the browser downloads the CSS
+and parses it using JavaScript before injecting them into the page. This
+causes performance issues because the user must download a lot of
+JavaScript in the initial load.
+
 
 
 
