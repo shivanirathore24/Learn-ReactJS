@@ -262,6 +262,29 @@ and parses it using JavaScript before injecting them into the page. This
 causes performance issues because the user must download a lot of
 JavaScript in the initial load.
 
+### CSS Module
+1. A CSS Module is a CSS file with a .module.css extension in which all class names
+and animation names are scoped locally by default. One huge advantage of the CSS
+modules is that it is locally scoped to the component which prevents conflicting styles
+because of using the same selector names.
+
+2. The CSS properties are hashed into unique class names during compilation. You can
+use CSS Modules by creating a file with extension .module.css file and import it
+into the specific React Component file.
+
+   - Note: When you check it in the browser. On inspecting, The className is headingOne_headbtn__zZoo4 which is further transformed into a Unique Identifier.
+This will remove any chances of name collision in the React App.
+
+3. Advantages:
+   - Modular and reusable CSS
+   - No more styling conflicts, So, you can use the same CSS class in multiple
+CSS files
+4. Disadvantages:
+   - Using the styles object whenever constructing a className is compulsory.
+   - Only allows usage of camelCase CSS class names.
+
+
+
 
 
 
