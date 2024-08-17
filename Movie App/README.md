@@ -283,6 +283,10 @@ CSS files
    - Using the styles object whenever constructing a className is compulsory.
    - Only allows usage of camelCase CSS class names.
 
+### Navbar Module
+1. Created 'Navbar.module.css' file -> Creating a this file allows you to encapsulate the styles specifically for the Navbar component. This prevents the styles from affecting other components and avoids naming conflicts in your CSS. It ensures that your styles are modular, organized, and applied only where they are intended, making your codebase easier to maintain and scale.
+2. In Navbar.js -> In this React component, CSS Modules are used to apply styles in a scoped manner. The Navbar.module.css file is imported as styles, turning each CSS class into a property of the styles object. When applying styles, you reference these properties (e.g., styles.nav), ensuring the styles are unique to this component and won't interfere with styles in other parts of the application. This approach keeps the CSS modular and organized
+
 
 
 
