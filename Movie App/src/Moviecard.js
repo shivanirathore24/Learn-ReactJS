@@ -4,7 +4,7 @@ class Moviecard extends Component {
 
   render() {
     console.log("Rendered the component");
-    const {movies, onIncStars, onClickFav, onClickAddtocart, onDecStars} =  this.props;
+    const {movies, addStars, decStars, toggleFav, toggleCart} =  this.props;
     const { title, plot, price, rating, stars, fav, isInCart } =
       this.props.movies;
 
@@ -30,7 +30,7 @@ class Moviecard extends Component {
                   alt="decrease"
                   src="https://cdn-icons-png.flaticon.com/128/992/992683.png"
                   className="str-btn"
-                  onClick={() => onDecStars(movies)}
+                  onClick={() => decStars(movies)}
                 />
                 <img
                   alt="star"
@@ -42,21 +42,21 @@ class Moviecard extends Component {
                   alt="increase"
                   src="https://cdn-icons-png.flaticon.com/128/992/992651.png"
                   className="str-btn"
-                  onClick={() => onIncStars(movies)}
+                  onClick={() => addStars(movies)}
                 />
                 <span>{stars}</span>
               </div>
               
               <button
                 className={fav ? "unfavourite-btn" : "favourite-btn"}
-                onClick={() => onClickFav(movies)}
+                onClick={() => toggleFav(movies)}
               >
                 {fav ? "Unfavourite" : "Favourite"}
               </button>
 
               <button
                 className={isInCart ? "removecart-btn" : "cart-btn"}
-                onClick={() => onClickAddtocart(movies)}
+                onClick={() => toggleCart(movies)}
               >
                 {isInCart ? "Remove from Cart" : "Add to cart"}
               </button>
