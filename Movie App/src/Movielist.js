@@ -91,23 +91,9 @@ class Movielist extends Component {
   };
 
   render() {
-    //const { title, plot, price, rating, stars, fav, isIncart, poster } = this.state.movies;
     const { movies } = this.state;
     return (
       <>
-        {/* Way-1 */}
-        {/* <Moviecard
-          title={title}
-          plot={plot}
-          price={price}
-          rating={rating}
-          stars={stars}
-          fav={fav}
-          isInCart={isIncart}
-        /> */}
-
-        {/* Way-2 */}
-        {/* <Moviecard movies={this.state} />  */}
         <div className="main">
           {movies.map((movie, index) => (
             <Moviecard

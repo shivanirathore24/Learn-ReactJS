@@ -1,19 +1,9 @@
-// import React from "react";
-// OR
 import { Component } from "react";
 
-// class Moviecard extends React.Component {
 class Moviecard extends Component {
 
   render() {
     console.log("Rendered the component");
-    // const {movies: data} = this.props;   //renaming movies to data
-    // console.log(data);
-
-    // Way-1
-    // const { title, plot, price, rating, stars, fav, isIncart } = this.props;
-
-    //Way-2
     const {movies, onIncStars, onClickFav, onClickAddtocart, onDecStars} =  this.props;
     const { title, plot, price, rating, stars, fav, isInCart } =
       this.props.movies;
@@ -52,13 +42,11 @@ class Moviecard extends Component {
                   alt="increase"
                   src="https://cdn-icons-png.flaticon.com/128/992/992651.png"
                   className="str-btn"
-                  //onClick={this.addStars.bind(this)}  //Way-1 Binding
                   onClick={() => onIncStars(movies)}
                 />
                 <span>{stars}</span>
               </div>
-              {/* {fav ? <button className="unfavourite-btn" onClick={this.handleFav}>Un-Favourite</button> : 
-              <button className="favourite-btn" onClick={this.handleFav}>Favourite</button>} */}
+              
               <button
                 className={fav ? "unfavourite-btn" : "favourite-btn"}
                 onClick={() => onClickFav(movies)}
