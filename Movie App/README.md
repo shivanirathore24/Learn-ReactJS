@@ -291,6 +291,15 @@ CSS files
 Lifting state to a parent component in React is done when multiple child components need to share and interact with the same piece of state. By managing the state in the parent, you ensure that all related components have a consistent view of the data, avoid redundant state management, and centralize the logic for state updates, making your application easier to manage and debug.
 
 
+### Showing the Cart Count
+1. In 'App.js' Component
+   - State Initialization: The cartCount is initialized in the state with a value of 0.
+handleAddtocart Function: When a movie is added or removed from the cart, the handleAddtocart function is triggered.    
+   - It toggles the movie's isInCart status. If the movie is added to the cart (isInCart becomes true), cartCount increases by 1. If the movie is removed (isInCart becomes false), cartCount decreases by 1. The function then updates the state with the new cartCount and movie list.
+   - Rendering: The cartCount value is passed as a prop to the Navbar component, which can display the current count of items in the cart.
+2. In 'Navbar.js' Component ->  Rendering: The cartCount value, passed as a prop, is displayed inside the CartCount badge. The badge is positioned on top of the cart icon, showing how many items are in the cart.
+
+
 
 
 

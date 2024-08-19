@@ -8,7 +8,7 @@ class App extends React.Component {
     super();
     this.state = {
       movies: movies,
-      cartCount: 0
+      cartCount: 0,
     };
   }
 
@@ -49,31 +49,40 @@ class App extends React.Component {
   };
 
   handleAddtocart = (movie) => {
-    const { movies } = this.state;
+    let { movies, cartCount } = this.state;
     const movieId = movies.indexOf(movie);
 
     movies[movieId].isInCart = !movies[movieId].isInCart;
 
+    if (movies[movieId].isInCart) {
+      cartCount = cartCount + 1;
+    } else {
+      cartCount -= 1;
+    }
+
     this.setState({
       movies,
+      cartCount,
     });
+    console.log(cartCount);
   };
 
-  render()
-  {
-    const {movies} = this.state;
+  render() {
+    const { movies, cartCount} = this.state;
 
-  return (
-    <>
-      <Navbar />
-      <Movielist  movies = {movies}
-                  addStars = {this.handleIncStars}
-                  decStars = {this.handleDecStars}
-                  toggleFav = {this.handleToggleFav}
-                  toggleCart = {this.handleAddtocart} />
-    </>
-  )
-}
+    return (
+      <>
+        <Navbar cartCount={cartCount} />
+        <Movielist
+          movies={movies}
+          addStars={this.handleIncStars}
+          decStars={this.handleDecStars}
+          toggleFav={this.handleToggleFav}
+          toggleCart={this.handleAddtocart}
+        />
+      </>
+    );
+  }
 }
 
 export default App;
