@@ -1,70 +1,64 @@
-# Getting Started with Create React App
+## Components Lifecycle Methods
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### Lifecycle
+Lifecycle is the series of stages through which a component passes from the
+beginning of its life until its death. The life of the React component starts when it is
+born ( Created/Mounted) and ends when it is destroyed (Unmounted).
+#### Different Phases of a Lifecycle
+1. Different Phases of a component lifecycle are:
+    - Mounting: When a component is being created and inserted into the DOM.
+    - Updating: When a Component is being re-rendered due to any updates
+made to its state or props.
+    - Unmounting: When it is destroyed/ removed from the DOM.
+    - Error Handling: When there is an error during rendering.
+2. During the lifecycle of a component, certain methods are called at each phase where
+we can execute some logic or perform a side-effect.
+    - Side effects are actions that are not predictable because they are actions that are
+performed with the "outside world."
+    - For example: Using Browser APIs like localStorage, using the native DOM methods
+instead of the ReactDOM, fetching the data from an API, and setting timeouts and
+intervals
 
-## Available Scripts
+### Mounting Phase
+These methods are called in the following sequence when an instance of a
+component is being created:
+1. constructor()
+2. static getDerivedStateFromProps()
+3. render()
+4. componentDidMount()
+#### Constructor
+1. A special function that will get called whenever a new component is created.
+2. It can be used to initialize the state and bind the event handlers.
+3. This is the only place where the state can be modified directly. Everywhere
+else state should be updated using the setState function (used to update the
+state of a component).
+4. Avoid introducing any side effects/subscriptions in the constructor.
 
-In the project directory, you can run:
+#### static getDerivedStateFromProps
+1. It is invoked right before the render function. This method is invoked in both
+the mounting and updating phases.
+2. This method exists for rare use cases where the state depends on changes in
+the props over time.If there is no change in state, then this method returns the
+null value.
+3. It is a static method that does not have any access to this keyword.
+4. Example: It will return an object to update the state. if the props.value is equal to state.counter
+then it will return a null value
 
-### `npm start`
+#### render()
+1. This is the only required method in the class component. render() executes
+during both the mounting and updating phase of the component's lifecycle.
+2. It is used to render elements to the DOM by returning some JSX.
+3. The render() method must be a pure function, meaning it should not modify
+the component's state, as when the state gets updated, the render method
+gets automatically called, which could lead to infinite looping.
+4. render() will not be invoked if shouldComponentUpdate() returns false.
+5. Example: It returns JSX to render your UI and returns null value if there is nothing to render
+inside the component.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+#### componentDidMount
+1. It is invoked after a component is mounted. (initially renders on the screen).
+2. This method is a good place to handle side effects like setting up
+subscriptions and loading data from a remote endpoint.
+3. You can also use the setState function in this method to update the state.
+4. Example: When the state gets updated inside this method, it causes another rendering just
+before the browser updates the UI.
