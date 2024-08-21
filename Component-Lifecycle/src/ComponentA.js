@@ -1,4 +1,5 @@
 import React from "react";
+import ComponentB from "./ComponentB";
 
 class ComponentA extends React.Component {
   /* 
@@ -30,9 +31,9 @@ class ComponentA extends React.Component {
   componentDidMount() {
     console.log("ComponentA componentDidMount");
     //Only use setState in lifecycle methods like componentDidMount or in event handlers.
-    this.setState({
-      name: "CA",
-    });
+    // this.setState({
+    //   name: "CA",
+    // });
   }
 
   render() {
@@ -42,8 +43,26 @@ class ComponentA extends React.Component {
     // this.setState({
     //   name: "CA"
     // })
-    return <h1>{this.state.name}</h1>;
+    return (
+      <>
+        <h1>{this.state.name}</h1>
+        <ComponentB />
+      </>
+    );
   }
 }
 
 export default ComponentA;
+
+
+/*** Order in which function is called b/w Parent & Child Component ***/
+/*
+ComponentA Constructor
+ComponentA getDerivedStateFromProps
+ComponentA Render
+ComponentB Constructor
+ComponentB getDerivedStateFromProps
+ComponentB Render
+ComponentB componentDidMount
+ComponentA componentDidMount
+*/
