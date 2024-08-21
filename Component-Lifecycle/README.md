@@ -62,3 +62,12 @@ subscriptions and loading data from a remote endpoint.
 3. You can also use the setState function in this method to update the state.
 4. Example: When the state gets updated inside this method, it causes another rendering just
 before the browser updates the UI.
+
+### Mouting Phase: setState()
+1. We shouldn't call setState in the constructor because the component isn't fully initialized yet. Instead, directly assign the initial state to this.state. Using setState here is redundant and can cause issues since the component hasn't mounted, so there's no need for re-rendering.
+2. Calling setState inside the render method creates an infinite loop. This happens because setState triggers a re-render, and since it's being called within render, the component keeps re-rendering endlessly.
+3. We should not use setState inside getDerivedStateFromProps because it's a static method and doesn't have access to this. Instead, return an object representing the updated state if needed, or return null if no state update is required.
+4. You should use setState in the following places:
+    - Event Handlers: To update the state in response to user actions (e.g., button clicks).
+    - Lifecycle Methods: Such as componentDidMount, componentDidUpdate, or in asynchronous callbacks, to update the state after the component has mounted or updated.
+    - Avoid using setState in the constructor or render method to prevent issues like unnecessary re-renders or infinite loops.
