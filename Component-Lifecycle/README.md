@@ -160,3 +160,11 @@ necessary if the props have not changed).
 call but you have to mention a condition to check if the previous state or props
 has changed or not.
 
+The updated code includes a state object and a handleIncrease method that modifies the state by increasing the count value. This addition triggers the component's update lifecycle methods whenever the state changes.
+   - handleIncrease -> is triggered by clicking the "Increase" button, which calls setState. Calling setState triggers a re-render, which invokes the component's update lifecycle methods.
+   - getDerivedStateFromProps -> is called before every render, even after state changes.
+   - render method -> re-renders the component to reflect the updated count.
+   - getSnapshotBeforeUpdate -> is called right before the DOM updates. Used to capture information from the DOM (though you’re returning null).
+   - componentDidUpdate -> Called after the DOM has been updated to reflect the new state.
+   
+This sequence repeats every time you click the "Increase" button.

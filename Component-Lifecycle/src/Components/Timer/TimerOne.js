@@ -1,50 +1,76 @@
-import React from 'react';
-export default class Timer extends React.Component{
-    constructor(){
-        super();
-        console.log("TimerOne Constructor")  
-    }
+import React from "react";
+export default class Timer extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      count: 0,
+    };
+    console.log("TimerOne Constructor");
+  }
 
-    static getDerivedStateFromProps(){
-        console.log("TimerOne getDerivedStateFromProps");
-        return null;
-    }
+  static getDerivedStateFromProps() {
+    console.log("TimerOne getDerivedStateFromProps");
+    return null;
+  }
 
-    shouldComponentUpdate(nextProps, nextState){
-        return true;
-    }
+  shouldComponentUpdate(nextProps, nextState) {
+    return true;
+  }
 
-    render(){
-        console.log("TimerOne render");
-        return(<h1>Timer</h1>)
-    }
+  handleIncrease = () => {
+    this.setState((prevState) => ({
+      count: prevState.count + 1,
+    }));
+  };
 
-    componentDidMount(){
-        console.log("TimeOne componentDidMount");
-    }
+  render() {
+    console.log("TimerOne render");
+    return (
+      <>
+        <h1>Counter</h1>
+        <h2>{this.state.count}</h2>
+        <button onClick={this.handleIncrease}>Increase</button>
+      </>
+    );
+  }
 
-    getSnapshotBeforeUpdate(prevProps, prevState){
-        console.log("Timer getSnapshotBeforeUpdate");
-        return null;
-    }
+  componentDidMount() {
+    console.log("TimeOne componentDidMount");
+    console.log("____________________________");
+  }
 
-    componentDidUpdate(){
-        console.log("TimerOne componentDidUpdate");
-    }
+  getSnapshotBeforeUpdate(prevProps, prevState) {
+    console.log("Timer getSnapshotBeforeUpdate");
+    return null;
+  }
+
+  componentDidUpdate() {
+    console.log("TimerOne componentDidUpdate");
+    console.log("____________________________");
+  }
 }
 
 /*
 *** CONSOLE ***
 TimerOne Constructor
-Warning: `Timer` uses `getDerivedStateFromProps` but its initial state is undefined. This is not recommended.
-TimerOne getDerivedStateFromProps
-TimerOne render
-TimeOne componentDidMount
+ TimerOne getDerivedStateFromProps
+ TimerOne render
+ TimeOne componentDidMount
+ ____________________________
+ TimerOne getDerivedStateFromProps
+ TimerOne render
+ Timer getSnapshotBeforeUpdate
+ TimerOne componentDidUpdate
+ ____________________________
+ TimerOne getDerivedStateFromProps
+ TimerOne render
+ Timer getSnapshotBeforeUpdate
+ TimerOne componentDidUpdate
+ ____________________________
 
-*** REASON ***
-The update-related lifecycle methods (getSnapshotBeforeUpdate and componentDidUpdate) aren't printing in the console 
-because the component isn't re-rendering after the initial render. These methods only run when the component's state 
-or props change, which triggers a re-render.
-In code, no state or props are changing, so no updates occur, and those methods don't get called. To trigger these 
-methods, you'd need to update the state or receive new props that cause a re-render.
-*/
+ This sequence repeats every time you click the "Increase" button. 
+ Here, I have clicked button 2 times so, 2 times update related methods is called.
+ */
+
+
+
