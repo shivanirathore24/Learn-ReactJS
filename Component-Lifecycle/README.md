@@ -166,5 +166,32 @@ The updated code includes a state object and a handleIncrease method that modifi
    - render method -> re-renders the component to reflect the updated count.
    - getSnapshotBeforeUpdate -> is called right before the DOM updates. Used to capture information from the DOM (though you’re returning null).
    - componentDidUpdate -> Called after the DOM has been updated to reflect the new state.
-   
+
 This sequence repeats every time you click the "Increase" button.
+
+### Setting the Timer
+1. State Initialization (time):
+   - The state has a time property initialized to 0. This time represents the number of seconds elapsed.
+2. componentDidMount:
+   - What it does:
+      - This lifecycle method is called once after the component is mounted.
+      - A timer is set up using setInterval that increments the time in the state by 1 every second.
+   - How it works:
+      - The setInterval function runs every 1000 milliseconds (1 second) and updates the time state.
+The UI is re-rendered each time the state updates.
+3. render:
+   - What it does:
+      - Converts the time (in seconds) to a human-readable format (HH:MM:SS).
+      - Displays the formatted time in an h1 element.
+   - How it works:
+      - ```new Date(this.state.time * 1000).toISOString().slice(11, 19)``` converts the seconds into a HH:MM:SS format.
+4. Timer Updates:
+   - As the time state updates every second, the component re-renders, showing the updated time in the UI.
+
+This setup allows the component to display a live timer, incrementing every second and updating the displayed time accordingly.
+
+
+
+
+
+

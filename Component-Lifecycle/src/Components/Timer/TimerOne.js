@@ -3,8 +3,9 @@ export default class Timer extends React.Component {
   constructor() {
     super();
     this.state = {
-      count: 0,
+      time: 0,
     };
+    this.timer = null;
     console.log("TimerOne Constructor");
   }
 
@@ -27,9 +28,10 @@ export default class Timer extends React.Component {
     console.log("TimerOne render");
     return (
       <>
-        <h1>Counter</h1>
-        <h2>{this.state.count}</h2>
-        <button onClick={this.handleIncrease}>Increase</button>
+        <h1>
+          Time Spent:{" "}
+          {new Date(this.state.time * 1000).toISOString().slice(11, 19)}
+        </h1>
       </>
     );
   }
@@ -37,6 +39,11 @@ export default class Timer extends React.Component {
   componentDidMount() {
     console.log("TimeOne componentDidMount");
     console.log("____________________________");
+    this.timer = setInterval(() => {
+      this.setState((prevState) => ({
+        time: prevState.time + 1,
+      }));
+    }, 1000);
   }
 
   getSnapshotBeforeUpdate(prevProps, prevState) {
@@ -49,28 +56,3 @@ export default class Timer extends React.Component {
     console.log("____________________________");
   }
 }
-
-/*
-*** CONSOLE ***
-TimerOne Constructor
- TimerOne getDerivedStateFromProps
- TimerOne render
- TimeOne componentDidMount
- ____________________________
- TimerOne getDerivedStateFromProps
- TimerOne render
- Timer getSnapshotBeforeUpdate
- TimerOne componentDidUpdate
- ____________________________
- TimerOne getDerivedStateFromProps
- TimerOne render
- Timer getSnapshotBeforeUpdate
- TimerOne componentDidUpdate
- ____________________________
-
- This sequence repeats every time you click the "Increase" button. 
- Here, I have clicked button 2 times so, 2 times update related methods is called.
- */
-
-
-
