@@ -120,3 +120,43 @@ In componentDidMount -> The fetch API is called to get user data after the compo
    - componentDidMount is a lifecycle method specifically for initiating side effects like data fetching. React guarantees that the component is fully mounted before componentDidMount runs, making it a safe place to perform operations that require access to the DOM or external data.
 
 In render: The fetched data (this.state.data) is mapped over to generate a list of usernames, which are displayed in the UI.
+
+### Updating Phase
+Changes to props or state can cause an update. These methods are called in the
+following order when a component is being re-rendered:
+   - static getDerivedStateFromProps()
+   - shouldComponentUpdate()
+   - render()
+   - getSnapshotBeforeUpdate()
+   - componentDidUpdate()
+1. shouldComponentUpdate()
+   - shouldComponentUpdate() is called as soon as static
+getDerivedStateFromProps() the method is invoked.
+   - In the shouldComponentUpdate() method, you can return a Boolean value that
+controls whether the component gets rerendered upon a change in
+state/props. It defaults to true.
+   - This method only exists as a performance optimization. Do not rely on it to
+“prevent” a rendering, as this can lead to bugs.
+   - Example:
+It returns the boolean value true or false if you want to re-render or not
+2. getSnapshotBeforeUpdate()
+   - getSnapshotBeforeUpdate() is invoked just after the render() method.
+   - It stores the previous values of the state after the DOM is updated, meaning
+that even after the update, you can check what the values were before the
+update. Any value returned by this lifecycle method will be passed as a
+parameter to componentDidUpdate().
+   - Most likely, you’ll rarely reach for this lifecycle method. But it comes in handy
+when you need to grab information from the DOM (and potentially change it)
+just after an update is made, like a chat thread that needs to handle the scroll
+position.
+   - A snapshot value (or null) should be returned.
+3. componentDidUpdate()
+   - componentDidUpdate() is invoked immediately after updating occurs.
+   - It can operate on the DOM when the component has been updated.
+   - This is also a good place to do network requests as long as you compare the
+current props to previous props (e.g., a network request may not be
+necessary if the props have not changed).
+   - It is similar to componentDidMount() as you can use setState() or fetch API
+call but you have to mention a condition to check if the previous state or props
+has changed or not.
+
