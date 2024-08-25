@@ -202,6 +202,20 @@ component will never be re-rendered. Once a component instance is
 unmounted, it will never be mounted again.
 
 
+### Understanding Updating Methods
+1. shouldComponentUpdate(nextProps, nextState)
+   - Purpose: Decides whether the component should re-render based on changes to props or state.
+   - Current Behavior: Always returns true, so the component re-renders whenever there's a change in state or props.
+2. getSnapshotBeforeUpdate(prevProps, prevState)
+
+   - Purpose: Captures some information (snapshot) from the DOM before it’s potentially changed by the upcoming update.
+   - Current Behavior: Returns the value 5, which doesn’t relate to the DOM or state here but is just a placeholder for demonstration. This value is passed to componentDidUpdate.
+3. componentDidUpdate(prevProps, prevState, snapshot)
+   - Purpose: Runs after the component updates and re-renders, allowing you to perform side effects or interact with the DOM.
+   - Current Behavior: Logs the previous props, previous state, and the snapshot value (5 from getSnapshotBeforeUpdate) to the console. This helps in tracking the state and props before the update and the captured snapshot.
+
+These methods control the update process, allowing the component to decide whether to re-render, capture a snapshot before the update, and then react to the update by comparing previous states or props.
+
 
 
 

@@ -15,7 +15,7 @@ export default class Timer extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return true;
+    return true;  //returns true, so the component re-renders whenever there's a state or prop change.
   }
 
   handleIncrease = () => {
@@ -43,23 +43,33 @@ export default class Timer extends React.Component {
       this.setState((prevState) => ({
         time: prevState.time + 1,
       }));
-    }, 1000);
+    }, 3000);
   }
 
   getSnapshotBeforeUpdate(prevProps, prevState) {
     console.log("Timer getSnapshotBeforeUpdate");
-    return null;
+    //You're returning the value 5, which is then passed to the componentDidUpdate method. 
+    //This value can be any snapshot of the state or DOM that might be useful after the update
+    return 5;
   }
 
-  componentDidUpdate() {
+
+  /* First parameter should be the previous props (prevProps).
+  Second parameter should be the previous state (prevState).
+  Third parameter should be the snapshot value (snapshot).
+  You can name argument anything you prefer. */
+  componentDidUpdate(prevProps, prevState, snapShot) {
     console.log("TimerOne componentDidUpdate");
     console.log("____________________________");
-    // if(this.state.time === 10){
-    //   clearInterval(this.timer);
-    // }
+    //You log the previous props, previous state, and the snapshot value to the console, helping you debug or 
+    //track what the component was like before the update. 
+    console.log("Previous Props:", prevProps);
+    console.log("Previous State:", prevState);
+    console.log("Snapshot from getSnapshotBeforeUpdate", snapShot);
+    
   }
 
-  componentWillUnmount(){
+  componentWillUnmount() {
     console.log("TimerOne componentWillUnmount");
     clearInterval(this.timer);
   }
