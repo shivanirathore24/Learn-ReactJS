@@ -217,5 +217,8 @@ unmounted, it will never be mounted again.
 These methods control the update process, allowing the component to decide whether to re-render, capture a snapshot before the update, and then react to the update by comparing previous states or props.
 
 
+### Controlling the Timer
+1. Timer Control Logic: The timer no longer starts automatically in componentDidMount. Instead, it starts or stops based on the timerOn prop in componentDidUpdate. If timerOn changes to true, the timer starts; if it changes to false, the timer stops.
+2. The if (prevProps.timerOn !== this.props.timerOn) condition ensures that the timer starts or stops only when the timerOn prop changes. This prevents unnecessary updates and optimizes performance by avoiding redundant operations.
 
 
