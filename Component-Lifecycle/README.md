@@ -221,4 +221,11 @@ These methods control the update process, allowing the component to decide wheth
 1. Timer Control Logic: The timer no longer starts automatically in componentDidMount. Instead, it starts or stops based on the timerOn prop in componentDidUpdate. If timerOn changes to true, the timer starts; if it changes to false, the timer stops.
 2. The if (prevProps.timerOn !== this.props.timerOn) condition ensures that the timer starts or stops only when the timerOn prop changes. This prevents unnecessary updates and optimizes performance by avoiding redundant operations.
 
+### Refreshing the Timer App after 5 seconds
+The return statement in the shouldComponentUpdate method is checking two conditions to decide whether the component should re-render:
+   - nextProps.timerOn !== this.props.timerOn: This checks if the timerOn prop is changing. If it is, the component should re-render.
+   - nextState.time % 5 === 0: This checks if the time in the state is a multiple of 5. If it is, the component should also re-render.
+
+So, the component will re-render when either the timerOn prop changes or when the time state is a multiple of 5.
+
 

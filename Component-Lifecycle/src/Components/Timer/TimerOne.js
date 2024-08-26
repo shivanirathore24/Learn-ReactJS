@@ -1,4 +1,3 @@
-
 import React from "react";
 export default class Timer extends React.Component {
   constructor() {
@@ -16,7 +15,9 @@ export default class Timer extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return true; //returns true, so the component re-renders whenever there's a state or prop change.
+    console.log(nextProps);
+    console.log(nextState);
+    return nextProps.timerOn !== this.props.timerOn || nextState.time % 5 === 0; //returns true, so the component re-renders whenever there's a state or prop change.
   }
 
   handleIncrease = () => {
