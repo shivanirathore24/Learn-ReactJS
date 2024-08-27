@@ -228,4 +228,43 @@ The return statement in the shouldComponentUpdate method is checking two conditi
 
 So, the component will re-render when either the timerOn prop changes or when the time state is a multiple of 5.
 
+### Error Handling Phase
+These methods are called when an error occurs during rendering, in a lifecycle
+method, or the constructor of any child component.
+   - static getDerivedStateFromError()
+   - componentDidCatch()
+1. static getDerivedStateFromError()
+   - This lifecycle is invoked after a descendant component has thrown an error.
+   - It receives the error thrown as a parameter and should return a value to
+update the state.
+   - getDerivedStateFromError() is called during the “render” phase, so side effects are not permitted. For those use cases, use componentDidCatch()
+instead.
+
+Example:
+whenever an error is thrown in a descendant component, the error will be logged to
+the console, console.error(error), and an object is returned from the
+getDerivedStateFromError method. This will be used to update the state of the
+ErrorBoundary component i.e., with hasError: true
+
+2. componentDidCatch()
+   - This lifecycle is invoked after a descendant component has thrown an error. It
+receives two parameters:
+      - error - The error that was thrown.
+      - info - An object with a componentStack key containing information
+about which component threw the error.
+   - componentDidCatch() is called during the “commit” phase, so side effects are
+permitted. It should be used for things like logging errors
+
+Error boundaries -> Error boundaries are React components that catch JavaScript errors anywhere in
+their child component tree, log those errors, and display a fallback UI instead of the
+component tree that crashed.
+
+### Summary
+React follows a proper path of calling all lifecycle methods, which are called in
+different phases of a component’s lifetime. Starting before the component is created,
+when the component is mounted, updated, or unmounted, and finally, during error
+handling. They all have roles, but some are used more often than others. The only
+required method in the whole lifecycle is the render() method.
+
+
 

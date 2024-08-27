@@ -1,5 +1,6 @@
 import React from "react";
 import ComponentB from "./ComponentB";
+import ErrorBoundary from "../../ErrorBoundary";
 
 class ComponentA extends React.Component {
   /* 
@@ -46,14 +47,15 @@ class ComponentA extends React.Component {
     return (
       <>
         <h1>{this.state.name}</h1>
-        <ComponentB />
+        <ErrorBoundary>
+          <ComponentB />
+        </ErrorBoundary>
       </>
     );
   }
 }
 
 export default ComponentA;
-
 
 /*** Order in which function is called b/w Parent & Child Component ***/
 /*
