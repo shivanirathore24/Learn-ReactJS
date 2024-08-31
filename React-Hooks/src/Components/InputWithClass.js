@@ -4,8 +4,8 @@ export default class Input extends React.Component {
   constructor() {
     super();
     this.state = {
-      name: "",
-      lastName: "",
+      name: "Shivani",
+      lastName: "Rathore",
     };
   }
 
@@ -21,15 +21,31 @@ export default class Input extends React.Component {
     });
   };
 
+  componentDidMount() {
+    document.title = this.state.name + " " + this.state.lastName;
+  }
+
+  componentDidUpdate() {
+    document.title = this.state.name + " " + this.state.lastName;
+  }
+
   render() {
     return (
       <>
         <div className="section">
           <Row label="Name">
-            <input value={this.state.name} onChange={this.handleName} />
+            <input
+              className="input"
+              value={this.state.name}
+              onChange={this.handle}
+            />
           </Row>
           <Row label="Last Name">
-            <input value={this.state.lastName} onChange={this.handleLastname} />
+            <input
+              className="input"
+              value={this.state.lastName}
+              onChange={this.handleLastname}
+            />
           </Row>
         </div>
 
@@ -43,10 +59,10 @@ function Row(props) {
   const { label } = props;
   return (
     <>
-      <lable>
+      <label>
         {label}
         <br />
-      </lable>
+      </label>
       {props.children}
       <hr />
     </>

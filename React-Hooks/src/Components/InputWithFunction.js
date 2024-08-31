@@ -1,7 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 export default function Input() {
-  const [name, setName] = useState("Shiv");
-  const [lastName, setLastname] = useState("Sati");
+  const [name, setName] = useState("Shivani");
+  const [lastName, setLastname] = useState("Rathore");
+
+  //Acts as componentDidMount and componentDidUpdate
+  useEffect(() => {
+    document.title = name + " " + lastName;
+  });
+
+  //Will act as only componentDidMount
+  // useEffect(() => {
+  //   document.title = name + " " + lastName;
+  // }, []);
 
   return (
     <>
