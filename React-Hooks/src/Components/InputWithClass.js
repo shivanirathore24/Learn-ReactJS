@@ -7,6 +7,7 @@ export default class Input extends React.Component {
       name: "Shivani",
       lastName: "Rathore",
     };
+    this.timer = null;
   }
 
   handleName = (e) => {
@@ -21,12 +22,22 @@ export default class Input extends React.Component {
     });
   };
 
+  //Issues:
+  //timer related code is not at one place but writing in two different function.
+  //Concerns are not seperated like displaying name as title and showing window width
   componentDidMount() {
     document.title = this.state.name + " " + this.state.lastName;
+    this.timer = setInterval(() => {
+      console.log("Window-width: ", window.innerWidth);
+    }, 2000);
   }
 
   componentDidUpdate() {
     document.title = this.state.name + " " + this.state.lastName;
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timer);
   }
 
   render() {
@@ -37,7 +48,7 @@ export default class Input extends React.Component {
             <input
               className="input"
               value={this.state.name}
-              onChange={this.handle}
+              onChange={this.handleName}  //bug fixed from last pushed code
             />
           </Row>
           <Row label="Last Name">

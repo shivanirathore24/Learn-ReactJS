@@ -13,6 +13,18 @@ export default function Input() {
   //   document.title = name + " " + lastName;
   // }, []);
 
+  //Concerns are seperated like displaying name as title and showing window width in two different useEffect hook
+  //We have placed timer related code in at one place (unlike class component)
+  useEffect(() => {
+    let timer = setInterval(() => {
+      console.log("Window Width:", window.innerWidth);
+    }, 2000);
+
+    return () => {
+      clearInterval(timer);
+    };
+  });
+
   return (
     <>
       <div className="section">
