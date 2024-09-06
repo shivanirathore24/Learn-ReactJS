@@ -25,4 +25,19 @@ The main update in the code of the Blog component involves the use of a single s
 
 This consolidated state approach simplifies handling form data, especially as the form grows in complexity.
 
+### Deleting a Blog
+The change made to the original code is the introduction of the removeBlog function, and the associated functionality for deleting a blog post. Here’s an explanation of the changes:
+
+1. New removeBlog Function:
+
+    - A new function, `removeBlog(i)`, was added. It takes the index i of the blog to be removed and updates the blogs state by filtering out the blog at that index.
+    - `setBlogs(blogs.filter((blog, index) => index !== i));:` This line updates the state to include only the blogs whose index does not match the one to be deleted.
+2. Delete Button in Each Blog:
+
+    - A new `<button>` element was added inside the map function where the blogs are displayed.
+    - This button has an onClick handler that calls `removeBlog(i)` with the blog’s index as an argument, triggering the deletion of the corresponding blog.
+    - The button is styled with `className="btn remove"` for specific styling (if defined).
+
+This allows users to remove specific blog posts dynamically from the list.
+
 
