@@ -53,3 +53,12 @@ In the updated code, the following additions were made:
 These changes improve the usability by automatically focusing the title input field when the page loads and when the user submits a blog post.
 
 
+### Setting the Title
+In the updated code, the following changes were made:
+1. Second useEffect Hook:
+    - A new useEffect is added to update the document title based on the most recent blog title: This effect runs whenever the blogs state changes. It sets the document title to the latest blog's title (the most recent blog is at index 0). If there are no blogs, the title is set to "No Blogs".
+2. required Attribute in Textarea:
+    - The textarea for the blog content now has a required attribute
+    - This ensures that the blog content must be filled out before the form can be submitted.
+
+
