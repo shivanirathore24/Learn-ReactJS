@@ -41,3 +41,15 @@ The change made to the original code is the introduction of the removeBlog funct
 This allows users to remove specific blog posts dynamically from the list.
 
 
+### Focus on Input Field
+In the updated code, the following additions were made:
+1. useRef Hook:
+    - `const titleRef = useRef(null);` is added to create a reference to the title input field. This allows us to programmatically focus on the input field when the component mounts or after the form is submitted.
+2. useEffect Hook:
+    - `useEffect(() => { titleRef.current.focus(); }, []);` is added to ensure that when the component first renders, the title input field is focused automatically. This is executed only once when the component mounts because of the empty dependency array [].
+3. Focus on Submit:
+    - Inside the handleSubmit function, `titleRef.current.focus();` is called to return the focus to the title input field every time a new blog is submitted. This improves the user experience by allowing them to continue typing new blog titles without needing to click the input field again.
+
+These changes improve the usability by automatically focusing the title input field when the page loads and when the user submits a blog post.
+
+

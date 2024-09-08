@@ -1,15 +1,20 @@
 //Blogging App using Hooks
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 export default function Blog() {
   // const [title,setTitle] = useState("");
   // const [content,setContent] = useState("");
   const [formData, setformData] = useState({ title: "", content: "" });
   const [blogs, setBlogs] = useState([]);
+  const titleRef = useRef(null);
+
+  useEffect(() => {
+    titleRef.current.focus();
+  }, []);
 
   function handleSubmit(e) {
     e.preventDefault();
-
+    titleRef.current.focus();
     setBlogs([{ title: formData.title, content: formData.content }, ...blogs]);
     setformData({ title: "", content: "" });
     console.log(blogs);
@@ -30,6 +35,7 @@ export default function Blog() {
               className="input"
               placeholder="Enter the Title of the Blog here.."
               value={formData.title}
+              ref={titleRef}
               onChange={(e) =>
                 setformData({
                   title: e.target.value,
