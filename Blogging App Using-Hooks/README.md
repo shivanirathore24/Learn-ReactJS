@@ -61,4 +61,132 @@ In the updated code, the following changes were made:
     - The textarea for the blog content now has a required attribute
     - This ensures that the blog content must be filled out before the form can be submitted.
 
+### The useReducer hook
+useReducer is a React Hook that lets you add a reducer to your component. It is
+typically used when you have complex state transitions that involve multiple
+sub-values or when the next state depends on the previous state.
+
+It is a more powerful alternative to the useState hook and is particularly useful when
+managing state for large or deeply nested objects. The useReducer hook provides a
+simple API for dispatching actions and updating state in a predictable way.
+
+Parameters
+1. reducer: In React, the useReducer hook takes a pure reducer function as its
+first argument, which defines how the state gets updated. The reducer
+function should take in the current state and an action as arguments and
+return the new state. The state and action can be of any type.
+2. initialState: The value that represents the initial state of the component. This
+can be any value, including an object or an array.
+
+Returns
+
+useReducer returns an array with exactly two values:
+1. The current state. During the first render, it’s set to the initialState.
+2. The dispatch function that lets you update the state to a different value and
+trigger a re-render.
+
+Example: 
+
+Usage of useReducer hook -> 
+`const [state, dispatch] = useReducer(reducer, initialState);`
+This code snippet uses the useReducer hook to define a state variable named state
+with an initial value of initialState, and a function named dispatch that can be used
+to dispatch updates to the state.
+
+#### The dispatch function
+The dispatch function returned by useReducer lets you update the state to a
+different value and trigger a re-render. You need to pass the action as the only
+argument to the dispatch function
+
+Example:
+
+`const [timer, dispatch] = useReducer(reducer, initialState)`
+`const handleIncrement = () => {`
+    `dispatch({ type: "INCREMENT_COUNT" });`
+`};`
+
+This code snippet uses the dispatch function from the useReducer hook and
+passes an action object of type "INCREMENT_COUNT". The reducer function then
+checks this action type to update the state of the timer.
+
+
+#### Writing the reducer function
+The reducer function used in useReducer hook of React is a pure function that takes
+the current state and an action as arguments, and returns the new state.
+
+The reducer function evaluates the type of the action and updates the state based on
+the type of action.
+
+Example:
+
+`const reducer = (state, action) => {`
+    
+`switch (action.type) {`
+
+    case "incremented_age": {
+        return {
+        name: state.name,
+        age: state.age + 1,
+        };
+    }
+
+    case "changed_name": {
+        return {
+        name: action.nextName,
+        age: state.age,
+        };
+    }
+
+    default:
+    return state;
+`}`
+
+
+
+
+
+### Blogs using useReducer()
+A detailed explanation of the added code and how it functions in the updated version of the Blogging App:
+1. useReducer Hook
+    - `import { useReducer } from "react";`
+    - This line imports the useReducer hook from React. Unlike useState, which manages simple state updates, useReducer is used when you need to handle more complex state logic (like managing an array of blogs, where actions such as adding or removing blogs are involved).
+2. blogsReducer Function -> Purpose: This function defines how the state (the list of blogs) will change based on different actions (ADD and REMOVE).
+    - Parameters:
+        - state: The current state of blogs (the array of blog objects).
+        - action: An object that contains the type of action (like "ADD" or "REMOVE") and any additional data (like the blog to be added or the index of the blog to be removed).
+    - ADD case:
+        - When the action type is "ADD", the new blog (action.blog) is added to the beginning of the state array. The blog is stored as an object with a title and content.
+        - `return [action.blog, ...state]`: This returns a new array with the new blog added at the beginning, followed by the rest of the previous blogs (...state).
+    - REMOVE case:
+        - When the action type is "REMOVE", the blog at the index specified in action.index is removed from the array.
+        - `state.filter((blog, index) => index !== action.index)`: This filters out the blog whose index matches the action.index.
+    - Default:
+        - If the action type doesn't match any known case, the function returns an empty array, ensuring no accidental state corruption.
+3. Using useReducer for Managing Blogs
+    - `const [blogs, dispatch] = useReducer(blogsReducer, []);`
+    - Purpose: This line initializes the useReducer hook. Instead of useState which holds simple state values, useReducer takes two arguments:
+        - The blogsReducer function defined above.
+        - The initial state, which in this case is an empty array [] (meaning no blogs are present initially).
+    - dispatch: This is the function that will be used to trigger state changes based on actions. Whenever you call dispatch, it triggers the blogsReducer function to update the blogs state accordingly.
+4. Dispatching the "ADD" Action
+    - `dispatch({
+  type: "ADD",
+  blog: { title: formData.title, content: formData.content },
+});`
+    - Purpose: This dispatches an action to the reducer to add a new blog.
+    - `type: "ADD"`: This specifies the action type as ADD, so the reducer knows to execute the ADD case.
+    - `blog: { title: formData.title, content: formData.content }`: The new blog to be added is passed as part of the action object. This blog object contains the title and content from the form data.
+    - When this action is dispatched, the reducer adds the new blog to the beginning of the blogs array.
+5. Dispatching the "REMOVE" Action
+    - `dispatch({ type: "REMOVE", index: i });`
+    - Purpose: This dispatches an action to remove a specific blog by its index.
+    - `type: "REMOVE"`: Specifies the action type as REMOVE, so the reducer knows to execute the REMOVE case.
+    - `index: i`: Passes the index of the blog to be removed.
+    - When this action is dispatched, the reducer filters out the blog at the specified index from the blogs array.
+6. Summary of Added Code:
+    - useReducer replaces useState for managing the blogs array.
+    - blogsReducer function handles two actions:
+        - ADD: Adds a new blog to the beginning of the blogs array.
+        - REMOVE: Removes a blog from the array based on its index.
+    - dispatch is used to trigger these actions (ADD and REMOVE) within the reducer, allowing for structured and maintainable state management.
 
