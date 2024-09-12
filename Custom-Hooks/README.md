@@ -46,3 +46,15 @@ This update ensures that the email is saved in localStorage whenever the user ty
     - Setting email: If a value for the email is found in localStorage, it updates the email state using setEmail, pre-filling the input field with the stored email when the page loads.
 
 This update allows the component to auto-fill the email field with the value stored from a previous session, improving user experience.
+
+
+### Order of Hooks
+In both component 'Login.js' and 'Reset.js' ->
+1. First useEffect (Retrieving from localStorage):
+    - Purpose: Fetches the saved email from localStorage when the component mounts and sets it in the email state.
+    - Why First: Ensures the email field is pre-filled with stored data before any changes or saves occur.
+2. Second useEffect (Saving to localStorage):
+    - Purpose: Saves the email to localStorage every time the email state changes.
+    - Why Second: Ensures that any updates to the email are stored after it's been retrieved and modified.
+
+Order is important because the email must be retrieved first, then saved after any changes. This prevents overwriting the stored data with an empty or incorrect value.
