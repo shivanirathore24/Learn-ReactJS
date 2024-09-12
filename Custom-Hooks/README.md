@@ -58,3 +58,17 @@ In both component 'Login.js' and 'Reset.js' ->
     - Why Second: Ensures that any updates to the email are stored after it's been retrieved and modified.
 
 Order is important because the email must be retrieved first, then saved after any changes. This prevents overwriting the stored data with an empty or incorrect value.
+
+### Implementing Custom Hooks
+1. Created 'useLocalStorage.js' file which will act as Custom Hook -> This custom hook useLocalStorage manages the email state by interacting with the browser's localStorage. Here's how it works:
+    - Initial State (useEffect 1): On component mount, it retrieves the email from localStorage (if available) and sets it in the email state.
+    - Update Storage (useEffect 2): Whenever the email state changes, it saves the new email to localStorage.
+    - Return Values: It returns the email value and the setEmail function, allowing components to access and update the email.
+
+This hook helps maintain persistent state for email across sessions.
+
+2. In 'Login.js' and 'Reset.js' file ->
+    - Custom Hook Integration: The email state is now managed using the useLocalStorage hook: `const { email, setEmail } = useLocalStorage();` This replaces the previous useState and useEffect logic for handling localStorage.
+    - Simplified Code: The redundant useEffect hooks for fetching and saving email are removed, as the custom hook now handles it.
+
+This makes the component cleaner by offloading the localStorage logic to the custom hook.
