@@ -31,3 +31,18 @@ localStorage.setItem(key, JSON.stringify(value));
 return [value, setValue];
 };`
 
+
+### Using LocalStorage
+ 1. In 'Login.js' component -> The code introduces the useEffect hook to persist the email state in localStorage.
+    - Purpose of useEffect: This hook is used to perform side effects in function components. In this case, it's storing the value of the email input in the browser's localStorage.
+    - Effect Trigger: The effect is triggered every time the email state changes because [email] is passed as a dependency. This means whenever the user types a new value into the email input field, the useEffect will run and store the updated value in localStorage.
+    - localStorage.setItem: This function is called to store the current email in localStorage under the key "email". It allows the value to be persistent even if the page is reloaded.
+
+This update ensures that the email is saved in localStorage whenever the user types it in, making the data persist across page refreshes or sessions.
+
+2. In 'Reset.js' component ->  The code uses the useEffect hook to retrieve the email from localStorage and automatically set it as the initial value for the email input.
+    - Purpose of useEffect: This hook runs after the component renders, specifically when the component is mounted ([] dependency array ensures it runs only once).
+    - localStorage.getItem: It retrieves the email stored in the browser’s localStorage under the key "email". If the email exists (i.e., it’s not null), it is assigned to the variable email.
+    - Setting email: If a value for the email is found in localStorage, it updates the email state using setEmail, pre-filling the input field with the stored email when the page loads.
+
+This update allows the component to auto-fill the email field with the value stored from a previous session, improving user experience.
