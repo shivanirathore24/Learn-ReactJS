@@ -1,5 +1,6 @@
 //Blogging App using Hooks
 import { useState, useRef, useEffect, useReducer } from "react";
+import {db} from "../firebaseInit";
 
 function blogsReducer(state, action) {
   switch (action.type) {

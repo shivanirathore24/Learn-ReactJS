@@ -190,3 +190,7 @@ A detailed explanation of the added code and how it functions in the updated ver
         - REMOVE: Removes a blog from the array based on its index.
     - dispatch is used to trigger these actions (ADD and REMOVE) within the reducer, allowing for structured and maintainable state management.
 
+### Connecting Firebase to the App
+1. Install Firebase, use this command: `npm install firebase`
+2. Created 'firebaseInit.js' -> code initializes a Firebase app using specific project credentials (from firebaseConfig) and sets up Firestore, a cloud database. The db object represents the Firestore instance, which can be used to interact with the database in a web app
+3. In 'Blog.js' -> the line `import {db} from "../firebaseInit";` is added to import the Firebase Firestore instance from a separate file (firebaseInit). This allows you to use Firebase Firestore (db) within your blogging app for managing blog data in the cloud.
