@@ -194,3 +194,13 @@ A detailed explanation of the added code and how it functions in the updated ver
 1. Install Firebase, use this command: `npm install firebase`
 2. Created 'firebaseInit.js' -> code initializes a Firebase app using specific project credentials (from firebaseConfig) and sets up Firestore, a cloud database. The db object represents the Firestore instance, which can be used to interact with the database in a web app
 3. In 'Blog.js' -> the line `import {db} from "../firebaseInit";` is added to import the Firebase Firestore instance from a separate file (firebaseInit). This allows you to use Firebase Firestore (db) within your blogging app for managing blog data in the cloud.
+
+### Adding a document
+In the updated code, the following changes were made:
+1. Firestore Integration:
+    - Imported collection and addDoc from Firebase Firestore.
+    - Inside handleSubmit, after dispatching the blog to the reducer, the code adds a new blog entry to Firestore using addDoc in the "blogs" collection, which includes title, content, and createdOn (the date of creation).
+2. Error Handling:
+    - Added a try-catch block in handleSubmit to handle any errors during the Firestore document addition process, logging errors to the console if they occur.
+
+These changes enable storing blog data in Firestore alongside the existing local state management.

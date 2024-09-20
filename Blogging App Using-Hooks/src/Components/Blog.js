@@ -1,6 +1,7 @@
 //Blogging App using Hooks
 import { useState, useRef, useEffect, useReducer } from "react";
-import {db} from "../firebaseInit";
+import { db } from "../firebaseInit";
+import { collection, addDoc } from "firebase/firestore";
 
 function blogsReducer(state, action) {
   switch (action.type) {
@@ -18,6 +19,7 @@ export default function Blog() {
   // const [content,setContent] = useState("");
   const [formData, setformData] = useState({ title: "", content: "" });
   //const [blogs, setBlogs] = useState([]);
+  console.log(formData);
   const [blogs, dispatch] = useReducer(blogsReducer, []);
   const titleRef = useRef(null);
 
@@ -33,16 +35,28 @@ export default function Blog() {
     }
   }, [blogs]);
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     titleRef.current.focus();
-    //setBlogs([{ title: formData.title, content: formData.content }, ...blogs]);
-    dispatch({
-      type: "ADD",
-      blog: { title: formData.title, content: formData.content },
-    });
-    setformData({ title: "", content: "" });
-    console.log(blogs);
+
+    try {
+      dispatch({
+        type: "ADD",
+        blog: { title: formData.title, content: formData.content },
+      });
+
+      // Add a new document to Firestore
+      const docRef = await addDoc(collection(db, "blogs"), {
+        title: formData.title,
+        content: formData.content,
+        createdOn: new Date(),
+      });
+
+      console.log("Document written with ID: ", docRef.id);
+      //setformData({ title: "", content: "" });
+    } catch (error) {
+      console.error("Error adding document: ", error);
+    }
   }
 
   function removeBlog(i) {
