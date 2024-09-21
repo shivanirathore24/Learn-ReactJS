@@ -1,7 +1,7 @@
 //Blogging App using Hooks
 import { useState, useRef, useEffect, useReducer } from "react";
 import { db } from "../firebaseInit";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, doc, setDoc } from "firebase/firestore";
 
 function blogsReducer(state, action) {
   switch (action.type) {
@@ -46,7 +46,13 @@ export default function Blog() {
       });
 
       // Add a new document to Firestore
-      const docRef = await addDoc(collection(db, "blogs"), {
+      // const docRef = await addDoc(collection(db, "blogs"), {
+      //   title: formData.title,
+      //   content: formData.content,
+      //   createdOn: new Date(),
+      // });
+      const docRef = doc(collection(db, "blogs"));
+      await setDoc(docRef, {
         title: formData.title,
         content: formData.content,
         createdOn: new Date(),

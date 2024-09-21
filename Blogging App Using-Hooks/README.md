@@ -204,3 +204,17 @@ In the updated code, the following changes were made:
     - Added a try-catch block in handleSubmit to handle any errors during the Firestore document addition process, logging errors to the console if they occur.
 
 These changes enable storing blog data in Firestore alongside the existing local state management.
+
+### addDoc vs setDoc
+Difference Between addDoc and setDoc:
+1. addDoc:
+    - Automatically generates a unique document ID in a collection.
+    - Easier when you don’t care about controlling the document ID.
+2. setDoc:
+    - Allows you to specify the document ID yourself.
+    - More control over the structure or location of the document within the collection.
+
+Added Part of Code: setDoc Usage -> 
+The code now uses setDoc to add a document to Firestore instead of addDoc. 
+1. The doc function creates a new document reference with a unique ID in the blogs collection.
+2. setDoc then adds the blog data to this document in Firestore.
