@@ -218,3 +218,15 @@ Added Part of Code: setDoc Usage ->
 The code now uses setDoc to add a document to Firestore instead of addDoc. 
 1. The doc function creates a new document reference with a unique ID in the blogs collection.
 2. setDoc then adds the blog data to this document in Firestore.
+
+### Getting Documents from Database
+The added part in the code includes fetching blogs from Firestore:
+1. New action in reducer:
+    - "SET" case is added to the blogsReducer to update the blogs with the fetched data from Firestore.
+2. Fetching blogs from Firestore:
+    - A new useEffect is added to run when the component loads. It fetches blog data using getDocs() from Firestore's "blogs" collection.
+    - The fetched blogs are stored in the state using the "SET" action.
+3. Mapping Firestore data:
+    - The fetched documents are mapped to an array of blog objects, containing id and other data fields (title, content, etc.), and then dispatched to update the blogs state.
+
+These additions enable the app to display existing blogs stored in Firestore when the app loads

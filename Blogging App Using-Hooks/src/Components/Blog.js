@@ -1,12 +1,14 @@
 //Blogging App using Hooks
 import { useState, useRef, useEffect, useReducer } from "react";
 import { db } from "../firebaseInit";
-import { collection, doc, setDoc } from "firebase/firestore";
+import { collection, doc, getDocs, setDoc } from "firebase/firestore";
 
 function blogsReducer(state, action) {
   switch (action.type) {
     case "ADD":
       return [action.blog, ...state];
+    case "SET":
+      return action.blogs; // Set blogs from Firestore
     case "REMOVE":
       return state.filter((blog, index) => index !== action.index);
     default:
@@ -34,6 +36,26 @@ export default function Blog() {
       document.title = "No Blogs";
     }
   }, [blogs]);
+
+  useEffect(() => {
+    /** get all the documents from the fireStore using getDocs() */
+    async function fetchData() {
+      const snapShot = await getDocs(collection(db, "blogs"));
+      console.log(snapShot);
+
+      const blogs = snapShot.docs.map((doc) => {
+        return {
+          id: doc.id,
+          ...doc.data(),
+        };
+      });
+      console.log(blogs);
+      // Update the blogs state with the fetched blogs
+      dispatch({ type: "SET", blogs: blogs });
+    }
+
+    fetchData();
+  }, []);
 
   async function handleSubmit(e) {
     e.preventDefault();
