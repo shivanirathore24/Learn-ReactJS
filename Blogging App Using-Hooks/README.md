@@ -259,3 +259,12 @@ The updated part of the code involves the addition of real-time updates using Fi
 
 Removal of fetchData() ->
 The previous code using getDocs() for fetching blogs was removed to make way for the real-time update mechanism provided by onSnapshot(). Now, the blogs are fetched automatically when they change in Firestore.
+
+### Deleting a document
+1. Firestore Document Deletion (deleteDoc):
+   - The removeBlog function is updated to remove the blog directly from Firestore using the deleteDoc method.
+   - The function now takes the blog's id as a parameter to identify the specific document in the Firestore collection and deletes it.
+2. Firestore Cleanup (unsub):
+   -The onSnapshot listener is now cleaned up when the component unmounts to prevent memory leaks. This ensures that the listener stops listening for real-time updates after the component is removed from the DOM.
+
+These changes enhance the app by adding the ability to delete blogs from Firestore and manage the real-time listener lifecycle.

@@ -4,7 +4,7 @@ import { db } from "../firebaseInit";
 import {
   collection,
   doc,
-  getDocs,
+  deleteDoc,
   setDoc,
   onSnapshot,
 } from "firebase/firestore";
@@ -74,6 +74,11 @@ export default function Blog() {
       // Update the blogs state with the fetched blogs
       dispatch({ type: "SET", blogs: blogs });
     });
+
+    // Cleanup the listener when the component unmounts
+    return () => {
+      unsub();
+    };
   }, []);
 
   async function handleSubmit(e) {
@@ -106,9 +111,11 @@ export default function Blog() {
     }
   }
 
-  function removeBlog(i) {
+  function removeBlog(id) {
     //setBlogs(blogs.filter((blog, index) => index !== i));
-    dispatch({ type: "REMOVE", index: i });
+    //dispatch({ type: "REMOVE", index: i });
+    const docRef = doc(db, "blogs", id);
+    deleteDoc(docRef);
   }
 
   return (
@@ -161,7 +168,7 @@ export default function Blog() {
           <div className="blog-btn">
             <button
               onClick={() => {
-                removeBlog(i);
+                removeBlog(blog.id);
               }}
               className="btn remove"
             >
