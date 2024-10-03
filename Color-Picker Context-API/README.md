@@ -11,3 +11,19 @@
     - colorContext.Provider allows you to pass 'red' as the current value of the context, making it accessible to any component that consumes colorContext using useContext().
 
 This approach helps manage the color value centrally via context, instead of passing it down as props directly.
+
+### Getting the value -> useContext()
+In 'GrandChildComponent.jsx' ->
+1. useContext Hook:
+    - The useContext hook is used to consume the value from the colorContext that is provided by a higher-level component (typically using Context.Provider).
+    - This means that value now holds whatever data is being passed down through colorContext. In this case, it is likely the color value.
+2. Fix - Moving useContext inside the curly braces:
+    - In the previous version of the code, the context was not correctly accessed, as the useContext hook was outside of the curly braces.
+    - By moving useContext(colorContext) inside the component, the value is properly retrieved and logged using console.log(value).
+
+Now, the component can dynamically access the context-provided color and use it appropriately in the JSX (though color itself seems to be missing in the return statement—this could be a typo that should also be corrected).
+
+In 'ParentComponent.jsx' ->
+1. In the updated code, the colorContext.Provider now uses the dynamic color state as its value:
+`<colorContext.Provider value={color}>`
+2. This allows the selected color from the input to be passed down dynamically to the ChildComponent, instead of the hardcoded 'red'. Now, the color changes based on user input.
