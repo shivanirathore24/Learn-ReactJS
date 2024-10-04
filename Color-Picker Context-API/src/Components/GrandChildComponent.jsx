@@ -3,9 +3,13 @@ import { colorContext } from "../context";
 
 const GrandChildComponent = (props) => {
   const value = useContext(colorContext); // Fix: Move this inside the curly braces
-  console.log(value);
+  console.log(value.color);
 
-  return <p style={{ color: value }}>Color: {value}</p>;
+  return (
+    <colorContext.Consumer>
+    {(value) => <p style={{ color: value.color }}>Color: {value.color}</p>}
+    </colorContext.Consumer>
+  )
 };
 
 export default GrandChildComponent;

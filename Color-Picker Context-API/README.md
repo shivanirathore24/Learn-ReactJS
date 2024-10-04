@@ -27,3 +27,13 @@ In 'ParentComponent.jsx' ->
 1. In the updated code, the colorContext.Provider now uses the dynamic color state as its value:
 `<colorContext.Provider value={color}>`
 2. This allows the selected color from the input to be passed down dynamically to the ChildComponent, instead of the hardcoded 'red'. Now, the color changes based on user input.
+
+### Getting the value - Consumer
+1.  In 'ParentComponent.jsx':
+    - Initially, colorContext.Provider was passing only the color value. Now, it passes an object containing both color and setColor. This allows the child components to access and modify the color.
+    `<colorContext.Provider value= {{color, setColor}}>`
+
+2. In 'GrandChildComponent.jsx':
+    - In the updated code, useContext(colorContext) now accesses the color and setColor properties.
+    - In the colorContext.Consumer, value.color is used instead of just value because now the context provides an object, not a simple value.
+`{(value) => <p style={{ color: value.color }}>Color: {value.color}</p>}`
