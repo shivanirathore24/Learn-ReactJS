@@ -9,3 +9,13 @@
     - `const value = useContext(itemContext);`: This retrieves the context value (i.e., total and setTotal) provided by itemContext.
     - `{value.total}`: The total value from the context is displayed dynamically in the Navbar (Total : ₹ {value.total}), replacing the hardcoded value.
     - This is update allows the Navbar component to reflect the current total value from the context
+
+### Updating the Total Value
+In 'ItemCard.js' -> The updated part of the code introduces the use of useContext from React to manage the total price of items added. Here's what changed:
+1. useContext Hook:
+    - The itemContext is imported and used to access total (current total price) and setTotal (function to update the total).
+    - This allows the ItemCard component to modify the global total price when items are added.
+2. handleAdd Function:
+    - When the "Add" button is clicked, setTotal is called to update the total by adding the item's price to the current total.
+
+This update integrates a shared state (total) between components through useContext.
