@@ -19,3 +19,12 @@ In 'ItemCard.js' -> The updated part of the code introduces the use of useContex
     - When the "Add" button is clicked, setTotal is called to update the total by adding the item's price to the current total.
 
 This update integrates a shared state (total) between components through useContext.
+
+### Updating Items
+1. In 'App.js' -> The updated code adds item and setItem to the itemContext, allowing both the item count and total to be shared and managed across the app components, along with their update functions
+2. In 'ItemCard.js' -> 
+    - Item count state (item, setItem) added to track the number of items.
+    - handleAdd function now increments both total price and item count.
+    - handleRemove function decreases total price and item count, with a check to prevent negative totals.
+This allows the component to manage both price and item quantity.
+3. In 'Navbar.jsx' -> The update changes the item count from hardcoded 0 to dynamically displaying value.item from the itemContext, reflecting the actual number of items selected.
