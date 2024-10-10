@@ -28,3 +28,23 @@ This update integrates a shared state (total) between components through useCont
     - handleRemove function decreases total price and item count, with a check to prevent negative totals.
 This allows the component to manage both price and item quantity.
 3. In 'Navbar.jsx' -> The update changes the item count from hardcoded 0 to dynamically displaying value.item from the itemContext, reflecting the actual number of items selected.
+
+### Multiple Context
+1. Created 'totalContext.js' -> The code creates a shared context (totalContext) for managing and accessing the "total" value across multiple components, without passing props. This is useful for global state management in React.
+2. In 'App.js' -> The updated part of the code splits the context into two separate providers: itemContext and totalContext. Here’s what changed:
+    - Separate Context Providers:
+        - Previously, itemContext handled both item and total state.
+        - Now, the code uses two contexts:
+            - itemContext only manages item and setItem.
+            - totalContext manages total and setTotal.
+        - This approach separates concerns, making the management of item and total independent, which is cleaner and more modular.
+    - Nested Providers:
+        - itemContext.Provider and totalContext.Provider are nested within each other, allowing components like Navbar and Items to access the values from both contexts.
+    
+    This change improves code organization by keeping item and total in their own contexts.
+3. In 'ItemCard.js' -> The updated part of the code separates the management of total and item into different contexts:
+    - Using Separate Contexts:
+        - Previously, itemContext handled both item and total.
+        - Now, itemContext manages item and setItem, while totalContext manages total and setTotal.
+    - This separation makes it clearer and more modular, with each context handling specific state.
+4. In 'Navbar.js' -> The update separates item and total into two different contexts (itemContext for item and totalContext for total) in the Navbar component, making the state management cleaner and more modular
