@@ -48,3 +48,13 @@ This allows the component to manage both price and item quantity.
         - Now, itemContext manages item and setItem, while totalContext manages total and setTotal.
     - This separation makes it clearer and more modular, with each context handling specific state.
 4. In 'Navbar.js' -> The update separates item and total into two different contexts (itemContext for item and totalContext for total) in the Navbar component, making the state management cleaner and more modular
+
+### Custom Context
+A custom context in React is used to create a global state that can be shared across multiple components without needing to pass props down through every level of the component tree. It allows for more efficient state management and easier access to common data (like user information, theme, or app-wide settings).
+1. In 'itemContext.js' ->
+    - The updated code introduces the CustomItemContext component, which manages two state variables, total and item, both initialized to 0 using useState. Their setter functions, setTotal and setItem, allow for updating these values.
+    - The itemContext.Provider wraps around child components, sharing these state values and their updaters (total, setTotal, item, setItem) throughout the component tree.
+    - The children prop passes these components into the Provider, enabling them to access and modify the shared context values.
+2. In 'App.js' -> 
+    - In the updated code, the state management (useState) and itemContext.Provider have been moved into a separate component called CustomItemContext. Instead of handling state directly in the App component, App now uses CustomItemContext to wrap the entire app, which provides the context values (total, setTotal, item, setItem) to its children (Navbar and Items).
+    - This change simplifies the App component by offloading state and context management to CustomItemContext.
