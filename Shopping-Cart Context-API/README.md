@@ -58,3 +58,23 @@ A custom context in React is used to create a global state that can be shared ac
 2. In 'App.js' -> 
     - In the updated code, the state management (useState) and itemContext.Provider have been moved into a separate component called CustomItemContext. Instead of handling state directly in the App component, App now uses CustomItemContext to wrap the entire app, which provides the context values (total, setTotal, item, setItem) to its children (Navbar and Items).
     - This change simplifies the App component by offloading state and context management to CustomItemContext.
+
+### Custom Hooks
+1. In 'itemContext.js' ->
+    - Functions:
+        - handleAdd(price): This function adds the specified price to the total and increments the item count by 1.
+        - handleRemove(price): This function subtracts the specified price from the total, but only if total is greater than 0, and decrements the item count by 1.
+    - Provider: The itemContext.Provider now passes the handleAdd and handleRemove functions along with the total and item count, allowing components to modify these values.
+    - Custom Hook: The useValue function uses useContext to provide an easy way for components to access the context values, simplifying the process of using the context in child components.
+2. In 'ItemCard.js' -> 
+    - Custom Hook Usage: It now uses the useValue hook to access handleAdd and handleRemove functions from the context, streamlining the code.
+    - Removed Local Handlers: The previous local handleAdd and handleRemove functions are removed, relying instead on the context functions for state management.
+    - Button Handlers: The buttons directly call handleAdd(price) and handleRemove(price), simplifying the logic and improving readability.
+
+Overall, these changes enhance code clarity and maintain separation of concerns.
+
+3. In 'Navbar.js' ->
+    - Custom Hook Usage: The component now uses the useValue custom hook to access the total and item values from the context. This simplifies the code by encapsulating the context logic.
+    - Cleaner Code: By using useValue, the code is more concise and readable, reducing direct interactions with the context API.
+
+Overall, these changes improve code clarity and maintainability by centralizing context access through the custom hook.
