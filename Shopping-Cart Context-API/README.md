@@ -78,3 +78,9 @@ Overall, these changes enhance code clarity and maintain separation of concerns.
     - Cleaner Code: By using useValue, the code is more concise and readable, reducing direct interactions with the context API.
 
 Overall, these changes improve code clarity and maintainability by centralizing context access through the custom hook.
+
+### Reset Button
+1. In 'Navbar.jsx' -> A clear function was added via the context (useValue()).
+A new "Reset" button was added, which when clicked, calls the clear function to reset the total and item values (or possibly other state).
+2. In 'itemContext.js' -> Added a clear function to reset total and item to 0, and it is passed through the context so other components can use it.
+3. In 'Total.module.css' -> Added styles for .buttonsWrapper and .button. The .buttonsWrapper aligns buttons, while the .button styles include border, background color, font size, and hover effects like scaling and color changes.
