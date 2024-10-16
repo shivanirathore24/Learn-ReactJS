@@ -84,3 +84,11 @@ Overall, these changes improve code clarity and maintainability by centralizing 
 A new "Reset" button was added, which when clicked, calls the clear function to reset the total and item values (or possibly other state).
 2. In 'itemContext.js' -> Added a clear function to reset total and item to 0, and it is passed through the context so other components can use it.
 3. In 'Total.module.css' -> Added styles for .buttonsWrapper and .button. The .buttonsWrapper aligns buttons, while the .button styles include border, background color, font size, and hover effects like scaling and color changes.
+
+### Card Button
+1. In 'Navbar.js' -> The updated code adds a "Cart" button alongside the existing "Reset" button within the div for buttons. Now, the navbar has two buttons: "Cart" (without any action yet) and "Reset" (which clears items). The "Reset" button is positioned after the new "Cart" button.
+2. Created 'CardModal.module.js' -> The Navbar component in React fetches the total price (total), the number of items (item), and the clear function from a context using useValue(). It displays the total amount in rupees and the number of items. The component has two buttons:
+    - A "Cart" button (currently without any functionality).
+    - A "Reset" button that triggers the clear function to reset the cart.
+    - The component is styled using CSS modules (Total.module.css or Navbar.module.css).
+3. Created 'CardModal.module.css' -> This CSS styles a cart modal with a fixed, full-screen layout. It includes scrollable cart items (.itemContainer), individual item cards (.cartCard), a total section (.total), and two buttons: one to close the modal (.closeButton) and another to clear the cart (.clearButton). All elements use consistent padding, margins, and colors from CSS variables.
