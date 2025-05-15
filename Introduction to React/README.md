@@ -68,3 +68,43 @@ that reloads the whole page when a user interacts with the app.
 3. Single-page app developers have trouble indexing a website properly Multi-page applications are more SEO-friendly than single-page and achieve high search rankings.
 4. It is easy to maintain at a low cost.
 5. It has the ability to work offline if there are some problems with the internet connection, as it loads all the data at once.
+
+## How to include Javascript in HTML?
+
+You can include JavaScript in your HTML in two ways:
+
+1. Embedding code in your HTML file using `<script>` tag
+2. Including it as a link to an external file.
+
+### Embedding Code
+
+You can add JavaScript code in an HTML document by employing the dedicated
+HTML tag `<script`> that wraps around JavaScript code. The `<script>` tag can be
+placed in the `<head>` section of your HTML or in the `<body>` section, depending on
+when you want the JavaScript to load.
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Document</title>
+    <script>
+      document.write("Welcome to the session");
+    </script>
+  </head>
+  <body>
+    <h1>Hello</h1>
+  </body>
+</html>
+```
+
+### External File
+
+To include an external JavaScript file, we can use the script tag with the attribute src.
+The value for the src attribute should be the path to your JavaScript file. This script
+tag should be included between your HTML document's `<head>` tags.When
+JavaScript files are cached, pages load more quickly.
+
+```html
+<script type="text/javascript" src="path-to-javascript-file.js"></script>
+```
