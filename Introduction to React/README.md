@@ -108,3 +108,234 @@ JavaScript files are cached, pages load more quickly.
 ```html
 <script type="text/javascript" src="path-to-javascript-file.js"></script>
 ```
+
+## How React is declarative?
+
+Declarative programming is when you say what you want to do, and describe the
+final state of the desired UI. Imperative programming is when you say how to get
+what you want and provide step-by-step DOM mutations until you reach the desired
+UI. Javascript is an imperative Language whereas React is a declarative language.
+
+For eg: For the following output, You need to add an element to the DOM
+imperatively using JavaScript. As your app gets bigger, with more DOM elements you
+being created, this can become hard to maintain. But, React it performs all of the
+JavaScript/DOM steps as per the declared code to get us to our desired result. It
+abstracts away all the nuts and bolts of how the DOM renders these elements. In
+your code you tell your page "Look like this" and you'll get that result. Declarative
+programming is much easier to read and figure out what is going on in your code.
+That makes it easier to debug and easier for other devs to work on.
+
+### Javascript CODE
+
+#### index.html
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>HTML</title>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script src="script.js" type="text/javascript"></script>
+  </body>
+</html>
+```
+
+#### script.js
+
+```javascript
+const div = document.createElement("div");
+
+const heading = document.createElement("h1");
+heading.textContent = "Hello";
+heading.className = "header";
+
+const para = document.createElement("p");
+para.textContent = "Welcome to the session";
+para.className = "para";
+
+const btn = document.createElement("button");
+btn.textContent = "Click";
+btn.className = "btn";
+
+div.append(heading);
+div.append(para);
+div.append(btn);
+
+document.getElementById("root").append(div);
+```
+
+### React CODE
+
+#### index.html
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Document</title>
+
+    <script
+      crossorigin
+      src="https://unpkg.com/react@18/umd/react.development.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
+    ></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script src="scripts.js" type="text/babel"></script>
+  </body>
+</html>
+```
+
+#### script.js
+
+```javascript
+const heading = React.createElement("h1", null, "Hello");
+
+const para = React.createElement(
+  "p",
+  { className: "para" },
+  "Welcome to the session"
+);
+
+const btn = React.createElement("button", { className: "btn" }, "Click");
+
+const div = React.createElement("div", {
+  className: "App",
+  children: [heading, para, btn],
+});
+
+ReactDOM.createRoot(document.getElementById("root")).render(div);
+```
+
+#### script.js (Using JSX)
+
+```javascript
+const header = (
+  <div>
+    <h1 className="header">Hello</h1>
+    <p className="para">Welcome to the session</p>
+    <button className="btn">Click</button>
+  </div>
+);
+
+ReactDOM.createRoot(document.getElementById("root")).render(header);
+```
+
+## Creating First React Element
+
+To include React in a simple web page, CDN(Content Delivery Network) can be
+used. You need to create a new HTML file and include the CDN links of the following:
+
+**React**: React-script-tag is an npm package that provides a React `<script>` tag which
+supports universal rendering. With this library, we can create react components, that
+is, a plain javascript object with some properties.
+
+```html
+<script
+  crossorigin
+  src="https://unpkg.com/react@18/umd/react.development.js"
+></script>
+```
+
+**React-DOM**: React-DOM basically converts the javascript object returned by React
+script tag to HTML nodes that can be rendered in the browser.
+
+```html
+<script
+  crossorigin
+  src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
+></script>
+```
+
+**Babel**: JSX files are not understandable by the browser. It is a tool that converts JSX
+files to simple javascript code that the browser understands. Moreover, it also
+converts ES6 and ES5 code to javascript code.
+
+```html
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+```
+
+Now, we are ready to use React library in our webpage. So, introduce a div tag with
+an id “root” in the body. We call this a “root” DOM node because everything inside it
+will be managed by React DOM.
+
+```html
+<div id="root" type="text/babel"></div>
+```
+
+Now, create a script section at the end of the document. Then, pass the DOM
+element to `ReactDOM.createRoot()`, and then to `root.render()` to render an
+HTML element dynamically.
+
+```html
+<script language="JavaScript">
+  const heading = React.createElement("h1", null, "Hello");
+  ReactDOM.createRoot(document.getElementById("root")).render(heading);
+</script>
+```
+
+After that, use the **live server** extension of VS Code to serve the webpage and see
+the output.
+
+### React.createElement
+
+A React element describes what the real Document Object Model (DOM) element
+should look like. React.js uses virtual DOM to design the UI and interact with the
+browser. It is made up of react elements that seem similar to HTML elements but
+are JavaScript objects. In simple words, react elements are the instructions for how
+the browser DOM should be created. We can create the react elements using the
+below syntax by embedding HTML elements in JavaScript to display the content on
+the screen.
+
+`React.createElement(type,{props},children);`
+
+It takes three arguments. They are:
+
+- **type**: specifies the type of the HTML element (h1, p, button).
+- **props**: specifies properties of the object ({style:{size:10px}} or event handlers,
+  classNames,etc).
+- **children**: anything that needs to be displayed on the screen.
+
+### React.createRoot
+
+It creates a React root for the supplied container and returns the root. The root can
+be used to render a React element into the DOM with render:
+
+`const root = createRoot(container);`
+
+`root.render(element);`
+
+### Root.render
+
+React elements are immutable. Once you create an element, you can’t change its
+children or attributes. The only way to update the UI is to create a new element, and
+pass it to root.render().
+
+`root.render(element, container element);`
+
+It takes two arguments:
+
+- element: The element that needs to be rendered in the DOM.
+- container element: It specifies where to render the element in the DOM.
+
+#### Note:
+
+For running your React.js project, there are two modes available –
+development and Reactjs build production. During the development phase, we will
+be running our code locally using the development mode where React provides us
+with many helpful warnings and tools for easily detecting and fixing problems in our
+application code and eliminating potential bugs. But in production mode, the
+warning messages and other features present in development mode for debugging
+are suppressed. It minifies your code, optimizes assets, and produces lighter-weight
+source maps. As a result, the bundle size is drastically reduced, improving page load
+time. React recommends utilizing the production mode while deploying the
+application.
