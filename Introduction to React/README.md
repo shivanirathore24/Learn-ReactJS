@@ -339,3 +339,82 @@ are suppressed. It minifies your code, optimizes assets, and produces lighter-we
 source maps. As a result, the bundle size is drastically reduced, improving page load
 time. React recommends utilizing the production mode while deploying the
 application.
+
+## Understanding Real DOM and Virtual DOM
+
+### Real DOM
+
+DOM stands for “Document Object Model”. The DOM in simple words represents the
+UI of your application. Every time there is a change in the state of your application
+UI, the updated element and its children have to be re-rendered to represent that
+change. But frequently manipulating the DOM affects performance, making it slow.
+Therefore, the more UI components you have, the more expensive the DOM updates
+could be, since they need to be re-rendered for every DOM update.
+
+### Virtual DOM
+
+The virtual DOM is only a virtual representation of the DOM. Every time the state of
+our application changes, the virtual DOM gets updated instead of the real DOM. If
+the state of any of these elements changes, a new virtual DOM tree is created. This
+tree is then compared or “diffed” from the previous virtual DOM tree. Once this is
+done, the virtual DOM calculates the best possible method to make these changes to
+the real DOM. This ensures that there are minimal operations on the real DOM.
+Hence, reducing the performance cost of updating the real DOM.
+
+<img src="./images/virtual_DOM.png" alt="Virtual DOM" width="600" height="auto">
+
+React compares the Virtual DOM with Real DOM. It finds out the changed nodes and
+updates only the changed nodes in Real DOM leaving the rest nodes as it is. This
+process is called **Reconciliation**. Diffing algorithm is a technique of reconciliation
+that is used by React.
+
+## JSX
+JSX, or JavaScript XML, is an extension to the JavaScript language syntax. Similar
+in appearance to HTML, JSX provides a way to structure component rendering using
+syntax familiar to many developers. React components are typically written using
+JSX, although they do not have to be (components may also be written in pure JavaScript). JSX is similar to another extension syntax created by Facebook for PHP
+called XHP.
+- **Why is a class not used as an attribute in JSX?** We cannot use class
+attributes in script tags. Instead of this, we use it because the class is a
+reserved keyword in javascript.
+- **Using javascript variables in JSX:** We can use variable names instead of
+static text by creating variables. We can add them in a JSX file using
+{variable_name}.
+
+For Example:
+```javascript
+const name = "Shiv";
+
+const header = () => (
+  <>
+    <h1 className="header">Hello {name}</h1>
+    <p className="para">Welcome to the session</p>
+    <button className="btn">Click</button>
+  </>
+);
+```
+- Declares a constant variable name with the value "Shiv".
+- Defines a functional React component header using an arrow function.
+- Returns a JSX Fragment (`<>...</>`) containing:
+  - An `<h1>` that displays “Hello Shiv” using `{name}` interpolation.
+  - A `<p>` with a welcome message.
+  - A `<button>` with the label “Click”.
+- CSS classes (`header`, `para`, `btn`) are assigned for styling.
+
+
+## Babel: Javascript Compiler
+React uses JSX syntax and JSX files are not understandable by the browser. Babel
+is a transpiler i.e. it converts the JSX to vanilla JavaScript. It can also convert the
+latest version of JavaScript code into the one that the browser understands. [Link](https://babeljs.io/)
+<img src="./images/babel_compiler1.png" alt="Babel" width="800" height="auto">
+
+#### React JSX Example 
+```javascript
+/* REACT with JSX */
+//const jsxHeading = (<h1 className="head">Hello, Shiv !</h1>);
+const jsxHeading = <h1 className="head">Hello, Shiv !</h1>;
+ReactDOM.createRoot(document.getElementById("root")).render(jsxHeading);
+```
+
+
+<img src="./images/babel_compiler2.png" alt="Babel" width="700" height="auto">
