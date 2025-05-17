@@ -369,19 +369,22 @@ process is called **Reconciliation**. Diffing algorithm is a technique of reconc
 that is used by React.
 
 ## JSX
+
 JSX, or JavaScript XML, is an extension to the JavaScript language syntax. Similar
 in appearance to HTML, JSX provides a way to structure component rendering using
 syntax familiar to many developers. React components are typically written using
 JSX, although they do not have to be (components may also be written in pure JavaScript). JSX is similar to another extension syntax created by Facebook for PHP
 called XHP.
+
 - **Why is a class not used as an attribute in JSX?** We cannot use class
-attributes in script tags. Instead of this, we use it because the class is a
-reserved keyword in javascript.
+  attributes in script tags. Instead of this, we use it because the class is a
+  reserved keyword in javascript.
 - **Using javascript variables in JSX:** We can use variable names instead of
-static text by creating variables. We can add them in a JSX file using
-{variable_name}.
+  static text by creating variables. We can add them in a JSX file using
+  {variable_name}.
 
 For Example:
+
 ```javascript
 const name = "Shiv";
 
@@ -393,6 +396,7 @@ const header = () => (
   </>
 );
 ```
+
 - Declares a constant variable name with the value "Shiv".
 - Defines a functional React component header using an arrow function.
 - Returns a JSX Fragment (`<>...</>`) containing:
@@ -401,14 +405,16 @@ const header = () => (
   - A `<button>` with the label “Click”.
 - CSS classes (`header`, `para`, `btn`) are assigned for styling.
 
-
 ## Babel: Javascript Compiler
+
 React uses JSX syntax and JSX files are not understandable by the browser. Babel
 is a transpiler i.e. it converts the JSX to vanilla JavaScript. It can also convert the
 latest version of JavaScript code into the one that the browser understands. [Link](https://babeljs.io/)
+
 <img src="./images/babel_compiler1.png" alt="Babel" width="800" height="auto">
 
-#### React JSX Example 
+#### React JSX Example
+
 ```javascript
 /* REACT with JSX */
 //const jsxHeading = (<h1 className="head">Hello, Shiv !</h1>);
@@ -416,5 +422,38 @@ const jsxHeading = <h1 className="head">Hello, Shiv !</h1>;
 ReactDOM.createRoot(document.getElementById("root")).render(jsxHeading);
 ```
 
-
 <img src="./images/babel_compiler2.png" alt="Babel" width="700" height="auto">
+
+## React Fragments
+
+In React, when a component returns multiple elements, we must wrap them in a
+container element like a div for the code to work. While this is fine, it may however
+cause unintended issues in our components. React fragments serve as a cleaner
+alternative to using unnecessary divs in our code. Fragments let you group a list of
+children without adding extra nodes to the DOM.
+
+#### Here is a code snippet for your reference:
+
+```javascript
+const header = () => (
+  <React.Fragment>
+    <h1 className="header">Hello</h1>
+    <p className="para">Welcome to the session</p>
+    <button className="btn">Click</button>
+  </React.Fragment>
+);
+```
+You can create a React fragment using `<React.Fragment></React.Fragment>`.
+You can also use the shorthand syntax to wrap components using an empty HTML
+element like syntax, `<></>`.
+
+```javascript
+const header = () => (
+  <>
+    <h1 className="header">Hello</h1>
+    <p className="para">Welcome to the session</p>
+    <button className="btn">Click</button>
+  </>
+);
+```
+NOTE: `()` wraps multi-line JSX to ensure JavaScript treats it as a single expression when assigning to a variable or returning from an arrow function, preventing syntax errors from line breaks or automatic semicolon insertion.
