@@ -443,6 +443,7 @@ const header = () => (
   </React.Fragment>
 );
 ```
+
 You can create a React fragment using `<React.Fragment></React.Fragment>`.
 You can also use the shorthand syntax to wrap components using an empty HTML
 element like syntax, `<></>`.
@@ -456,4 +457,46 @@ const header = () => (
   </>
 );
 ```
+
 NOTE: `()` wraps multi-line JSX to ensure JavaScript treats it as a single expression when assigning to a variable or returning from an arrow function, preventing syntax errors from line breaks or automatic semicolon insertion.
+
+## Components in React
+
+Components are independent and reusable codes. They work for the same purpose
+as JavaScript functions but work independently and restore HTML with the render()
+function. In simple words, react is like the lego game, and here components are
+bricks of lego that are used to build different applications. Components are of two
+types:
+
+1. **Class components**: The class component name must start with a capital
+   letter. This component should contain `React.Component` statement, which
+   creates the inheritance for `React.Component` and gives your component
+   access to the functions of `React.Component`. The component also requires a
+   `render()` method, which provides HTML.
+2. **Function components**: A functional component is just a plain JavaScript
+   function that accepts props (arguments passed into React components) as an
+   argument and returns a React element. There is no render method used in
+   functional components.
+
+#### React Functional Component: A Simple Example
+
+```javascript
+function App() {
+  //functional component
+  return (
+    <>
+      <h1>Hello, Shiv ! </h1>
+      <p>This heading is created using JSX</p>
+    </>
+  );
+}
+
+/* During Call: App() --> function , <App/> --> Component */
+//ReactDOM.createRoot(document.getElementById("root")).render(App());
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+
+/*
+Add Extension to Chrome : React Developers Tools
+Inspect --> >> --> Components --> you will see 'App" as Components
+*/
+```
