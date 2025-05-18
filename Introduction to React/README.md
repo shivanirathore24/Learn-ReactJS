@@ -500,3 +500,100 @@ Add Extension to Chrome : React Developers Tools
 Inspect --> >> --> Components --> you will see 'App" as Components
 */
 ```
+
+## Arrow Function in React
+
+- An arrow function expression is a JavaScript expression that has a shorter syntax
+  than the function keyword. It is designed for situations where you want to create a
+  one−line anonymous function expression, like in event handlers.
+- The arrow function expression syntax for the above function is as follows:
+  `let handleClick = (parameter) => { // code };`
+- An arrow function expression always has a single parameter, following the => token,
+  and then an expression or statement within parentheses that follow the return value
+  using the parameter.
+
+#### There are several benefits to using arrow functions in ReactJS.
+
+1. They are much simpler to write and understand than traditional function
+   expressions. This can make your code more readable and easier to debug.
+2. Arrow functions do not create a new scope, so they can be used in ReactJS
+   without polluting the global scope.
+3. Arrow functions can be used as arguments to other functions, which can
+   make your code more flexible and expressive.
+
+#### React Functional Component Using Arrow Function: A Simple Example
+```javascript
+/* Functional Component using Arrow Function */
+
+const App1 = () => {
+  return (
+    <>
+      <h1>Hello, Shiv ! </h1>
+      <p>This heading is created using JSX</p>
+    </>
+  );
+};
+
+//here we are returning one expression so we can remove return keyword and curly braces.
+const App2 = () => (
+  <>
+    <h1>Hello, Shiv ! </h1>
+    <p>This heading is created using JSX</p>
+  </>
+);
+
+function Name() {
+  return (
+    <>
+      <p>JSX is Javascript XML</p>
+    </>
+  );
+}
+
+/* here we are calling 3 components, so we need to enclose inside the parent component or fragment */
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <>
+    <App1 />
+    <App2 />
+    <Name />
+  </>
+);
+
+/* Benefits of Arrow function over normal function: */
+// 1. Decreases lines of code
+// 2. Arrow function implicitely "returns" if curly braces not present (but only for 1 expression)
+// whereas normal function only returns when you write "return" keyword explicitely.
+```
+
+## Summarising it
+
+Let’s summarise what we have learned in this module:
+
+- Learned about React, its history, and its features.
+- Learned about Multi-Page and Single Page Applications.
+- Learned about Declarative and Imperative Languages.
+- Learned how to create elements in React.
+- Learned about Real DOM and Virtual DOM.
+- Learned about JSX.
+- Learned about Babel.
+- Learned about React Fragments
+- Learned about types of components.
+- Learned how to create components using arrow functions
+
+### Some Additional Resources: To explore more
+
+[React Official Documentation](http://react.dev/learn)
+
+[MPA vs SPA](https://simicart.com/blog/spa-vs-mpa/)
+
+[Rendering Elements](https://legacy.reactjs.org/docs/rendering-elements.html)
+
+[Reconciliation](https://www.mindbowser.com/react-virtual-dom-vs-real-dom/)
+
+[Babel Documentation](https://babeljs.io/docs/)
+
+[Babel Try it out](https://babeljs.io/repl/)
+
+[React Fragments](https://legacy.reactjs.org/docs/fragments.html)
+
+[Understanding Fragments](https://blog.logrocket.com/understanding-react-fragments/)
