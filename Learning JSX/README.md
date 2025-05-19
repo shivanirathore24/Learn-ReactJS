@@ -113,6 +113,7 @@ function App() {
 ## Embedding Javascript inside JSX
 
 ### A Simple Example
+
 ```javascript
 function App() {
   var name = "Shiv";
@@ -140,48 +141,176 @@ This code defines a React functional component called `App`. The component demon
 
 1. JavaScript Variables:
 
-    ```javascript
-    var name = "Shiv";
-    var age = 24;
-    let demo = null;
-    let undefineValue = undefined;
-    let isMarried = false;
-    ```
+   ```javascript
+   var name = "Shiv";
+   var age = 24;
+   let demo = null;
+   let undefineValue = undefined;
+   let isMarried = false;
+   ```
 
-    - `name`: A string variable containing the name `"Shiv"`.
-    - `age`: A number variable holding the value `24`.
-    - `demo`: A variable set to `null`. In JSX, `null` will render nothing.
-    - `undefineValue`: A variable set to `undefined`. It also renders nothing in JSX.
-    - `isMarried`: A boolean value `false`.
+   - `name`: A string variable containing the name `"Shiv"`.
+   - `age`: A number variable holding the value `24`.
+   - `demo`: A variable set to `null`. In JSX, `null` will render nothing.
+   - `undefineValue`: A variable set to `undefined`. It also renders nothing in JSX.
+   - `isMarried`: A boolean value `false`.
 
 2. JSX:
 
-    Inside the `return` statement, you’re using JSX to render HTML-like elements. You can embed JavaScript variables within curly braces `{}`.
+   Inside the `return` statement, you’re using JSX to render HTML-like elements. You can embed JavaScript variables within curly braces `{}`.
 
-    ```javascript
-    return (
-      <>
-        <h1>Hello, {name} ! </h1>
-        <p> Your age is {age} </p>
-        <p> Null value : {demo} </p>
-        <p> Undefined value : {undefineValue} </p>
-        <p> Boolean value : {isMarried}</p>
-        <p> Boolean value : {isMarried.toString()}</p>
-      </>
-    );
-    ```
+   ```javascript
+   return (
+     <>
+       <h1>Hello, {name} ! </h1>
+       <p> Your age is {age} </p>
+       <p> Null value : {demo} </p>
+       <p> Undefined value : {undefineValue} </p>
+       <p> Boolean value : {isMarried}</p>
+       <p> Boolean value : {isMarried.toString()}</p>
+     </>
+   );
+   ```
 
-    - `{name}`: Displays the value of `name`, which is `"Shiv"`. 
-    - `{age}`: Displays the value of `age`, which is `24`. 
-    - `{demo}`: Since `demo` is `null`, it renders nothing in JSX. 
-    - `{undefineValue}`: Similarly, `undefined` renders nothing. 
-    - `{isMarried}`: Displays `false`. Booleans are not automatically rendered in JSX as text. 
-    - `{isMarried.toString()}`: Converts the boolean `false` to a string `"false"` using `.toString()`, so it gets rendered properly.
+   - `{name}`: Displays the value of `name`, which is `"Shiv"`.
+   - `{age}`: Displays the value of `age`, which is `24`.
+   - `{demo}`: Since `demo` is `null`, it renders nothing in JSX.
+   - `{undefineValue}`: Similarly, `undefined` renders nothing.
+   - `{isMarried}`: Displays `false`. Booleans are not automatically rendered in JSX as text.
+   - `{isMarried.toString()}`: Converts the boolean `false` to a string `"false"` using `.toString()`, so it gets rendered properly.
 
 3. React Rendering:
 
-    ```javascript
-    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
-    ```
+   ```javascript
+   ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+   ```
 
-    This line uses `ReactDOM.createRoot` to render the `App` component into the `root` element in your HTML.
+   This line uses `ReactDOM.createRoot` to render the `App` component into the `root` element in your HTML.
+
+## JSX Expression
+
+With JSX, you can write expressions inside curly braces { }. JSX Expressions,
+written inside curly brackets, allow only things that evaluate some value like
+string, number, array map method, etc. The expression can be a React
+variable, property, or any other valid JavaScript expression. JSX will execute
+the expression and return the result.
+
+#### Example:
+
+```javascript
+// A simple function that calculates and returns a value
+function sum() {
+  let a = 3 + 4;
+  return a; // returns 7
+}
+
+// React functional component
+function App() {
+  // Data variables to be used in JSX
+  var name = "Shivani Rathore";
+  let age = 24;
+
+  // Storing a JSX heading element in a constant
+  const header = <h2>This is Header</h2>;
+
+  // Returning JSX content wrapped in a Fragment
+  return (
+    <>
+      {/* Render the header JSX element */}
+      {header}
+
+      {/* Display name and age dynamically */}
+      <p>My name is {name}.</p>
+      <p>My age is {age}.</p>
+
+      {/* Call sum() function and display its result */}
+      <p>Calling function: {sum()}</p>
+    </>
+  );
+}
+```
+
+In JavaScript, a function can only return one value at a time. Since **JSX is just syntactic sugar for JavaScript**, it also follows the same rule ~ it can only return **one parent element**.
+
+To return multiple elements, we must wrap them inside a single outer wrapper. This wrapper is often a `<div>`, but in React, we can also use a Fragment (`<> </>`), which groups elements without adding extra nodes to the DOM.
+
+That’s why in this example, we used a **Fragment** to return multiple elements cleanly.
+
+For example, the code below will throw an error because **JSX expressions must return only one parent element**:
+
+```javascript
+function App() {
+  return (
+      <div>Hello</div>
+      <div>World</div>
+  );
+}
+```
+
+### Comments in JSX
+
+To add JavaScript code inside JSX, we need to write it in curly brackets. To
+add a comment for that code, then you have to wrap that code in JSX
+expression syntax inside the /_ and _/ comment symbols like this:
+
+```javascript
+{
+  /* <p>This is some text</p> */
+}
+```
+
+### Null/Undefines/Boolean in JSX
+
+JSX ignores `null`, `undefined`, and `Booleans` (false, true). They don’t render as
+JSX is syntactic sugar for `React.createElement(component, props,
+...children)`. Let's Understand JSX Rendering of Special Values:
+
+#### For Example
+
+In React JSX, the following expressions:
+
+```javascript
+<div />
+<div></div>
+<div>{false}</div>
+<div>{null}</div>
+<div>{undefined}</div>
+<div>{true}</div>
+```
+
+may look different in code, but they all render the same way in the browser:
+
+```javascript
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+```
+
+#### ❓ Why do they render the same?
+
+Because JSX ignores certain JavaScript values inside `{}` when rendering:
+
+- `false`
+- `true`
+- `null`
+- `undefined`
+
+These values do **not produce any visible output** in the DOM. React skips them silently.
+
+#### ✅ How to Show These Values on Screen
+
+If you want to display them (e.g., true, false, null), you must convert them to strings:
+
+```javascript
+const myVariable = false;
+<div>My JavaScript variable is {String(myVariable)}.</div>;
+```
+
+This will correctly render the value as text:
+
+```javascript
+<div>My JavaScript variable is false</div>
+```
