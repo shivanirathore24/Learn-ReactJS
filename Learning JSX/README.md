@@ -76,8 +76,10 @@ function App() {
 trying to render more than one root element, we have to put the entire content
 inside the ‘div’ tag, which is not a good approach because no one wants to
 include an extra div element if that is not required in the code. Hence, Fragments were introduced, and we use them instead of the extraneous ‘div’
-tag. 
+tag.
+
 #### Example:
+
 ```javascript
 function App() {
   return (
@@ -88,6 +90,7 @@ function App() {
   );
 }
 ```
+
 **Shorthand Fragment**: The output of the first code and the code above is the
 same, but the main reason for using it is that it is a tiny bit faster when
 compared to the one with the ‘div’ tag inside it, as we didn’t create any DOM
@@ -95,6 +98,7 @@ nodes. Also, it takes less memory. Another shorthand also exists for the above
 method in which we use ‘<>’ and ‘</>’ instead of the ‘React.Fragment’.
 
 #### Example:
+
 ```javascript
 function App() {
   return (
@@ -106,3 +110,78 @@ function App() {
 }
 ```
 
+## Embedding Javascript inside JSX
+
+### A Simple Example
+```javascript
+function App() {
+  var name = "Shiv";
+  var age = 24;
+  let demo = null;
+  let undefineValue = undefined;
+  let isMarried = false;
+  return (
+    <>
+      <h1>Hello, {name} ! </h1>
+      <p> Your age is {age} </p>
+      <p> Null value : {demo} </p>
+      <p> Undefined value : {undefineValue} </p>
+      <p> Boolean value : {isMarried}</p>
+      <p> Boolean value : {isMarried.toString()}</p>
+    </>
+  );
+}
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+```
+
+#### Code Explanation:
+
+This code defines a React functional component called `App`. The component demonstrates how to embed various JavaScript data types inside JSX.
+
+1. JavaScript Variables:
+
+    ```javascript
+    var name = "Shiv";
+    var age = 24;
+    let demo = null;
+    let undefineValue = undefined;
+    let isMarried = false;
+    ```
+
+    - `name`: A string variable containing the name `"Shiv"`.
+    - `age`: A number variable holding the value `24`.
+    - `demo`: A variable set to `null`. In JSX, `null` will render nothing.
+    - `undefineValue`: A variable set to `undefined`. It also renders nothing in JSX.
+    - `isMarried`: A boolean value `false`.
+
+2. JSX:
+
+    Inside the `return` statement, you’re using JSX to render HTML-like elements. You can embed JavaScript variables within curly braces `{}`.
+
+    ```javascript
+    return (
+      <>
+        <h1>Hello, {name} ! </h1>
+        <p> Your age is {age} </p>
+        <p> Null value : {demo} </p>
+        <p> Undefined value : {undefineValue} </p>
+        <p> Boolean value : {isMarried}</p>
+        <p> Boolean value : {isMarried.toString()}</p>
+      </>
+    );
+    ```
+
+    - `{name}`: Displays the value of `name`, which is `"Shiv"`. 
+    - `{age}`: Displays the value of `age`, which is `24`. 
+    - `{demo}`: Since `demo` is `null`, it renders nothing in JSX. 
+    - `{undefineValue}`: Similarly, `undefined` renders nothing. 
+    - `{isMarried}`: Displays `false`. Booleans are not automatically rendered in JSX as text. 
+    - `{isMarried.toString()}`: Converts the boolean `false` to a string `"false"` using `.toString()`, so it gets rendered properly.
+
+3. React Rendering:
+
+    ```javascript
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+    ```
+
+    This line uses `ReactDOM.createRoot` to render the `App` component into the `root` element in your HTML.
