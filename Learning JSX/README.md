@@ -426,12 +426,14 @@ and the solution is to manipulate the object so that it becomes a valid element.
 
 And this is excellent because it now remains in the developer's hand to decide
 how to present the data in the object in its application.
+
 #### Example:
+
 ```javascript
 const App = () => {
   const myVariable = {
     productName: "Watermelon",
-    price: 12
+    price: 12,
   };
 
   return (
@@ -441,9 +443,11 @@ const App = () => {
   );
 };
 ```
+
 And the above code would render a div with the content: Watermelon: $12
 
 ### Arrays and Object Rendering in JSX
+
 ```javascript
 /*Arrays and Object Rendering in JSX*/
 function App() {
@@ -477,7 +481,9 @@ to render it on the screen it should return something.
 So, Alternative solution : Map function which returns something.
 */
 ```
+
 🖥️ What You See in Browser:
+
 ```text
 Arrays and Objects in Javascript
 1,2,3,4,5,6,7
@@ -490,3 +496,80 @@ Arrays and Objects in Javascript
 7
 Shiv
 ```
+
+## Assigning Unique Keys
+
+### A Simple Example
+
+```javascript
+/* Assigning Unique Keys */
+function App() {
+  let cars = ["BMW", "Audi", "Nexa", "Honda", "Maruti"];
+
+  return (
+    <>
+      <h1>List of cars</h1>
+      <ul>
+        {cars.map((car, index) => (
+          <li key={index}> {car} </li>
+        ))}
+      </ul>
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+```
+
+#### Code Explanation:
+
+1. Component Definition:
+   - `App` is a functional React component ~ a simple function that returns JSX (UI code).
+2. Data:
+   - Inside the component, an array called `cars` holds car brand names: `["BMW", "Audi", "Nexa", "Honda", "Maruti"]`
+3. JSX Return (UI):
+   - The component returns:
+     - A heading: `<h1>List of cars</h1>`
+     - An unordered list: `<ul>...</ul>` containing car names.
+4. Dynamic List Rendering with `.map()`:
+   - c`ars.map((car, index) => ( ... ))` loops through each item in the cars array.
+   - For each `car`, it returns a `<li>` element displaying the car's name.
+5. Why the key Prop is Important
+
+   ```javascript
+   <li key={index}> {car} </li>
+   ```
+
+   `key={index}` is used to give each `<li>` a unique identity.
+
+   - What the `key` does:
+     - Helps React **track** each item when the list is updated, added, or removed.
+     - Allows React to **efficiently re-render only what's changed**, improving performance.
+   - Why `key` must be unique:
+     - If two items have the same key, React can get confused during updates, causing UI bugs.
+   - Why using `index` is okay here:
+     - Since this is a **static list** (no items are added/removed dynamically), using the array `index` as the key is acceptable.
+     - But if this list were dynamic (e.g., adding/removing cars), using `index` could cause incorrect updates.
+     - In real apps, use a **unique ID** (like a database ID or UUID) instead of `index`.
+
+6. Rendering the Component
+
+   ```javascript
+   ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+   ```
+
+   - Finds the DOM element with ID `root`.
+   - Renders the `App` component inside it.
+   - This is the standard way to mount a React app using React 18+.
+
+### Without Using 'key' prop
+
+#### ⚠️Common Console Warning: "Each child in a list should have a unique 'key' prop"
+
+<img src="./images/key-props_warning.png" alt="Key Props Warning" width="600" height="auto">
+
+### With Using 'key' prop
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/key-props_no-warning.png" alt="Key Props No-Warning" width="600" height="auto">
