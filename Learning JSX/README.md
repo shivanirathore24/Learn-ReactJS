@@ -564,7 +564,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(<App />);
 
 ### Without Using 'key' prop
 
-#### ⚠️Common Console Warning: "Each child in a list should have a unique 'key' prop"
+#### ⚠️ Console Warning: "Each child in a list should have a unique 'key' prop"
 
 <img src="./images/key-props_warning.png" alt="Key Props Warning" width="600" height="auto">
 
@@ -573,3 +573,163 @@ ReactDOM.createRoot(document.getElementById("root")).render(<App />);
 #### 🖥️ What You See in Browser:
 
 <img src="./images/key-props_no-warning.png" alt="Key Props No-Warning" width="600" height="auto">
+
+## Tables in JSX
+
+The tables are created using the `<table>` tag in which the `<tr>` tag is used to
+create table rows, and the `<td>` tag is used to create data cells. The elements
+under `<td>` are regular and left aligned by default. Here, the border is an
+attribute of `<table>` tag, and it is used to put a border across all the cells. If
+you do not need a border, then you can use border = "0".
+
+### Table Heading
+
+Table heading can be defined using `<th>` tag. This tag will be put to replace
+`<td>` tag, which is used to represent actual data cells. Normally you will put
+your top row as a table heading as shown below; otherwise, you can use `<th>`
+element in any row. Headings, which are defined in `<th>` tag are centred and
+bold by default.
+
+### Colspan and Rowspan Attributes
+
+You can use the `colSpan` attribute if you want to merge two or more columns
+into a single column. Similarly, you can use `rowSpan` if you want to merge two
+or more rows.
+
+#### Example:
+
+```javascript
+<table border="1">
+  <tr>
+    <th>Column 1</th>
+    <th>Column 2</th>
+    <th>Column 3</th>
+  </tr>
+  <tr>
+    <td rowspan="2">Row 1 Cell 1</td>
+    <td>Row 1 Cell 2</td>
+    <td>Row 1 Cell 3</td>
+  </tr>
+  <tr>
+    <td>Row 2 Cell 2</td>
+    <td>Row 2 Cell 3</td>
+  </tr>
+  <tr>
+    <td colspan="3">Row 3 Cell 1</td>
+  </tr>
+</table>
+```
+
+<img src="./images/table_col-row-span.png" alt="Key Props Warning" width="350" height="auto">
+
+### Table Caption
+
+The caption tag will serve as a title or explanation for the table and will show
+up at the top. It can be just before the table's 1st `<tr>` element.
+
+#### Example:
+
+```javascript
+<table border="1">
+  <caption>This is the caption</caption>
+  <tr>
+    <td>row 1, column 1</td>
+    <td>row 1, column 2</td>
+  </tr>
+  <tr>
+    <td>row 2, column 1</td>
+    <td>row 2, column 2</td>
+  </tr>
+</table>
+```
+
+<img src="./images/table_caption.png" alt="Key Props Warning" width="350" height="auto">
+
+### `<thead>`, `<tbody>`, `<tfoot>`
+
+The `<thead>` tag is used to group header content in a table. The `<tbody>` tag
+is used to group the body content in a table. The `<tfoot>` tag is used to group
+footer content in a table. These are the semantic tags that not only provide
+meaning to the elements but also have some other useful functions as well.
+Browsers can use these elements to enable scrolling of the table body
+independently of the header and footer. Also, when printing a large table that
+spans multiple pages, these elements can enable the table header and footer
+to be printed at the top and bottom of each page.
+
+Note: You can use one table inside another table. Not only tables, but you can
+also use almost all the tags inside table data tag `<td>`. This is called a nested
+table.
+
+#### Example: Displaying Student Information in a Table
+
+```jsx
+function App() {
+  let students = [
+    {
+      name: "Shivani",
+      age: 24,
+      marks: 90,
+    },
+    {
+      name: "MSD",
+      age: 43,
+      marks: 95,
+    },
+    {
+      name: "Neeraj",
+      age: 26,
+      marks: 91,
+    },
+  ];
+  return (
+    <>
+      <h1>Student Details</h1>
+      <table>
+        <thead>
+          <tr>
+            <th>NAME</th>
+            <th>AGE</th>
+            <th>MARKS</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {students.map((student, index) => (
+            <tr key={index}>
+              <td>{student.name}</td>
+              <td>{student.age}</td>
+              <td>{student.marks}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </>
+  );
+}
+const rootElement = ReactDOM.createRoot(document.getElementById("root"));
+rootElement.render(<App />);
+
+/*
+1. If we don't use the "key" property:
+   ➤ Console Warning: Each child in a list should have a unique "key" prop.
+   ➤ Use the index number as the key because it is unique within the list.
+   ➤ However, when working with objects (like from a database), prefer using a unique "id" if available.
+   ➤ Note: The "key" prop can be passed to any element in a list, not just <li>. It's used by React to track which items change, are added, or removed.
+
+2. If we don't use <thead> or <tbody>:
+   ➤ Console Warning: validateDOMNesting(...): <tr> cannot appear as a child of <table>.
+   ➤ Solution: Wrap <tr> elements inside <thead>, <tbody>, or <tfoot> to follow valid HTML structure and avoid warnings.
+*/
+```
+
+### Without Using `<thead>` or `<tbody>` Tag
+
+#### ⚠️ Console Warning: validateDOMNesting(...): `<tr>` cannot appear as a child of `<table>`.
+
+<img src="./images/student-details_warning.png" alt="Students Details Warning" width="600" height="auto">
+
+### With Using `<thead>` or `<tbody>` Tag
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/student-details_no-warning.png" alt="Students Details No-Warning" width="600" height="auto">
