@@ -733,3 +733,181 @@ rootElement.render(<App />);
 #### 🖥️ What You See in Browser:
 
 <img src="./images/student-details_no-warning.png" alt="Students Details No-Warning" width="600" height="auto">
+
+## Conditional Rendering
+
+Conditional rendering in React works the same way conditions work in
+JavaScript. We can use JavaScript operators like if - else or the conditional
+operator (ternary operator) or AND operator or OR operator in JSX.
+
+### Conditional rendering with if else statement
+
+We can use the if-else statements to render a JSX expression on the basis of
+some conditions. Note that if-else statements can’t return additional JSX
+elements apart from the elements which are inside the if-else statements. This
+is because the return keyword inside the App component will return the
+elements which are after the return statement. So, if any condition inside the
+if-else statement is true, then just the elements inside that condition gets
+rendered and it doesn’t even check the rest of the conditions or elements
+which are put outside that truthy condition.
+
+#### Example-1
+
+```javascript
+const App = () => {
+  const email = "shivanirathore@gmail.com";
+  const password = "Shiv@24";
+
+  if (email == "shivanirathore@gmail.com") {
+    if (password == "Shiv@24") {
+      return <h1>User is an employee.</h1>;
+    } else {
+      return <h1>Incorrect password</h1>;
+    }
+  } else {
+    return <h1>User is a student.</h1>;
+  }
+};
+```
+
+#### Example-2
+
+```javascript
+/* Rendering components based on condition */
+function Student() {
+  let students = [
+    {
+      name: "Shivani",
+      age: 24,
+      marks: 77,
+    },
+    {
+      name: "MSD",
+      age: 33,
+      marks: 80,
+    },
+    {
+      name: "Neeraj",
+      age: 26,
+      marks: 78,
+    },
+  ];
+  return (
+    <>
+      <h1>Student Details</h1>
+      <table>
+        <thead>
+          <tr>
+            <th>NAME</th>
+            <th>AGE</th>
+            <th>MARKS</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {students.map((student, index) => (
+            <tr key={index}>
+              <td>{student.name}</td>
+              <td>{student.age}</td>
+              <td>{student.marks}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </>
+  );
+}
+
+function Car() {
+  let cars = [
+    {
+      name: "BMW",
+      model: "7 Series",
+      year: 2023,
+    },
+    {
+      name: "Audi",
+      model: "A8",
+      year: 2024,
+    },
+    {
+      name: "Mercedes",
+      model: "S-class",
+      year: 2022,
+    },
+  ];
+  return (
+    <>
+      <h1>Cars Details</h1>
+      <table>
+        <thead>
+          <tr>
+            <th>NAME</th>
+            <th>MODEL</th>
+            <th>YEAR</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {cars.map((car, index) => (
+            <tr key={index}>
+              <td>{car.name}</td>
+              <td>{car.model}</td>
+              <td>{car.year}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </>
+  );
+}
+
+function CarName() {
+  let cars = ["BMW", "Audi", "Mercedes", "Jaguar", "Rolls-Royce"];
+
+  return (
+    <>
+      <h1>Cars Name</h1>
+      {cars.map((car, index) => (
+        <h3 key="index">{car}</h3>
+      ))}
+    </>
+  );
+}
+
+/*Rendering multiple components */
+/*
+function App() {
+  return (
+    <>
+      <Student />
+      <Car />
+      <CarName />
+    </>
+  );
+}
+*/
+
+/* Rendering components/elements based on some condition , and this concept is known as conditional rendering */
+function App() {
+  let showCars = true;
+
+  /*we can skip parenthesis i.e () if returning single component */
+  if (showCars) {
+    return <Car />;
+  }
+  return (
+    <>
+      <Student />
+      <CarName />
+    </>
+  );
+}
+
+const rootElement = ReactDOM.createRoot(document.getElementById("root"));
+rootElement.render(<App />);
+```
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/render-component_based-on-condition.png" alt="Render Component based on Condition " width="500" height="auto">
