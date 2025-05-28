@@ -968,3 +968,111 @@ rootElement.render(<App />);
 
 <img src="./images/conditional-rendering_using-ternary-operator.png" alt="Conditional Rendering using Ternary Operator " width="500" height="auto">
 
+### Conditional Rendering with AND Operator
+
+Another way to conditionally render a React component is by using the `&&`
+operator. It returns the "first falsy" and "last truthy" value.
+
+#### Example-1
+
+```javascript
+const App = () => {
+  const email = "shivanirathore@gmail.com";
+  const password = "Shiv@24";
+
+  return (
+    <>
+      {email === "shivanirathore@gmail.com" && password === "Shiv@24" && (
+        <h1>User is an employee.</h1>
+      )}
+
+      {email === "shivanirathore@gmail.com" && password !== "Shiv@24" && (
+        <h1>Incorrect password.</h1>
+      )}
+
+      {email !== "shivanirathore@gmail.com" && <h1>User is a student.</h1>}
+    </>
+  );
+};
+```
+
+#### Example-2
+
+```javascript
+/* Conditional rendering using AND Operator */
+function App() {
+  let loggedIn = true;
+
+  return (
+    <>
+      <h1>Hey, {loggedIn ? "Shiv" : "User"}</h1>
+      {loggedIn && <p>Welcome to the Sports Club!</p>}
+    </>
+  );
+}
+
+const rootElement = ReactDOM.createRoot(document.getElementById("root"));
+rootElement.render(<App />);
+```
+
+#### Explaination:
+
+1. You define a boolean variable:
+   - `let loggedIn = true;`
+   - This controls whether the user is considered logged in or not.
+2. Inside `return`, you display:
+
+- A heading (`<h1>`)
+  - Shorthand for `if-else`
+    ```jsx
+    <h1>Hey, {loggedIn ? "Shiv" : "User"}</h1>
+    ```
+  - This uses a ternary operator: `condition ? valueIfTrue : valueIfFalse`
+    - If `loggedIn === true`, it shows: `Hey, Shiv`
+    - If `loggedIn === false`, it shows: `Hey, User`
+- A paragraph (`<p>`) – Conditional rendering using **AND (&&) operator**
+  - Logic: If the left side is true, the right side is executed/rendered.
+    ```jsx
+    {
+      loggedIn && <p>Welcome to the Sports Club!</p>;
+    }
+    ```
+  - The AND operator checks the left condition:
+    - If `loggedIn === true`, it renders the `<p>` element.
+    - If `loggedIn === false`, it **renders nothing**.
+
+#### Expected Output:
+
+If `loggedIn` is `true`:
+
+```text
+Hey, Shiv
+Welcome to the Sports Club!
+```
+
+If `loggedIn` is `false`:
+
+```text
+Hey, User
+```
+
+(No paragraph rendered)
+
+#### NOTE:
+
+- Falsy values in JavaScript: `0`, `""`, `null`, `undefined`, `false`, `NaN`
+- Truthy values: Everything else (like `"text"`, `1`, `[]`, `{}`)
+- AND (`&&`) behavior:
+  - Returns:
+    - Second value if the first is truthy
+    - First value if the first is falsy
+- Boolean values are not rendered in JSX:
+  ```jsx
+  {
+    false;
+  } // renders nothing
+  ```
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/conditional-rendering_using-AND-operator.png" alt="Conditional Rendering using AND Operator " width="500" height="auto">
