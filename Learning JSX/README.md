@@ -740,7 +740,7 @@ Conditional rendering in React works the same way conditions work in
 JavaScript. We can use JavaScript operators like if - else or the conditional
 operator (ternary operator) or AND operator or OR operator in JSX.
 
-### Conditional rendering with if else statement
+### Conditional Rendering with if-else Statement
 
 We can use the if-else statements to render a JSX expression on the basis of
 some conditions. Note that if-else statements can’t return additional JSX
@@ -911,3 +911,60 @@ rootElement.render(<App />);
 #### 🖥️ What You See in Browser:
 
 <img src="./images/render-component_based-on-condition.png" alt="Render Component based on Condition " width="500" height="auto">
+
+### Conditional Rendering with Ternary Operator
+
+The conditional (ternary) operator is the only JavaScript operator that takes
+three operands: a condition followed by a question mark (`?`), then an
+expression to execute if the condition is "truthy" followed by a colon (`:`), and finally, the expression to execute if the condition is "falsy". This operator is
+frequently used as an alternative to an if...else statement
+
+#### Example-1
+
+```javascript
+const App = () => {
+  const email = "shivanirathore@gmail.com";
+  const password = "Shiv@24";
+
+  return (
+    <>
+      {email === "shivanirathore@gmail.com" ? (
+        password === "Shiv@24" ? (
+          <h1>User is an employee.</h1>
+        ) : (
+          <h1>Incorrect password.</h1>
+        )
+      ) : (
+        <h1>User is a student.</h1>
+      )}
+    </>
+  );
+};
+```
+
+#### Example-2
+
+```javascript
+/* Conditional rendering using ternary operator */
+
+function App() {
+  let loggedIn = true;
+  return (
+    <>
+      <h1>Hello, {loggedIn ? "Shiv" : "User"}</h1>
+    </>
+  );
+}
+
+const rootElement = ReactDOM.createRoot(document.getElementById("root"));
+rootElement.render(<App />);
+```
+
+- Conditional rendering using ternary operator: useful when you want to change some part of component instead of changing whole component.
+
+- Using if-else inside JSX would be complicated just for changing some part of component, return inside return is not acceptable so, solution : ternary operator.
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/conditional-rendering_using-ternary-operator.png" alt="Conditional Rendering using Ternary Operator " width="500" height="auto">
+
