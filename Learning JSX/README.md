@@ -1076,3 +1076,121 @@ Hey, User
 #### 🖥️ What You See in Browser:
 
 <img src="./images/conditional-rendering_using-AND-operator.png" alt="Conditional Rendering using AND Operator " width="500" height="auto">
+
+### Conditional Rendering with OR Operator
+We can also render a React component by using the `||` operator. It returns "last falsy" and "first truthy" value.
+#### Example-1
+```javascript
+const App = () => {
+  const email = "shivanirathore@gmail.com";
+
+  return (
+    <>
+      {
+        (email === "shivanirathore@gmail.com" ||
+         email === "shivani.rathore24@gmail.com") && (
+          <h1>User is an employee.</h1>
+        )
+      }
+    </>
+  );
+};
+```
+
+#### Example-2
+```javascript
+/* Conditional rendering using OR Operator */
+//case-1
+function App1() {
+  let loggedIn = true;
+  let firstName = "Shivani"; 
+  let lastName = ""; 
+
+  return (
+    <>
+      <h1>Hey, {loggedIn ? lastName || firstName : "User"}</h1>
+      {loggedIn && <p>Welcome to the Sports Club!</p>}
+    </>
+  );
+}
+
+//case-2
+function App2() {
+  let loggedIn = true;
+  let fname = "Shivani"; 
+  let lname = "Rathore"; 
+
+  return (
+    <>
+      <h1>Hey, {loggedIn ? lname || fname : "User"}</h1>
+      {loggedIn && <p>Welcome to the Sports Club!</p>}
+    </>
+  );
+}
+
+const rootElement = ReactDOM.createRoot(document.getElementById("root"));
+rootElement.render(
+  <>
+    <App1 />
+    <App2 />
+  </>
+);
+```
+#### Explaination:
+The **OR (`||`) operator** returns the "first truthy" value it finds. If all values are falsy, it returns the "last falsy" one.
+
+#### 🔹 Case-1:
+```javascript
+let firstName = "Shivani";
+let lastName = "";  // falsy
+```
+- Expression: `lastName || firstName`
+    - **lastName** is `""` → falsy
+    - **firstName** is `"Shivani"` → truthy
+    - ✅ Output: `Hey, Shivani`
+
+#### 🔹 Case-2:
+```javascript
+let fname = "Shivani";
+let lname = "Rathore";  // truthy
+```
+- Expression: `lname || fname`
+  - **lname** is `"Rathore"` → truthy (so it is selected)
+  - ✅ Output: `Hey, Rathore`
+
+#### 📘 Additional Note:
+- `loggedIn ? lname || fname : "User"` is a compact way to:
+    - Show `lname` if it's available
+    - Else show `fname`
+    - Else show `"User"` if not logged in
+- `loggedIn && <p>Welcome to the Sports Club!</p>`:
+    - Shows the welcome message only if `loggedIn === true`
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/conditional-rendering_using-OR-operator.png" alt="Conditional Rendering using OR Operator " width="500" height="auto">
+
+## Summarising it
+Let’s summarise what we have learned in this module:
+- Learned about the JSX.
+- Learned about React Fragments and its shortcut.
+- Learned about JSX Expressions.
+- Learned about how arrays and lists are rendered in React.
+- Learned about how to use objects in JSX.
+- Learned about how to use tables in JSX.
+- Learned about different types of conditional rendering in JSX.
+
+### Additional References (if you want to explore more):
+[More information JSX Expressions](https://legacy.reactjs.org/docs/introducing-jsx.html)
+
+[To apply React Developer tools](https://chromewebstore.google.com/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi?hl=en)
+
+[To read more about the array iteration methods](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)
+
+[More information on Tables](https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Structuring_content/HTML_table_basics)
+
+[Advanced information on Tables](https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Structuring_content/Table_accessibility)
+
+[You can read about nullish coalescing operator](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Nullish_coalescing)
+
+[Logical operators](https://reactpatterns.js.org/docs/logical-and-operator/)
