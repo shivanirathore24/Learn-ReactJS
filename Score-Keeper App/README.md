@@ -258,7 +258,7 @@ fields syntax to correctly bind callbacks.
 #### 🖥️ What You See in Browser:
 <img src="./images/event-handling.png" alt="More on Event Handling" width="600" height="auto">
 
-#### Score-keeper App: Mini-Project continued
+### Score-keeper App: Mini-Project continued
 ```jsx
 <body>
   <div id="root" style="text-align: center;"></div>
@@ -303,3 +303,96 @@ fields syntax to correctly bind callbacks.
   </script>
 </body>
 ```
+
+### Score-Keeper App: Display Ball-Wise Result
+```jsx
+<body>
+  <div id="root" style="text-align: center"></div>
+
+  <script type="text/babel">
+    let score = 0;
+    let wicket = 0;
+    let ballWiseRes = [];
+
+    function addScore(num) {
+      if (wicket < 10) {
+        ballWiseRes.push(num);
+        score += num;
+        rootElement.render(<App />);
+      }
+    }
+
+    function addWicket() {
+      if (wicket < 10) {
+        ballWiseRes.push("W");
+        wicket += 1;
+        rootElement.render(<App />);
+      }
+    }
+
+    const ScoreButtons = () => (
+      <div>
+        <button onClick={() => addScore(0)}>0</button>
+        <button onClick={() => addScore(1)}>1</button>
+        <button onClick={() => addScore(2)}>2</button>
+        <button onClick={() => addScore(3)}>3</button>
+        <button onClick={() => addScore(4)}>4</button>
+        <button onClick={() => addScore(5)}>5</button>
+        <button onClick={() => addScore(6)}>6</button>
+        <button onClick={addWicket}>Wicket</button>
+      </div>
+    );
+
+    // ✅ Working version: uses React.Fragment with key
+    const Result = () => (
+      <div>
+        {ballWiseRes.map((res, index) => (
+          <React.Fragment key={index}>
+            {index % 6 === 0 ? <br /> : null}
+            <span>{res === 0 ? <strong>*</strong> : res}</span>
+            &nbsp;&nbsp;&nbsp;
+          </React.Fragment>
+        ))}
+      </div>
+    );
+
+    // ❌ Alternate version using shorthand fragment (<>...</>)
+    // Commented out because it triggers a React warning:
+    // "Each child in a list should have a unique 'key' prop".
+    // Reason: <>...</> cannot take a key, and the key on <span> is ignored
+    // since the fragment is the actual root element returned by .map().
+    // ✅ Fix: use <React.Fragment key={index}>...</React.Fragment> instead.
+    //
+    // const Result = () => (
+    //   <div>
+    //     {ballWiseRes.map((res, index) => (
+    //       <>
+    //         {index % 6 === 0 ? <br /> : null}
+    //         <span key={index}>
+    //           {res === 0 ? <strong>*</strong> : res}
+    //         </span>&nbsp;&nbsp;&nbsp;
+    //       </>
+    //     ))}
+    //   </div>
+    // );
+
+    const App = () => (
+      <>
+        <h1>SCORE KEEPER</h1>
+        <h2>
+          SCORE: {score}/{wicket}
+        </h2>
+        <ScoreButtons />
+        <Result />
+      </>
+    );
+
+    const rootElement = ReactDOM.createRoot(document.getElementById("root"));
+    rootElement.render(<App />);
+  </script>
+</body>
+```
+
+
+#### 🖥️ What You See in Browser:
+<img src="./images/ballwise-result.png" alt="Display Ball-Wise Result" width="600" height="auto">
