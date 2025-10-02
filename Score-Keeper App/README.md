@@ -25,18 +25,20 @@ elements. There are some syntax differences:
 Another difference is that you cannot return false to prevent default behavior in
 React. You must call preventDefault explicitly. For example, with plain HTML, to
 prevent the default form behavior of submitting, you can write:
+
 ```jsx
 <form onsubmit="console.log('You clicked submit.'); return false">
-<button type="submit">Submit</button>
+  <button type="submit">Submit</button>
 </form>
 ```
 
 In React, this could instead be:
+
 ```jsx
 function Form() {
   function handleSubmit(e) {
     e.preventDefault();
-    console.log('You clicked submit.');
+    console.log("You clicked submit.");
   }
 
   return (
@@ -49,12 +51,10 @@ function Form() {
 
 Here, e is a synthetic event. React defines these synthetic events, so you don’t need
 to worry about cross-browser compatibility. React events do not work the same as
-native events. See the [SyntheticEvent](https://legacy.reactjs.org/docs/events.html
-) reference guide to learn more.
+native events. See the [SyntheticEvent](https://legacy.reactjs.org/docs/events.html) reference guide to learn more.
 When using React, you generally don’t need to call addEventListener to add
 listeners to a DOM element after it is created. Instead, just provide a listener when
 the element is initially rendered.
-
 
 ### Score-Keeper App: Events in JSX
 
@@ -114,6 +114,7 @@ the element is initially rendered.
 <img src="./images/events-in-jsx.png" alt="Events in JSX" width="600" height="auto">
 
 ## Virtual DOM under the hood
+
 The virtual DOM (VDOM) is a programming concept where an ideal, or “virtual”,
 representation of a UI is kept in memory and synced with the “real” DOM by a library
 such as ReactDOM. This process is called reconciliation.
@@ -123,16 +124,18 @@ update.
 Let‘s take a step back and check out an example of a React element.
 
 ```jsx
-const title = <h1>Hello, world!</h1>
+const title = <h1>Hello, world!</h1>;
 ```
 
 JSX does the heavy lifting to convert the familiar HTML syntax into a React element.
 Without JSX, this is just:
+
 ```jsx
-const title = React.createElement('h1', null, 'Hello, world!');
+const title = React.createElement("h1", null, "Hello, world!");
 ```
 
 And below is the created React element under the hood.
+
 ```jsx
 {
   "type": "h1",
@@ -141,7 +144,9 @@ And below is the created React element under the hood.
   }
 }
 ```
+
 ### Score-Keeper App: Virtual DOM under the hood
+
 ```jsx
 <body>
   <div id="root" style="text-align: center;"></div>
@@ -178,14 +183,18 @@ And below is the created React element under the hood.
   </script>
 </body>
 ```
+
 #### 🖥️ What You See in Browser:
+
 <img src="./images/virtual-DOM.png" alt="Virtual DOM under the hood" width="600" height="auto">
 
 ## More on Event-Handling
+
 When you define a component using an ES6, a common pattern is for an event
 handler like ‘handleClick’ to be a method on the components. For example, the
 Toggle component returns a button that lets the user toggle between “ON” and “OFF”
 states:
+
 ```jsx
 import React, { useState } from "react";
 
@@ -196,29 +205,28 @@ function Toggle() {
     setIsToggleOn(!isToggleOn);
   };
 
-  return (
-    <button onClick={handleClick}>
-      {isToggleOn ? "ON" : "OFF"}
-    </button>
-  );
+  return <button onClick={handleClick}>{isToggleOn ? "ON" : "OFF"}</button>;
 }
 
 export default Toggle;
 ```
+
 The alternate way to pass arguments to event handlers is using inline functions:
+
 ```jsx
-<button onClick={() => state.isToggleOn = !isToggleOn}>
-  {state.isToggleOn ? 'ON' : 'OFF'}
+<button onClick={() => (state.isToggleOn = !isToggleOn)}>
+  {state.isToggleOn ? "ON" : "OFF"}
 </button>
 ```
+
 You have to be careful about the meaning of this in JSX callbacks. In JavaScript,
 class methods are not bound by default. If you forget to bind this.handleClick and
 pass it to onClick, this will be undefined when the function is called.
 But this is not the case in functional components and that's why we are using public
 fields syntax to correctly bind callbacks.
 
-
 ### Score-Keeper App: More on Event Handling
+
 ```jsx
 <body>
   <div id="root" style="text-align: center;"></div>
@@ -256,9 +264,11 @@ fields syntax to correctly bind callbacks.
 ```
 
 #### 🖥️ What You See in Browser:
+
 <img src="./images/event-handling.png" alt="More on Event Handling" width="600" height="auto">
 
 ### Score-keeper App: Mini-Project continued
+
 ```jsx
 <body>
   <div id="root" style="text-align: center;"></div>
@@ -305,6 +315,7 @@ fields syntax to correctly bind callbacks.
 ```
 
 ### Score-Keeper App: Display Ball-Wise Result
+
 ```jsx
 <body>
   <div id="root" style="text-align: center"></div>
@@ -393,15 +404,16 @@ fields syntax to correctly bind callbacks.
 </body>
 ```
 
-
 #### 🖥️ What You See in Browser:
+
 <img src="./images/ballwise-result.png" alt="Display Ball-Wise Result" width="600" height="auto">
 
-
 ## Forms in JSX
+
 HTML form elements work a bit differently from other DOM elements in React
 because form elements naturally keep some internal state. For example, this form in
 plain HTML accepts a single name:
+
 ```html
 <form>
   <label>
@@ -417,6 +429,7 @@ user submits the form. If you want this behavior in React, it just works. But in
 cases, it’s convenient to have a JavaScript function that handles the submission of
 the form and has access to the data that the user entered. The standard way to
 achieve this is with a technique called “controlled components”
+
 ```jsx
 // variable to store form's values
 var state = { value: "" };
@@ -437,23 +450,21 @@ const Form = () => {
     <form onSubmit={handleSubmit}>
       <label>
         Name:
-        <input
-          type="text"
-          value={state.value}
-          onChange={handleChange}
-        />
+        <input type="text" value={state.value} onChange={handleChange} />
       </label>
       <input type="submit" value="Submit" />
     </form>
   );
 };
 ```
+
 In a controlled component, form data is handled by a React component. The
 alternative is uncontrolled components, where form data is handled by the DOM
 itself. To write an uncontrolled component, instead of writing an event handler for
 every state update, you can use a ref to get form values from the DOM.
 
 ### Score-Keeper App: Forms in JSX
+
 ```jsx
 <body>
     <div id="root" style="text-align: center"></div>
@@ -537,10 +548,13 @@ every state update, you can use a ref to get form values from the DOM.
     </script>
   </body>
 ```
+
 #### 🖥️ What You See in Browser:
+
 <img src="./images/forms-in-jsx.png" alt="Forms in JSX" width="600" height="auto">
 
 ### Score-Keeper App: Populating the score field
+
 ```jsx
  <body>
     <div id="root" style="text-align: center"></div>
@@ -617,7 +631,133 @@ every state update, you can use a ref to get form values from the DOM.
       rootElement.render(<App />);
     </script>
   </body>
-  ```
+```
 
-  #### 🖥️ What You See in Browser:
+#### 🖥️ What You See in Browser:
+
 <img src="./images/populate-score.png" alt="Populating the score field" width="600" height="auto">
+
+## Iterate over Arrays in JSX
+
+Given the code below, we use the map() function to take an array of numbers
+and double their values. We assign the new array returned by map() to the
+variable doubled and log it: For example:
+
+```jsx
+const numbers = [1, 2, 3, 4, 5];
+const doubled = numbers.map((number) => number * 2);
+console.log(doubled);
+```
+
+This code logs **[2, 4, 6, 8, 10]** to the console.
+You can build collections of elements and **include them in JSX** using curly
+braces **{}**.
+
+#### Note:
+
+The map() method is used to transform the elements of an array,
+whereas the forEach() method is used to loop through the elements of an
+array. The map() method can be used with other array methods, such as the
+filter() method, whereas the forEach() method cannot be used with other array
+methods.
+
+### Score-Keeper App: Displaying Current Ball Result
+
+```jsx
+<body>
+    <div id="root" style="text-align: center"></div>
+
+    <script type="text/babel">
+      let score = 0;
+      let wicket = 0;
+      let ballWiseRes = [];
+      let hit = [];
+
+      function addScore(num) {
+        hit = num;
+        rootElement.render(<App />);
+        console.log(hit);
+      }
+
+      function addWicket() {
+        hit = "W";
+        rootElement.render(<App />);
+        console.log(hit);
+      }
+
+      const ScoreButtons = () => (
+        <div>
+          <button onClick={() => addScore(0)}>0</button>
+          <button onClick={() => addScore(1)}>1</button>
+          <button onClick={() => addScore(2)}>2</button>
+          <button onClick={() => addScore(3)}>3</button>
+          <button onClick={() => addScore(4)}>4</button>
+          <button onClick={() => addScore(5)}>5</button>
+          <button onClick={() => addScore(6)}>6</button>
+          <button onClick={addWicket}>Wicket</button>
+        </div>
+      );
+
+      // const Result = () => (
+      //   <div>
+      //     {ballWiseRes.map((res, index) => (
+      //       <React.Fragment key={index}>
+      //         {index % 6 === 0 ? <br /> : null}
+      //         <span>{res === 0 ? <strong>*</strong> : res}</span>
+      //         &nbsp;&nbsp;&nbsp;
+      //       </React.Fragment>
+      //     ))}
+      //   </div>
+      // );
+
+      const Result = () => (
+        <>
+          {ballWiseRes.map((res, index) => (
+            <p key={index}>{res}</p>
+          ))}
+        </>
+      );
+
+      function handleSubmit(event) {
+        event.preventDefault();
+        if (hit == "W") {
+          wicket += 1;
+        } else {
+          score += hit;
+        }
+        ballWiseRes.unshift(hit);
+        rootElement.render(<App />);
+      }
+
+      const Form = () => (
+        <form onSubmit={handleSubmit}>
+          <input value={hit} />
+          <input />
+          <button>Submit </button>
+        </form>
+      );
+
+      const App = () => (
+        <>
+          <h1>SCORE KEEPER</h1>
+          <h2>
+            SCORE: {score}/{wicket}
+          </h2>
+          <ScoreButtons />
+          <br />
+          <Form />
+          <hr />
+          <Result />
+        </>
+      );
+
+      const rootElement = ReactDOM.createRoot(document.getElementById("root"));
+      rootElement.render(<App />);
+    </script>
+  </body>
+```
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/current-ball-result1.png" alt="Displaying Current Ball Result" width="600" height="auto">
+<img src="./images/current-ball-result2.png" alt="Displaying Current Ball Result" width="600" height="auto">
