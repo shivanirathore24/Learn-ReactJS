@@ -76,14 +76,20 @@
         } else {
           score += hit;
         }
-        ballWiseRes.unshift(hit);
+        ballWiseRes.unshift(
+          // <span>{hit}{","}{inputRef.current.value}</span>
+          <span>{`${hit}, ${inputRef.current.value}`}</span>
+        );
         console.log(inputRef.current.value);
+        hit = 0;
+        inputRef.current.value = "";
+
         rootElement.render(<App />);
       }
 
       const Form = () => (
         <form onSubmit={handleSubmit}>
-          <input value={hit} readOnly/>
+          <input value={hit} readOnly />
           <input ref={inputRef} placeholder="Add a comment..." />
           <button>Submit </button>
         </form>

@@ -763,38 +763,48 @@ methods.
 <img src="./images/current-ball-result2.png" alt="Displaying Current Ball Result" width="600" height="auto">
 
 ## Few Important Concepts
+
 ### Creating Refs
+
 Refs are created using `React.createRef()` and attached to React elements
 via the `ref` attribute. Refs are commonly assigned to an instance property
 when a component is constructed so they can be referenced throughout the
 component.
+
 ### Accessing Refs
+
 When a ref is passed to an element in render, a reference to the inputRef becomes
 accessible at the current attribute of the ref.
+
 ```js
 let inputRef = React.createRef();
 ```
+
 The value of the `ref` differs depending on the type of the node:
+
 - When the `ref` attribute is used on an HTML element, the ref is created in the
-constructor with `React.createRef()` receives the underlying DOM element
-as its current property.
+  constructor with `React.createRef()` receives the underlying DOM element
+  as its current property.
 - When the `ref` attribute is used on a custom class component, the `ref` object
-receives the mounted instance of the component as its `current`.
+  receives the mounted instance of the component as its `current`.
 
 ### Adding a Ref to a DOM Element
+
 This code uses a ref to store a reference to a DOM node:
+
 ```jsx
 const Form = () => {
   <form onSubmit={handleSubmit}>
     <input ref={inputRef} placeholder="Name" />
     <button>Submit</button>
-  </form>
-}
+  </form>;
+};
 ```
+
 - Pass it as `<input ref={inputRef}>`. This tells React to put this <input>’s
-DOM node into `inputRef.current`.
+  DOM node into `inputRef.current`.
 - In the handleClick function, read the input DOM node from inputRef.current
-and call focus() on it with `inputRef.current.focus()`.
+  and call focus() on it with `inputRef.current.focus()`.
 - Pass the handleClick event handler to <button> with onClick.
 
 While DOM manipulation is the most common use case for refs, the createRef can
@@ -803,6 +813,7 @@ between renders. Refs are like state variables that don’t trigger re-renders w
 set them.
 
 ### SyntheticEvent
+
 Your event handlers will be passed instances of `SyntheticEvent`, a cross-browser
 wrapper around the browser’s native event. It has the same interface as the
 browser’s native event, including `stopPropagation()` and `preventDefault()`,
@@ -811,6 +822,7 @@ React normalizes events so that they have consistent properties across different
 browsers.
 
 ### Score-Keeper App: Accessing 'input' values with 'refs'
+
 ```jsx
  <body>
     <div id="root" style="text-align: center"></div>
@@ -906,6 +918,129 @@ browsers.
     </script>
   </body>
 ```
+
 #### 🖥️ What You See in Browser:
 
 <img src="./images/input-ref.png" alt="Accessing 'input' values with 'refs'" width="600" height="auto">
+
+### Score-Keeper App: Finishing up the Mini-Project
+
+```jsx
+<body>
+    <div id="root" style="text-align: center"></div>
+
+    <script type="text/babel">
+      let score = 0;
+      let wicket = 0;
+      let ballWiseRes = [];
+      let hit = [];
+      let inputRef = React.createRef();
+
+      function addScore(num) {
+        hit = num;
+        rootElement.render(<App />);
+        console.log(hit);
+      }
+
+      function addWicket() {
+        hit = "W";
+        rootElement.render(<App />);
+        console.log(hit);
+      }
+
+      const ScoreButtons = () => (
+        <div>
+          <button onClick={() => addScore(0)}>0</button>
+          <button onClick={() => addScore(1)}>1</button>
+          <button onClick={() => addScore(2)}>2</button>
+          <button onClick={() => addScore(3)}>3</button>
+          <button onClick={() => addScore(4)}>4</button>
+          <button onClick={() => addScore(5)}>5</button>
+          <button onClick={() => addScore(6)}>6</button>
+          <button onClick={addWicket}>Wicket</button>
+        </div>
+      );
+
+      // const Result = () => (
+      //   <div>
+      //     {ballWiseRes.map((res, index) => (
+      //       <React.Fragment key={index}>
+      //         {index % 6 === 0 ? <br /> : null}
+      //         <span>{res === 0 ? <strong>*</strong> : res}</span>
+      //         &nbsp;&nbsp;&nbsp;
+      //       </React.Fragment>
+      //     ))}
+      //   </div>
+      // );
+
+      const Result = () => (
+        <>
+          {ballWiseRes.map((res, index) => (
+            <p key={index}>{res}</p>
+          ))}
+        </>
+      );
+
+      function handleSubmit(event) {
+        event.preventDefault();
+        if (hit == "W") {
+          wicket += 1;
+        } else {
+          score += hit;
+        }
+        ballWiseRes.unshift(
+          // <span>{hit}{","}{inputRef.current.value}</span>
+          <span>{`${hit}, ${inputRef.current.value}`}</span>
+        );
+        console.log(inputRef.current.value);
+        hit = 0;
+        inputRef.current.value = "";
+
+        rootElement.render(<App />);
+      }
+
+      const Form = () => (
+        <form onSubmit={handleSubmit}>
+          <input value={hit} readOnly />
+          <input ref={inputRef} placeholder="Add a comment..." />
+          <button>Submit </button>
+        </form>
+      );
+
+      const App = () => (
+        <>
+          <h1>SCORE KEEPER</h1>
+          <h2>
+            SCORE: {score}/{wicket}
+          </h2>
+          <ScoreButtons />
+          <br />
+          <Form />
+          <hr />
+          <Result />
+        </>
+      );
+
+      const rootElement = ReactDOM.createRoot(document.getElementById("root"));
+      rootElement.render(<App />);
+    </script>
+  </body>
+```
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/final-scorekeeper-app.png" alt="Finishing up the Mini-Project" width="600" height="auto">
+
+## Summarising it
+Let’s summarise what we have learned in this Lecture:
+- Learned about the Events in JSX.
+- Learned about Form in JSX.
+- Learned about Virtual DOM under the hood.
+- Learned about how to store elements in an array and populate it.
+
+### Some References:
+[More information JSX Events](https://react.dev/learn/responding-to-events?utm_source=chatgpt.com)
+
+[More information on Ref and the DOM](https://react.dev/learn/manipulating-the-dom-with-refs?utm_source=chatgpt.com)
+
+
