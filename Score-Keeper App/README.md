@@ -187,3 +187,103 @@ And below is the created React element under the hood.
 #### 🖥️ What You See in Browser:
 
 <img src="./images/virtual-DOM.png" alt="Virtual DOM under the hood" width="600" height="auto">
+
+## More on Event-Handling
+
+When you define a component using an ES6, a common pattern is for an event
+handler like ‘handleClick’ to be a method on the components. For example, the
+Toggle component returns a button that lets the user toggle between “ON” and “OFF”
+states:
+
+```jsx
+import React, { useState } from "react";
+
+function Toggle() {
+  const [isToggleOn, setIsToggleOn] = useState(true);
+
+  const handleClick = () => {
+    setIsToggleOn(!isToggleOn);
+  };
+
+  return <button onClick={handleClick}>{isToggleOn ? "ON" : "OFF"}</button>;
+}
+
+export default Toggle;
+```
+
+The alternate way to pass arguments to event handlers is using inline functions:
+
+```jsx
+<button onClick={() => (state.isToggleOn = !isToggleOn)}>
+  {state.isToggleOn ? "ON" : "OFF"}
+</button>
+```
+
+You have to be careful about the meaning of this in JSX callbacks. In JavaScript,
+class methods are not bound by default. If you forget to bind this.handleClick and
+pass it to onClick, this will be undefined when the function is called.
+But this is not the case in functional components and that's why we are using public
+fields syntax to correctly bind callbacks.
+
+### Score-Keeper App: More on Event Handling
+
+```jsx
+<body>
+    <div id="root" style ="text-align: center;">
+    </div>
+
+    <script type="text/babel">
+    let score = 0;
+    let wicket = 0;
+
+    function addOne(){
+      score += 1;
+      //Everytime you make changes in your main component that should be re-rendered.
+      rootElement.render(<App/>);
+      console.log(score);
+    }
+
+       function addTwo(){
+        score += 2;
+        rootElement.render(<App/>);
+        console.log(score);
+    }
+
+    function addScore(num){
+        score += num;
+        rootElement.render(<App/>);
+    }
+
+    const App = () => (
+        <>
+        <h1>SCORE KEEPER</h1>
+        <h2> SCORE: {score}/{wicket} </h2>
+        <div>
+            <button onClick ={addOne}>1</button>
+            <button onClick ={addTwo}>2</button>
+            <button onClick ={ () => addScore(3)}>3</button>
+            <button onClick ={ () => addScore(4)}>4</button>
+            <button onClick ={ () => addScore(5)}>5</button>
+            <button onClick ={ () => addScore(6)}>6</button>
+            <button>Wicket</button>
+        </div>
+        </>
+    )
+    const rootElement = ReactDOM.createRoot(document.getElementById("root"));
+    rootElement.render(<App/>);
+
+ /*
+  1. When you click "1" button -> inspect -> element -> check only one node is getting changes instead of
+    re-painting whole DOM. That's is possible due to "Virtual DOM" concept in React which helps the app to get
+    rendered faster.
+  2. Virtual DOM works by comparing changes in the Virtual DOM and updates the only changed objects in the Real DOM
+    which causes screen to change.
+  3. When you want to pass parameters in event handlers in React, we use : inline arrow function
+    i.e onClick = {(e) => handleClick(e, id)}
+  */
+</script>
+```
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/event-handling.png" alt="More on Event Handling" width="600" height="auto">
