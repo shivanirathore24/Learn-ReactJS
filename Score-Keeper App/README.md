@@ -112,3 +112,78 @@ the element is initially rendered.
 
 <img src="./images/click-button-1.png" alt="Click Button 1" width="600" height="auto">
 <img src="./images/events-in-jsx.png" alt="Events in JSX" width="600" height="auto">
+
+## Virtual DOM
+
+The virtual DOM (VDOM) is a programming concept where an ideal, or “virtual”,
+representation of a UI is kept in memory and synced with the “real” DOM by a library
+such as ReactDOM. This process is called reconciliation.
+In reality, the virtual DOM is just an organized collection of React elements — plain
+objects, and it mimics the browser DOM in a way that is easier to maintain and
+update.
+Let‘s take a step back and check out an example of a React element.
+
+```jsx
+const title = <h1>Hello, world!</h1>;
+```
+
+JSX does the heavy lifting to convert the familiar HTML syntax into a React element.
+Without JSX, this is just:
+
+```jsx
+const title = React.createElement("h1", null, "Hello, world!");
+```
+
+And below is the created React element under the hood.
+
+```jsx
+{
+  "type": "h1",
+  "props": {
+    "children": "Hello, world!"
+  }
+}
+```
+
+### Score-Keeper App: Virtual DOM 
+
+```jsx
+ <body>
+    <div id="root" style="text-align: center"></div>
+
+    <script type="text/babel">
+      let score = 0;
+      let wicket = 0;
+
+      function addOne() {
+        score += 1;
+        rootElement.render(<App />);
+        console.log(score);
+      }
+
+      const App = () => (
+        <>
+          <h1>SCORE KEEPER</h1>
+          <h2>
+            SCORE: {score}/{wicket}
+          </h2>
+          <div>
+            <button onClick={addOne}>1</button>
+            <button>2</button>
+            <button>3</button>
+            <button>4</button>
+            <button>5</button>
+            <button>6</button>
+            <button>Wicket</button>
+          </div>
+        </>
+      );
+      const rootElement = ReactDOM.createRoot(document.getElementById("root"));
+      rootElement.render(<App />);
+    </script>
+  </body>
+```
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/virtual-DOM.png" alt="Virtual DOM under the hood" width="600" height="auto">
