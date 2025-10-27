@@ -19,21 +19,18 @@
       let score = 0;
       let wicket = 0;
 
-      function addOne() {
-        score += 1;
-        rootElement.render(<App />);
-        console.log(score);
-      }
-
-      function addTwo() {
-        score += 2;
-        rootElement.render(<App />);
-        console.log(score);
-      }
-
       function addScore(num) {
-        score += num;
-        rootElement.render(<App />);
+        if (wicket < 10) {
+          score += num;
+          rootElement.render(<App />);
+        }
+      }
+
+      function addWicket() {
+        if (wicket < 10) {
+          wicket += 1;
+          rootElement.render(<App />);
+        }
       }
 
       const App = () => (
@@ -43,13 +40,13 @@
             SCORE: {score}/{wicket}
           </h2>
           <div>
-            <button onClick={addOne}>1</button>
-            <button onClick={addTwo}>2</button>
+            <button onClick={() => addScore(1)}>1</button>
+            <button onClick={() => addScore(2)}>2</button>
             <button onClick={() => addScore(3)}>3</button>
             <button onClick={() => addScore(4)}>4</button>
             <button onClick={() => addScore(5)}>5</button>
             <button onClick={() => addScore(6)}>6</button>
-            <button>Wicket</button>
+            <button onClick={addWicket}>Wicket</button>
           </div>
         </>
       );
