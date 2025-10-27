@@ -147,7 +147,7 @@ And below is the created React element under the hood.
 
 ### Score-Keeper App: Virtual DOM
 
-```jsx
+```html
  <body>
     <div id="root" style="text-align: center"></div>
 
@@ -227,7 +227,7 @@ fields syntax to correctly bind callbacks.
 
 ### Score-Keeper App: More on Event Handling
 
-```jsx
+```html
 <body>
     <div id="root" style="text-align: center"></div>
 
@@ -281,7 +281,7 @@ fields syntax to correctly bind callbacks.
 
 ### Score-keeper App: Mini-Project continued
 
-```jsx
+```html
 <body>
     <div id="root" style="text-align: center"></div>
 
@@ -325,3 +325,65 @@ fields syntax to correctly bind callbacks.
     </script>
   </body>
 ```
+
+
+### Score-keeper App: Storing the score in an array
+
+```html
+<body>
+    <div id="root" style="text-align: center"></div>
+
+    <script type="text/babel">
+      let score = 0;
+      let wicket = 0;
+      let ballWiseRes = [];
+
+      function addScore(num) {
+        if (wicket < 10) {
+          ballWiseRes.push(num);
+          score += num;
+          rootElement.render(<App />);
+          console.log(ballWiseRes);
+        }
+      }
+
+      function addWicket() {
+        if (wicket < 10) {
+          ballWiseRes.push("W");
+          wicket += 1;
+          rootElement.render(<App />);
+          console.log(ballWiseRes);
+        }
+      }
+
+      const ScoreButton = () => (
+        <div>
+          <button onClick={() => addScore(0)}>0</button>
+          <button onClick={() => addScore(1)}>1</button>
+          <button onClick={() => addScore(2)}>2</button>
+          <button onClick={() => addScore(3)}>3</button>
+          <button onClick={() => addScore(4)}>4</button>
+          <button onClick={() => addScore(5)}>5</button>
+          <button onClick={() => addScore(6)}>6</button>
+          <button onClick={addWicket}>Wicket</button>
+        </div>
+      );
+
+      const App = () => (
+        <>
+          <h1>SCORE KEEPER</h1>
+          <h2>
+            SCORE: {score}/{wicket}
+          </h2>
+          <ScoreButton />
+        </>
+      );
+      const rootElement = ReactDOM.createRoot(document.getElementById("root"));
+      rootElement.render(<App />);
+    </script>
+  </body>
+```
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/score-in-array.png" alt="More on Event Handling" width="600" height="auto">
