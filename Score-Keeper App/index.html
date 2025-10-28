@@ -51,26 +51,6 @@
         </div>
       );
 
-      // ❌ Alternate version using shorthand fragment (<>...</>)
-      // Commented out because it triggers a React warning:
-      // "Each child in a list should have a unique 'key' prop".
-      // Reason: <>...</> cannot take a key, and the key on <span> is ignored
-      // since the fragment is the actual root element returned by .map().
-      // ✅ Fix: use <React.Fragment key={index}>...</React.Fragment> instead.
-
-      // const Result = () => (
-      //   <div>
-      //     {ballWiseRes.map((res, index) => (
-      //       <>
-      //         {index % 6 === 0 ? <br /> : null}
-      //         <span key={index}>{res === 0 ? <strong>*</strong> : res}</span>
-      //         &nbsp; &nbsp;
-      //       </>
-      //     ))}
-      //   </div>
-      // );
-
-      // ✅ Working version: uses React.Fragment with key
       const Result = () => (
         <div>
           {ballWiseRes.map((res, index) => (
@@ -83,6 +63,18 @@
         </div>
       );
 
+      function handleSubmit(event) {
+        event.preventDefault();
+      }
+
+      const Form = () => (
+        <form onSubmit={handleSubmit}>
+          <input />
+          <input />
+          <button>Submit</button>
+        </form>
+      );
+
       const App = () => (
         <>
           <h1>SCORE KEEPER</h1>
@@ -90,7 +82,9 @@
             SCORE: {score}/{wicket}
           </h2>
           <ScoreButton />
-          <Result />
+          <br />
+          <Form />
+          <hr />
         </>
       );
       const rootElement = ReactDOM.createRoot(document.getElementById("root"));

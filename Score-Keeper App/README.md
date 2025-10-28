@@ -480,3 +480,146 @@ fields syntax to correctly bind callbacks.
 #### 🖥️ What You See in Browser:
 
 <img src="./images/ballwise-result.png" alt="Display Ball-Wise Result" width="600" height="auto">
+
+## Forms in JSX
+
+HTML form elements work a bit differently from other DOM elements in React
+because form elements naturally keep some internal state. For example, this form in
+plain HTML accepts a single name:
+
+```html
+<form>
+  <label>
+    Name:
+    <input type="text" name="name" />
+  </label>
+  <input type="submit" value="Submit" />
+</form>
+```
+
+This form has the default HTML form behavior of browsing to a new page when the
+user submits the form. If you want this behavior in React, it just works. But in most
+cases, it’s convenient to have a JavaScript function that handles the submission of
+the form and has access to the data that the user entered. The standard way to
+achieve this is with a technique called “controlled components”
+
+```jsx
+// variable to store form's values
+var state = { value: "" };
+
+// methods used on handling Events in JSX
+function handleChange(event) {
+  state = { value: event.target.value };
+}
+
+function handleSubmit(event) {
+  alert("A name was submitted: " + state.value);
+  event.preventDefault();
+}
+
+// created form in JSX
+const Form = () => {
+  return (
+    <form onSubmit={handleSubmit}>
+      <label>
+        Name:
+        <input type="text" value={state.value} onChange={handleChange} />
+      </label>
+      <input type="submit" value="Submit" />
+    </form>
+  );
+};
+```
+
+In a controlled component, form data is handled by a React component. The
+alternative is uncontrolled components, where form data is handled by the DOM
+itself. To write an uncontrolled component, instead of writing an event handler for
+every state update, you can use a ref to get form values from the DOM.
+
+### Score-Keeper App: Forms in JSX
+
+```html
+<body>
+  <div id="root" style="text-align: center"></div>
+
+  <script type="text/babel">
+    let score = 0;
+    let wicket = 0;
+    let ballWiseRes = [];
+
+    function addScore(num) {
+      if (wicket < 10) {
+        ballWiseRes.push(num);
+        score += num;
+        rootElement.render(<App />);
+        console.log(ballWiseRes);
+      }
+    }
+
+    function addWicket() {
+      if (wicket < 10) {
+        ballWiseRes.push("W");
+        wicket += 1;
+        rootElement.render(<App />);
+        console.log(ballWiseRes);
+      }
+    }
+
+    const ScoreButton = () => (
+      <div>
+        <button onClick={() => addScore(0)}>0</button>
+        <button onClick={() => addScore(1)}>1</button>
+        <button onClick={() => addScore(2)}>2</button>
+        <button onClick={() => addScore(3)}>3</button>
+        <button onClick={() => addScore(4)}>4</button>
+        <button onClick={() => addScore(5)}>5</button>
+        <button onClick={() => addScore(6)}>6</button>
+        <button onClick={addWicket}>Wicket</button>
+      </div>
+    );
+
+    const Result = () => (
+      <div>
+        {ballWiseRes.map((res, index) => (
+          <React.Fragment key={index}>
+            {index % 6 === 0 ? <br /> : null}
+            <span>{res === 0 ? <strong>*</strong> : res}</span>
+            &nbsp;&nbsp;&nbsp;
+          </React.Fragment>
+        ))}
+      </div>
+    );
+
+    function handleSubmit(event) {
+      event.preventDefault();
+    }
+
+    const Form = () => (
+      <form onSubmit={handleSubmit}>
+        <input />
+        <input />
+        <button>Submit</button>
+      </form>
+    );
+
+    const App = () => (
+      <>
+        <h1>SCORE KEEPER</h1>
+        <h2>
+          SCORE: {score}/{wicket}
+        </h2>
+        <ScoreButton />
+        <br />
+        <Form />
+        <hr />
+      </>
+    );
+    const rootElement = ReactDOM.createRoot(document.getElementById("root"));
+    rootElement.render(<App />);
+  </script>
+</body>
+```
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/forms-in-jsx.png" alt="Forms in JSX" width="600" height="auto">
