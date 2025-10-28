@@ -46,28 +46,38 @@
         </div>
       );
 
-      const Result = () => (
-        <div>
-          {ballWiseRes.map((res, index) => (
-            <React.Fragment key={index}>
-              {index % 6 === 0 ? <br /> : null}
-              <span>{res === 0 ? <strong>*</strong> : res}</span>
-              &nbsp;&nbsp;&nbsp;
-            </React.Fragment>
-          ))}
-        </div>
-      );
-
       function handleSubmit(event) {
         event.preventDefault();
+        ballWiseRes.unshift(hit);
+        rootElement.render(<App />);
       }
 
       const Form = () => (
         <form onSubmit={handleSubmit}>
-          <input value={hit} />
+          <input value={hit} readOnly />
           <input />
           <button>Submit</button>
         </form>
+      );
+
+      // const Result = () => (
+      //   <div>
+      //     {ballWiseRes.map((res, index) => (
+      //       <React.Fragment key={index}>
+      //         {index % 6 === 0 ? <br /> : null}
+      //         <span>{res === 0 ? <strong>*</strong> : res}</span>
+      //         &nbsp;&nbsp;&nbsp;
+      //       </React.Fragment>
+      //     ))}
+      //   </div>
+      // );
+
+      const Result = () => (
+        <>
+          {ballWiseRes.map((res, index) => (
+            <p key={index}>{res}</p>
+          ))}
+        </>
       );
 
       const App = () => (
@@ -80,6 +90,7 @@
           <br />
           <Form />
           <hr />
+          <Result />
         </>
       );
       const rootElement = ReactDOM.createRoot(document.getElementById("root"));

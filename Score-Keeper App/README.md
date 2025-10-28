@@ -706,3 +706,122 @@ every state update, you can use a ref to get form values from the DOM.
 #### 🖥️ What You See in Browser:
 
 <img src="./images/populate-score.png" alt="Populating the score field" width="600" height="auto">
+
+## Iterate over Arrays in JSX
+
+Given the code below, we use the map() function to take an array of numbers
+and double their values. We assign the new array returned by map() to the
+variable doubled and log it: For example:
+
+```jsx
+const numbers = [1, 2, 3, 4, 5];
+const doubled = numbers.map((number) => number * 2);
+console.log(doubled);
+```
+
+This code logs **[2, 4, 6, 8, 10]** to the console.
+You can build collections of elements and **include them in JSX** using curly
+braces **{}**.
+
+#### Note:
+
+The map() method is used to transform the elements of an array,
+whereas the forEach() method is used to loop through the elements of an
+array. The map() method can be used with other array methods, such as the
+filter() method, whereas the forEach() method cannot be used with other array
+methods.
+
+### Score-Keeper App: Displaying Current Ball Result
+
+```html
+<body>
+  <div id="root" style="text-align: center"></div>
+
+  <script type="text/babel">
+    let score = 0;
+    let wicket = 0;
+    let ballWiseRes = [];
+    let hit = 0;
+
+    function addScore(num) {
+      hit = num;
+      rootElement.render(<App />);
+      console.log(hit);
+    }
+
+    function addWicket() {
+      hit = "W";
+      rootElement.render(<App />);
+      console.log(hit);
+    }
+
+    const ScoreButton = () => (
+      <div>
+        <button onClick={() => addScore(0)}>0</button>
+        <button onClick={() => addScore(1)}>1</button>
+        <button onClick={() => addScore(2)}>2</button>
+        <button onClick={() => addScore(3)}>3</button>
+        <button onClick={() => addScore(4)}>4</button>
+        <button onClick={() => addScore(5)}>5</button>
+        <button onClick={() => addScore(6)}>6</button>
+        <button onClick={addWicket}>Wicket</button>
+      </div>
+    );
+
+    function handleSubmit(event) {
+      event.preventDefault();
+      ballWiseRes.unshift(hit);
+      rootElement.render(<App />);
+    }
+
+    const Form = () => (
+      <form onSubmit={handleSubmit}>
+        <input value={hit} readOnly />
+        <input />
+        <button>Submit</button>
+      </form>
+    );
+
+    // const Result = () => (
+    //   <div>
+    //     {ballWiseRes.map((res, index) => (
+    //       <React.Fragment key={index}>
+    //         {index % 6 === 0 ? <br /> : null}
+    //         <span>{res === 0 ? <strong>*</strong> : res}</span>
+    //         &nbsp;&nbsp;&nbsp;
+    //       </React.Fragment>
+    //     ))}
+    //   </div>
+    // );
+
+    const Result = () => (
+      <>
+        {ballWiseRes.map((res, index) => (
+          <p key={index}>{res}</p>
+        ))}
+      </>
+    );
+
+    const App = () => (
+      <>
+        <h1>SCORE KEEPER</h1>
+        <h2>
+          SCORE: {score}/{wicket}
+        </h2>
+        <ScoreButton />
+        <br />
+        <Form />
+        <hr />
+        <Result />
+      </>
+    );
+    const rootElement = ReactDOM.createRoot(document.getElementById("root"));
+    rootElement.render(<App />);
+  </script>
+</body>
+```
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/current-ball-result1.png" alt="Displaying Current Ball Result" width="600" height="auto">
+<img src="./images/current-ball-result2.png" alt="Displaying Current Ball Result" width="600" height="auto">
