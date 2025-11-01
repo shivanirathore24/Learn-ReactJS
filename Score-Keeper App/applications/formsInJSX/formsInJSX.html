@@ -1,0 +1,122 @@
+<!-- 
+Problem statement:
+Create a React application that allows users to input student details, including the student's name and their 
+obtained marks and render those data in a table.
+
+Expected Output:
+'images' folder -> formsInJSX.png
+
+Tasks:
+There are two main components, namely the Form component and the Result component. Your task is to complete both of 
+these components.
+The application should incorporate a form to collect the name and marks of students.
+
+Form Component
+'images' folder -> formsComponent.png
+When the user clicks the button, the student's name and marks should be dynamically inserted into a table, which will 
+be displayed below the student form.
+Within the Result component, you should render a table that displays the names and marks of all the students.
+It's crucial that the entire page does not reload during this process.
+
+Result Component
+'images' folder -> resultComponent.png
+
+
+Test Cases:
+App should render a form
+The application should correctly render a form to collect student details.
+
+App should render form with 2 inputs and a button
+The form should contain two input fields for name and marks and a button to submit the student details.
+
+App should render a table
+The application should properly render a table to display student details.
+
+App should render the table with correct table headings
+Test that the table contains the appropriate headings, including "Student's name" and "Marks" using the “th” tag.
+
+Hints:
+When you submit the form it will refresh the page, use preventDefault()  function to restrict the page from refresh.
+Rerender the App after every button click. 
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script
+      crossorigin
+      src="https://unpkg.com/react@18/umd/react.development.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
+    ></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <title>React App</title>
+  </head>
+
+  <body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+      let nameRef = React.createRef();
+      let marksRef = React.createRef();
+      let arr = [];
+
+      function handleSubmit(e) {
+        e.preventDefault();
+
+        arr.push(nameRef.current.value + "," + marksRef.current.value);
+        nameRef.current.value = "";
+        marksRef.current.value = null;
+
+        rootElement.render(<App />);
+      }
+
+      const Form = () => (
+        <>
+          <h1>Student's form</h1>
+          <div>
+            <form onSubmit={handleSubmit}>
+              <input type="text" placeholder="Name" ref={nameRef} />
+              <input type="number" placeholder="Marks" ref={marksRef} />
+              <button type="submit">Submit</button>
+            </form>
+          </div>
+        </>
+      );
+
+      const Result = () => (
+        <table border="1">
+          <thead>
+            <tr>
+              <th>Student's name</th>
+              <th>Marks</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {arr.map((student, index) => (
+              <tr key={index}>
+                <td>{student.split(",")[0]}</td>
+                <td>{student.split(",")[1]}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      );
+
+      const App = () => (
+        <>
+          <Form />
+          <br />
+          <Result />
+        </>
+      );
+
+      const rootElement = ReactDOM.createRoot(document.getElementById("root"));
+      rootElement.render(<App />);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,87 @@
+<!-- 
+Problem statement
+Create a Quotify App in React.
+
+Task:
+Create the form with two inputs for name and quote. Add additional attribute to these input field such as 
+placeholder, ref.
+For accessing the name and quote create two ref with name "nameRef" and "quoteRef".
+Also add an onKeyPress event listener to the quote input such that on pressing the "Enter" button it should push 
+the quote to the "quotes" array.
+Complete the handleQuote() to handle quote insertion and clearing the input once the quote has been added to 
+the quotes array.
+
+Expected Output:
+quotifyApp.html
+
+Hint:
+You can use onKeyPress event and its properties. Learn more about this event from here 
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script
+      crossorigin
+      src="https://unpkg.com/react@18/umd/react.development.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
+    ></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link rel="stylesheet" href="../quotifyApp/quotifyApp.css" />
+    <title>React App</title>
+  </head>
+
+  <body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+      const quotes = [];
+      const nameRef = React.createRef();
+      const quoteRef = React.createRef();
+
+      const clearInputs = () => {
+        nameRef.current.value = "";
+        quoteRef.current.value = "";
+      };
+
+      const handleQuote = (e) => {
+        const name = nameRef.current.value;
+        const quote = quoteRef.current.value;
+
+        if (!name || !quote) return;
+        if (e.key !== "Enter") return;
+        quotes.unshift({ name, quote });
+        clearInputs();
+        rootElement.render(<App />);
+      };
+
+      const App = () => (
+        <div className="App">
+          <h2 style={{ textAlign: "center" }}>Quotify</h2>
+          <div>
+            <input ref={nameRef} placeholder="Name" />
+            <input
+              ref={quoteRef}
+              placeholder="Quote"
+              onKeyPress={handleQuote}
+            />
+          </div>
+          <div className="quotes">
+            {quotes.map((q, i) => (
+              <div key={i}>
+                <i>"{q.quote}"</i>
+                <b>~ {q.name}</b>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+
+      const rootElement = ReactDOM.createRoot(document.getElementById("root"));
+      rootElement.render(<App />);
+    </script>
+  </body>
+</html>
