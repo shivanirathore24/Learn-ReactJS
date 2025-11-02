@@ -1,0 +1,219 @@
+<!-- 
+Problem statement:
+For a Restaurant, create a form to get the details of the customers, like the guest count, name, and phone number 
+and complete the table to show the records of the customers as shown in the output.
+
+Tasks:
+Form Submission and Record Display
+When the form is submitted, the "Seats Left" should decrease by the guest count, and a new entry should appear at 
+the top of the table.
+The new entry should have a blank "Check Out" column and the status should show "Click to Checkout."
+
+Checkout Feature
+After clicking on "Click to Checkout", the user should be checked out, and the "Check Out" column should show the 
+current timestamp as the checkout time.
+"Seats Left" should increase by the guest count.
+
+Deletion Feature
+Clicking on "Delete" in the "Remove Entry" column should delete the record.
+If the record is already checked out, clicking "Delete" should not increase "Seats Left", but if the record is deleted 
+before checking out, "Seats Left" should increase by the guest count.
+
+Guest Count Validation
+When the count of guests exceeds "Seats Left", an alert should show the message "Guest count exceeds capacity."
+"Seats Left" should never exceed "Total Capacity" or have a negative value.
+
+Duplicate Name Entry Handling
+Optionally handle duplicate name entries by showing an alert with the message "Customer already exists" when someone 
+tries to add an entry with a name that already exists in the records table.
+
+Expected Output:
+cmtMiniProject.png
+
+
+Test Cases:
+App should render a form with 3 inputs and a button
+The application should render a form with 3 inputs (for guest count, name, and phone) and a submit button.
+
+App should render a table with 7 columns
+The application should render a table with 7 columns (Count, Name, Phone, Check In, Check Out, Status, Remove Entry) 
+and in the table the heading should be written using the th tag.
+
+Hint:
+Each customer should have the following data:
+{ name, phone, count, checkin, checkout }
+Use the Date object to get the current timestamp as the checkout time.  
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script
+      crossorigin
+      src="https://unpkg.com/react@18/umd/react.development.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
+    ></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link rel="stylesheet" href="../CMT-MIniProject/cmtMiniProject.css" />
+    <title>React App</title>
+  </head>
+
+  <body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+      let customers = [];
+      const capacity = 25;
+      let seatsLeft = 25;
+
+      const formRef = React.createRef();
+      const countRef = React.createRef();
+      let nameRef = React.createRef();
+      let phoneRef = React.createRef();
+
+      const addToCustomerHistory = (name, phone, count) => {
+        const details = {
+          name,
+          phone,
+          count,
+          checkin: new Date(),
+          checkout: null,
+        };
+
+        customers.unshift(details);
+      };
+
+      const checkIfEntryExists = (phone) => {
+        return customers.find((c) => c.phone === phone && !c.checkout);
+      };
+
+      const handleCheckout = (phone, count) => {
+        customers.forEach((c) => {
+          if (c.phone === phone) {
+            c.checkout = new Date();
+          }
+        });
+
+        seatsLeft += count;
+
+        rootElement.render(<App />);
+      };
+
+      const handleRemove = (index) => {
+        let removedEntry = customers.splice(index, 1);
+        if (!removedEntry[0].checkout) {
+          seatsLeft += removedEntry[0].count;
+        }
+        rootElement.render(<App />);
+      };
+
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        const name = nameRef.current.value;
+        const phone = phoneRef.current.value;
+        const count = parseInt(countRef.current.value);
+
+        if (checkIfEntryExists(phone)) {
+          alert("User already exists.");
+          return;
+        }
+
+        if (count > seatsLeft) {
+          alert("Guest count exceeds capacity.");
+          return;
+        }
+        addToCustomerHistory(name, phone, count);
+        seatsLeft -= count;
+        formRef.current.reset();
+
+        rootElement.render(<App />);
+      };
+
+      const App = () => (
+        <div className="App" style={{ textAlign: "center" }}>
+          <div>
+            <h2>Total Capacity: {capacity}</h2>
+            <h2>Seats Left: {seatsLeft}</h2>
+          </div>
+          <form ref={formRef} onSubmit={handleSubmit}>
+            <input
+              ref={countRef}
+              type="number"
+              placeholder="Guests Count"
+              min="1"
+              required
+            />
+            <br />
+            <input ref={nameRef} placeholder="Primary Guest Name" required />
+            <br />
+            <input
+              ref={phoneRef}
+              type="tel"
+              placeholder="Phone Number"
+              required
+            />
+            <br />
+            <br />
+            <button>Add Entry</button>
+          </form>
+
+          <br />
+          <br />
+          <br />
+
+          <table border="1px" style={{ margin: "auto" }}>
+            <thead>
+              <tr>
+                <th>Count</th>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Check In</th>
+                <th>Check Out</th>
+                <th>Status</th>
+                <th>Remove Entry</th>
+              </tr>
+            </thead>
+            <tbody>
+              {customers.map((c, i) => (
+                <tr key={i}>
+                  <td>{c.count}</td>
+                  <td>{c.name}</td>
+                  <td>{c.phone}</td>
+                  <td>{c.checkin.toLocaleTimeString()}</td>
+                  <td>
+                    {c.checkout ? c.checkout.toLocaleTimeString() : <>-</>}
+                  </td>
+                  {c.checkout ? (
+                    <td className="served">Served</td>
+                  ) : (
+                    <td
+                      className="dining"
+                      onClick={() => {
+                        handleCheckout(c.phone, c.count);
+                      }}
+                    >
+                      Click to Checkout
+                    </td>
+                  )}
+                  <td
+                    onClick={() => {
+                      handleRemove(i);
+                    }}
+                  >
+                    Delete
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
+
+      const rootElement = ReactDOM.createRoot(document.getElementById("root"));
+      rootElement.render(<App />);
+    </script>
+  </body>
+</html>
