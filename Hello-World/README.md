@@ -119,7 +119,7 @@ The React application automatically creates required folders, as shown below.
    installed version. It will install the exact latest version of that package in
    your application and save it in the package.
 
-## Imports/Exports
+## Imports & Exports
 
 If you declare some value/function in some file, and you try to access that in another
 file, you won’t be able to do so. As, each individual has its own local scope. To make
@@ -210,7 +210,7 @@ ways:
    import * as obj from "file";
    ```
 
-### Implementation: Import & Exports
+### Implementation: Import & Export
 
 #### App.js file:
 
@@ -293,3 +293,162 @@ root.render(<App />);
 #### 🖥️ What You See in Console:
 
 <img src="./images/import-export.png" alt="Import & Export" width="450" height="auto">
+
+## Additional Notes
+
+### File Structure and Conventions:
+
+Some of the common approaches that are followed while creating the folder
+structure of the application are as follows:
+
+- **Grouping by features or routes:** structuring project by locating CSS,
+  JS, and tests together inside folders grouped by feature or route.
+- **Grouping by file type:** structuring project by grouping similar files
+  together. For eg: separate folder for CSS files, Test files etc. This is the
+  most common approach which is followed.
+
+The top level directory structure of src folder can be as follows:
+
+- **assets** -> for keeping global static assets such as images, svgs,
+  company logo, etc.
+- **components** -> for keeping global shared/reusable components, such
+  as layout (wrappers, navigation), form components, buttons
+- **services** -> this folder can have JavaScript modules
+- **store** -> Global Redux store
+- **utils** -> Utilities, helpers, constants, etc. can be kept in this folder
+- **views** -> Can also be called "pages", the majority of the app would be
+  contained here.
+
+NOTE: Try to minimise nesting of folders as much as possible as it becomes
+harder to write relative imports between them.
+
+## Components in React
+
+A component is a small, reusable chuck of code. It lets you split the UI into
+independent, reusable pieces, and think about each piece in isolation.
+
+We can create components with JavaScript classes or functions. To use
+React's properties and methods in our class components we must subclass
+the Component class from React. This way we can use the code from the
+React library without having to write it over and over again.
+
+A function is a valid React component if it accepts a single props object
+argument with data and returns a React element. We call these functions as
+functional components because they are simple JavaScript functions.
+
+### Functional Component Snippet:
+
+```jsx
+const Navbar = () => {
+  return (
+    <div>
+      <span>Navbar component</span>
+    </div>
+  );
+};
+
+export default Navbar;
+```
+
+### Class component Snippet:
+
+```jsx
+import { Component } from "react";
+
+class Navbar extends Component {
+  render() {
+    return (
+      <div>
+        <span>Navbar component</span>
+      </div>
+    );
+  }
+}
+
+export default Navbar;
+```
+
+## Function vs Class Components in React
+
+| **Functional Components**                                                 | **Class Components**                                                                          |
+| ------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| Functional components **cannot extend** from any class                    | Class components **must extend** from the `React.Component` class                             |
+| Create and maintain **state using Hooks** (e.g., `useState`, `useEffect`) | Create and maintain **state using lifecycle methods** (`componentDidMount`, `setState`, etc.) |
+| ❌ Do **not support a constructor**                                       | ✅ **Require a constructor** to initialize and store state                                    |
+| ❌ Do **not require a `render()`** function                               | ✅ **Require a `render()` method** that returns an HTML element (JSX)                         |
+
+### Why use Functional Components?
+
+- Make code more reusable and readable
+- Are easy to test and debug
+- Yield better performance
+- Low coupling and cross dependency in code
+- Easy to separate code into container and presentational components
+
+### Why use Class Components?
+
+- If you prefer working with classes
+- Still used in some legacy projects
+
+### Implementation: Functional & Class Components
+
+#### App.js file:
+
+```jsx
+/* FUNCTIONAL COMPONENT */
+// function App() {
+//   return <h1>Functional Component</h1>;
+// }
+// export default App;
+
+/* CLASS COMPONENT */
+import React from "react"; //import should be in first line of code
+class App extends React.Component {
+  render() {
+    return <h1>Class Component</h1>;
+  }
+}
+
+export default App;
+```
+
+#### index.js file:
+
+```jsx
+import ReactDOM from "react-dom/client";
+import App from "./App";
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App />);
+```
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/component.png" alt="Components" width="450" height="auto">
+
+## Summarising it
+
+Let’s summarise what we have learnt in this module:
+
+- Learned about drawbacks of CDNs and how to overcome them.
+- Learned about Webpack and configuration.
+- Learned about tools required to install and use create-react-app.
+- Learned how to install create-react-app.
+- Learned about files and folder structure of a react app.
+
+### Some Additional Resources :
+
+[What Is a CDN and How Does It Work?](https://www.sitepoint.com/what-is-a-cdn-and-how-does-it-work/)
+
+[CDN links for React and React DOM](https://legacy.reactjs.org/docs/cdn-links.html)
+
+[Babel and Webpack in 2 minutes](https://dev.to/getd/wtf-are-babel-and-webpack-explained-in-2-mins-43be)
+
+[Webpack link](https://webpack.js.org/)
+[Babel link](https://babeljs.io/repl#?config_lz=N4IgZglgNgpgdgQwLYxALhAJxgBygOgCsBnADxABoQdtiYAXY9AbWaxgQGN7LRMBXOPQgp0IBP3oB7JAmGcQAXwC6yqsSn9MnGABUAnjlQYkUgCb9YSoA&lineWrap=true&version=7.28.5)
+
+[Visual studio download link](https://code.visualstudio.com/download)
+
+[Nodejs download link](https://nodejs.org/en/download/)
+
+[Function and Class Components](https://legacy.reactjs.org/docs/components-and-props.html#function-and-class-components)
