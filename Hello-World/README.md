@@ -118,3 +118,178 @@ The React application automatically creates required folders, as shown below.
 9. **package.lock.json** -> It is created for locking the dependency with the
    installed version. It will install the exact latest version of that package in
    your application and save it in the package.
+
+## Imports/Exports
+
+If you declare some value/function in some file, and you try to access that in another
+file, you won’t be able to do so. As, each individual has its own local scope. To make
+all these available in another file, we can use export and import.
+
+The export and import are the keywords to utilize the code of one file to other files.
+
+### Export
+
+Export keyword is used to provide code to other files.
+There are two types of
+exports:
+
+1. **Named Exports**: This syntax allows you to individually import values
+   that have been exported by their name. It can be done in two ways:
+
+   - Export Individually
+
+     ```jsx
+     export var a = 10;
+
+     export let obj = {
+       name: "Alexa",
+     };
+
+     export function greet() {
+       console.log("Hello");
+     }
+     ```
+
+   - Export all at once at the bottom
+
+     ```jsx
+     var a = 10;
+
+     let obj = {
+       name: "Alexa",
+     };
+
+     function greet() {
+       console.log("Hello");
+     }
+
+     export { a, obj, greet };
+     ```
+
+2. **Default Exports**: You can export multiple named exports and imported
+   them individually or as one object with each export as a method on the
+   object. But, files can also contain a default export, using the default
+   keyword. A default export will not be imported with curly brackets, but
+   will be directly imported into a named identifier. It can be done in two
+   ways:
+
+   - Export Individually
+     ```jsx
+     export default function greet() {
+       console.log("Hello");
+     }
+     ```
+   - Export at the bottom
+
+     ```jsx
+     export function greet() {
+       console.log("Hello");
+     }
+
+     export default greet;
+     ```
+
+   Remember: You can have multiple named exports per module but only one default export.
+
+### Import
+
+Import keyword is used to read code exported from another files. The as keyword is
+used to create an alias to import under different names. Import can be done in three
+ways:
+
+1. Importing named exports:
+   ```jsx
+   import {x, ...} from "file";
+   ```
+2. Importing the default export:
+   ```jsx
+   import x from "file";
+   ```
+3. Import all:
+   ```jsx
+   import * as obj from "file";
+   ```
+
+### Implementation: Import & Exports
+
+#### App.js file:
+
+```jsx
+/* NAMED EXPORT */
+
+// 1. Export Individually
+export let a1 = 7;
+export var arr1 = [1, 2, 3, 4, 5];
+export const obj1 = { name: "CSE" };
+
+export function greet1() {
+  console.log("Hello World!");
+}
+
+//2. Export all at once at the bottom
+let a2 = 24;
+var arr2 = [6, 7, 8, 9, 10];
+const obj2 = { name: "Shiv" };
+
+function greet2() {
+  console.log("Shivani Rathore");
+}
+
+export { a2 as b2, arr2, obj2, greet2 };
+
+/* DEFAULT EXPORT */
+
+// 1. Export Individually
+// export default function greet3() {
+//   console.log("Greeting 3");
+// }
+
+//2. Export all at once at the bottom
+function greet4() {
+  console.log("Greeting 4");
+}
+
+export default greet4;
+//Only one default export allowed per module
+```
+
+#### index.js file:
+
+```jsx
+import ReactDOM from "react-dom/client";
+import App from "./App";
+
+import { a1, arr1, obj1, greet1 } from "./App";
+import { b2, arr2, obj2 as object2, greet2 } from "./App";
+import greet3 from "./App";
+import greet4 from "./App";
+
+console.log(a1); //7
+console.log(arr1); //[1, 2, 3, 4, 5]
+console.log(obj1); //{ name: "CSE" }
+console.log(greet1);
+// ƒ greet1() {
+//   console.log("Hello World!");
+// }
+
+console.log(b2); //24
+console.log(arr2); // [6, 7, 8, 9, 10];
+console.log(object2); //{ name: "Shiv" }
+console.log(greet2);
+// ƒ greet2() {
+//   console.log("Shivani Rathore");
+// }
+
+console.log(greet3);
+console.log(greet4);
+// ƒ greet4() {
+//   console.log("Greeting 4");
+// }
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App />);
+```
+
+#### 🖥️ What You See in Console:
+
+<img src="./images/import-export.png" alt="Import & Export" width="450" height="auto">

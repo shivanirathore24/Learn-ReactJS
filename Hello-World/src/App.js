@@ -1,25 +1,36 @@
-import logo from './logo.svg';
-import './App.css';
+/* NAMED EXPORT */
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+// 1. Export Individually
+export let a1 = 7;
+export var arr1 = [1, 2, 3, 4, 5];
+export const obj1 = { name: "CSE" };
+
+export function greet1() {
+  console.log("Hello World!");
 }
 
-export default App;
+//2. Export all at once at the bottom
+let a2 = 24;
+var arr2 = [6, 7, 8, 9, 10];
+const obj2 = { name: "Shiv" };
+
+function greet2() {
+  console.log("Shivani Rathore");
+}
+
+export { a2 as b2, arr2, obj2, greet2 };
+
+/* DEFAULT EXPORT */
+
+// 1. Export Individually
+// export default function greet3() {
+//   console.log("Greeting 3");
+// }
+
+//2. Export all at once at the bottom
+function greet4() {
+  console.log("Greeting 4");
+}
+
+export default greet4;
+//Only one default export allowed per module
