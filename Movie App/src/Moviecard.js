@@ -6,9 +6,12 @@ class Moviecard extends Component {
       <div className="main">
         <div className="movie-card">
           <div className="left">
-            <img alt="Poster" />
+            <img
+              alt="Poster"
+              src="https://m.media-amazon.com/images/I/91GN7Bww3sL._SY522_.jpg"
+            />
           </div>
-          
+
           <div className="right">
             <div className="title">The Avengers</div>
             <div className="plot">Supernatural powers shown in the movie.</div>
@@ -16,12 +19,11 @@ class Moviecard extends Component {
 
             <div className="footer">
               <div className="rating">8.9</div>
-              <div className="stars">star</div>
-              <button className="favourite">favourite</button>
-              <button className="cart=btn">Add to cart</button>
+              <div className="stars">⭐️⭐️⭐️⭐️</div>
+              <button className="favourite-btn">Favourite</button>
+              <button className="cart-btn">Add to cart</button>
             </div>
           </div>
-
         </div>
       </div>
     );
