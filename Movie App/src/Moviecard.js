@@ -9,24 +9,33 @@ class MovieCard extends Component {
       plot: "Supernatural powers shown in the movie.",
       price: 199,
       rating: 8.9,
+      stars: 0,
     };
-
-    // Way-2: Binding inside constructor
-    // this.addStars = this.addStars.bind(this);
   }
 
-  // Way-1 and Way-2
-  // addStars() {
-  //   console.log("this.state: ", this.state);
-  // }
-
-  // Way-3 (Recommended): Arrow function automatically binds 'this'
+  // Method to increase star count
   addStars = () => {
-    console.log("this.state: ", this.state);
+    // Form-1: Object form of setState
+    // Used when the new state does NOT depend on the previous state
+    // this.setState({
+    //   stars: this.state.stars + 0.5,
+    // });
+
+    // Form-2: Functional form of setState (Recommended)
+    // Used when the new state depends on the previous state value
+    this.setState((prevState) => {
+      return {
+        stars: prevState.stars + 0.5,
+      };
+    });
+
+    // ❌ Incorrect way: Direct state mutation (React will not re-render)
+    // this.state.stars += 0.5;
+    // console.log("this.state.stars: ", this.state.stars);
   };
 
   render() {
-    const { title, plot, price, rating } = this.state;
+    const { title, plot, price, rating, stars } = this.state;
 
     return (
       <div className="main">
@@ -59,11 +68,7 @@ class MovieCard extends Component {
                   src="https://cdn-icons-png.flaticon.com/128/1828/1828884.png"
                 />
 
-                {/* Way-1: Binding directly in JSX */}
-                {/* onClick={this.addStars.bind(this)} */}
-
-                {/* Way-2 & Way-3 */}
-                {/* onClick={this.addStars} */}
+                {/* Increase star count when clicked */}
                 <img
                   className="str-btn"
                   alt="increase"
@@ -71,7 +76,8 @@ class MovieCard extends Component {
                   onClick={this.addStars}
                 />
 
-                <span>0</span>
+                {/* Display current star count */}
+                <span className="starCount">{stars}</span>
               </div>
 
               <button className="favourite-btn">Favourite</button>

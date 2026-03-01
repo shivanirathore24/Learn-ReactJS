@@ -174,7 +174,10 @@ class MovieCard extends Component {
       <div className="main">
         <div className="movie-card">
           <div className="left">
-            <img alt="Poster" src="https://m.media-amazon.com/images/I/91GN7Bww3sL._SY522_.jpg" />
+            <img
+              alt="Poster"
+              src="https://m.media-amazon.com/images/I/91GN7Bww3sL._SY522_.jpg"
+            />
           </div>
 
           <div className="right">
@@ -316,7 +319,10 @@ class MovieCard extends Component {
       <div className="main">
         <div className="movie-card">
           <div className="left">
-            <img alt="Poster" src="https://m.media-amazon.com/images/I/91GN7Bww3sL._SY522_.jpg" />
+            <img
+              alt="Poster"
+              src="https://m.media-amazon.com/images/I/91GN7Bww3sL._SY522_.jpg"
+            />
           </div>
 
           <div className="right">
@@ -328,9 +334,21 @@ class MovieCard extends Component {
               <div className="rating">{rating}</div>
 
               <div className="star-dis">
-                <img className="str-btn" alt="decrease" src="https://cdn-icons-png.flaticon.com/128/1828/1828901.png" />
-                <img className="stars" alt="star" src="https://cdn-icons-png.flaticon.com/128/1828/1828884.png" />
-                <img className="str-btn" alt="increase" src="https://cdn-icons-png.flaticon.com/128/3524/3524388.png" />
+                <img
+                  className="str-btn"
+                  alt="decrease"
+                  src="https://cdn-icons-png.flaticon.com/128/1828/1828901.png"
+                />
+                <img
+                  className="stars"
+                  alt="star"
+                  src="https://cdn-icons-png.flaticon.com/128/1828/1828884.png"
+                />
+                <img
+                  className="str-btn"
+                  alt="increase"
+                  src="https://cdn-icons-png.flaticon.com/128/3524/3524388.png"
+                />
                 <span>0</span>
               </div>
 
@@ -344,7 +362,7 @@ class MovieCard extends Component {
   }
 }
 
-export default MovieCard;       
+export default MovieCard;
 ```
 
 #### Changes made (step-by-step):
@@ -360,6 +378,7 @@ This change makes the component dynamic and easier to update using React state i
 ## Binding 'this'
 
 ### Moviecard.js file:
+
 ```jsx
 import { Component } from "react";
 
@@ -394,7 +413,6 @@ class MovieCard extends Component {
     return (
       <div className="main">
         <div className="movie-card">
-
           <div className="left">
             <img
               alt="Poster"
@@ -411,7 +429,6 @@ class MovieCard extends Component {
               <div className="rating">{rating}</div>
 
               <div className="star-dis">
-
                 <img
                   className="str-btn"
                   alt="decrease"
@@ -433,7 +450,7 @@ class MovieCard extends Component {
                   className="str-btn"
                   alt="increase"
                   src="https://cdn-icons-png.flaticon.com/128/3524/3524388.png"
-                  onClick={this.addStars} 
+                  onClick={this.addStars}
                 />
 
                 <span>0</span>
@@ -441,10 +458,8 @@ class MovieCard extends Component {
 
               <button className="favourite-btn">Favourite</button>
               <button className="cart-btn">Add to cart</button>
-
             </div>
           </div>
-
         </div>
       </div>
     );
@@ -455,37 +470,195 @@ export default MovieCard;
 ```
 
 #### Explaination:
+
 1. Added addStars method
-    - A new function addStars is introduced inside the class.
-    - It logs the component state using:
-      ```jsx
-      console.log("this.state: ", this.state);
-      ```
+   - A new function addStars is introduced inside the class.
+   - It logs the component state using:
+     ```jsx
+     console.log("this.state: ", this.state);
+     ```
 2. Event handler added
-    - The increase star button now has an onClick event.
-      ```jsx
-      onClick={this.addStars}
-      ```
-    - When the button is clicked, the addStars function executes.
+   - The increase star button now has an onClick event.
+     ```jsx
+     onClick={this.addStars}
+     ```
+   - When the button is clicked, the addStars function executes.
 3. Different ways to bind this (shown in comments)
-    - The code demonstrates three ways to handle this binding in class components:
-      - Way-1: Bind inside JSX
-        ```jsx
-        onClick={this.addStars.bind(this)}
-        ```
-      - Way-2: Bind inside constructor
-        ```jsx
-        this.addStars = this.addStars.bind(this);
-        ```
-      - Way-3 (used in final code): Arrow function class property
-        ```jsx
-        addStars = () => { ... }
-        ```
-        Arrow functions automatically bind this.
+   - The code demonstrates three ways to handle this binding in class components:
+     - Way-1: Bind inside JSX
+       ```jsx
+       onClick={this.addStars.bind(this)}
+       ```
+     - Way-2: Bind inside constructor
+       ```jsx
+       this.addStars = this.addStars.bind(this);
+       ```
+     - Way-3 (used in final code): Arrow function class property
+       ```jsx
+       addStars = () => { ... }
+       ```
+       Arrow functions automatically bind this.
 4. Functional change
-    - Previously the button had no action.
-    - Now clicking the increase button triggers addStars and prints the component state in the console.
+   - Previously the button had no action.
+   - Now clicking the increase button triggers addStars and prints the component state in the console.
 
 #### 🖥️ What You See in Console:
 
 <img src="./images/binding_&apos;this&apos;.png" alt="binding 'this'" width="700" height="auto">
+
+### Increasing Stars using setState()
+
+### Moviecard.js file:
+
+```jsx
+import { Component } from "react";
+
+class MovieCard extends Component {
+  constructor() {
+    super();
+
+    this.state = {
+      title: "The Avengers",
+      plot: "Supernatural powers shown in the movie.",
+      price: 199,
+      rating: 8.9,
+      stars: 0,
+    };
+  }
+
+  // Method to increase star count
+  addStars = () => {
+    // Form-1: Object form of setState
+    // Used when the new state does NOT depend on the previous state
+    // this.setState({
+    //   stars: this.state.stars + 0.5,
+    // });
+
+    // Form-2: Functional form of setState (Recommended)
+    // Used when the new state depends on the previous state value
+    this.setState((prevState) => {
+      return {
+        stars: prevState.stars + 0.5,
+      };
+    });
+
+    // ❌ Incorrect way: Direct state mutation (React will not re-render)
+    // this.state.stars += 0.5;
+    // console.log("this.state.stars: ", this.state.stars);
+  };
+
+  render() {
+    const { title, plot, price, rating, stars } = this.state;
+
+    return (
+      <div className="main">
+        <div className="movie-card">
+          <div className="left">
+            <img
+              alt="Poster"
+              src="https://m.media-amazon.com/images/I/91GN7Bww3sL._SY522_.jpg"
+            />
+          </div>
+
+          <div className="right">
+            <div className="title">{title}</div>
+            <div className="plot">{plot}</div>
+            <div className="price">Rs.{price}</div>
+
+            <div className="footer">
+              <div className="rating">{rating}</div>
+
+              <div className="star-dis">
+                <img
+                  className="str-btn"
+                  alt="decrease"
+                  src="https://cdn-icons-png.flaticon.com/128/1828/1828901.png"
+                />
+
+                <img
+                  className="stars"
+                  alt="star"
+                  src="https://cdn-icons-png.flaticon.com/128/1828/1828884.png"
+                />
+
+                {/* Increase star count when clicked */}
+                <img
+                  className="str-btn"
+                  alt="increase"
+                  src="https://cdn-icons-png.flaticon.com/128/3524/3524388.png"
+                  onClick={this.addStars}
+                />
+
+                {/* Display current star count */}
+                <span className="starCount">{stars}</span>
+              </div>
+
+              <button className="favourite-btn">Favourite</button>
+              <button className="cart-btn">Add to cart</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+
+export default MovieCard;
+```
+
+#### Changes made (step-by-step):
+
+1. New state property added
+   - A new state variable stars is introduced to store the number of stars.
+     ```jsx
+     stars: 0;
+     ```
+2. addStars function updated
+   - Previously it only logged the state.
+   - Now it updates the stars value using setState().
+3. React provides two ways to update state using setState:
+   - Form-1 (Object form)
+     ```jsx
+     this.setState({
+       stars: this.state.stars + 0.5,
+     });
+     ```
+
+     - Used when the new state does not depend on the previous state.
+   - Form-2 (Functional form – used here)
+     ```jsx
+     this.setState((prevState) => ({
+       stars: prevState.stars + 0.5,
+     }));
+     ```
+
+     - Used when the new state depends on the previous state value, which makes it safer and recommended.
+
+4. Direct state mutation example commented
+   ```jsx
+   // this.state.stars += 0.5;
+   ```
+
+   - This is not recommended in React because directly modifying state does not trigger a component re-rende
+5. State destructuring updated
+   ```jsx
+   const { title, plot, price, rating, stars } = this.state;
+   ```
+
+   - stars is added to the destructuring.
+6. Star count displayed in UI
+   ```jsx
+   <span className="starCount">{stars}</span>
+   ```
+
+   - The UI now shows the current star value.
+7. Increase button functionality
+   ```jsx
+   onClick={this.addStars}
+   ```
+
+   - Clicking the increase button now increments the stars value by 0.5.
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/increase-stars_&apos;setState&apos;.png" alt="increase stars" width="700" height="auto">
