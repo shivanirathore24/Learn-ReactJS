@@ -357,3 +357,135 @@ export default MovieCard;
 
 This change makes the component dynamic and easier to update using React state instead of static content.
 
+## Binding 'this'
+
+### Moviecard.js file:
+```jsx
+import { Component } from "react";
+
+class MovieCard extends Component {
+  constructor() {
+    super();
+
+    this.state = {
+      title: "The Avengers",
+      plot: "Supernatural powers shown in the movie.",
+      price: 199,
+      rating: 8.9,
+    };
+
+    // Way-2: Binding inside constructor
+    // this.addStars = this.addStars.bind(this);
+  }
+
+  // Way-1 and Way-2
+  // addStars() {
+  //   console.log("this.state: ", this.state);
+  // }
+
+  // Way-3 (Recommended): Arrow function automatically binds 'this'
+  addStars = () => {
+    console.log("this.state: ", this.state);
+  };
+
+  render() {
+    const { title, plot, price, rating } = this.state;
+
+    return (
+      <div className="main">
+        <div className="movie-card">
+
+          <div className="left">
+            <img
+              alt="Poster"
+              src="https://m.media-amazon.com/images/I/91GN7Bww3sL._SY522_.jpg"
+            />
+          </div>
+
+          <div className="right">
+            <div className="title">{title}</div>
+            <div className="plot">{plot}</div>
+            <div className="price">Rs.{price}</div>
+
+            <div className="footer">
+              <div className="rating">{rating}</div>
+
+              <div className="star-dis">
+
+                <img
+                  className="str-btn"
+                  alt="decrease"
+                  src="https://cdn-icons-png.flaticon.com/128/1828/1828901.png"
+                />
+
+                <img
+                  className="stars"
+                  alt="star"
+                  src="https://cdn-icons-png.flaticon.com/128/1828/1828884.png"
+                />
+
+                {/* Way-1: Binding directly in JSX */}
+                {/* onClick={this.addStars.bind(this)} */}
+
+                {/* Way-2 & Way-3 */}
+                {/* onClick={this.addStars} */}
+                <img
+                  className="str-btn"
+                  alt="increase"
+                  src="https://cdn-icons-png.flaticon.com/128/3524/3524388.png"
+                  onClick={this.addStars} 
+                />
+
+                <span>0</span>
+              </div>
+
+              <button className="favourite-btn">Favourite</button>
+              <button className="cart-btn">Add to cart</button>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    );
+  }
+}
+
+export default MovieCard;
+```
+
+#### Explaination:
+1. Added addStars method
+    - A new function addStars is introduced inside the class.
+    - It logs the component state using:
+      ```jsx
+      console.log("this.state: ", this.state);
+      ```
+2. Event handler added
+    - The increase star button now has an onClick event.
+      ```jsx
+      onClick={this.addStars}
+      ```
+    - When the button is clicked, the addStars function executes.
+3. Different ways to bind this (shown in comments)
+    - The code demonstrates three ways to handle this binding in class components:
+      - Way-1: Bind inside JSX
+        ```jsx
+        onClick={this.addStars.bind(this)}
+        ```
+      - Way-2: Bind inside constructor
+        ```jsx
+        this.addStars = this.addStars.bind(this);
+        ```
+      - Way-3 (used in final code): Arrow function class property
+        ```jsx
+        addStars = () => { ... }
+        ```
+        Arrow functions automatically bind this.
+4. Functional change
+    - Previously the button had no action.
+    - Now clicking the increase button triggers addStars and prints the component state in the console.
+
+#### 🖥️ What You See in Console:
+
+<img src="./images/binding_&apos;this&apos;.png" alt="binding 'this'" width="700" height="auto">
