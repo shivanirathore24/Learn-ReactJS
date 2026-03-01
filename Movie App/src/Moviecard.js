@@ -13,28 +13,43 @@ class MovieCard extends Component {
     };
   }
 
-  // Method to increase star count
   addStars = () => {
     // Form-1: Object form of setState
-    // Used when the new state does NOT depend on the previous state
-    // this.setState({
-    //   stars: this.state.stars + 0.5,
-    // });
+    // this.setState(
+    //   {
+    //     stars: this.state.stars + 0.5,
+    //   },
+    //   () => console.log("stars inside callback:", this.state.stars),
+    // );
+    // console.log("stars:", this.state.stars);
 
     // Form-2: Functional form of setState (Recommended)
-    // Used when the new state depends on the previous state value
+    if (this.state.stars >= 5) {
+      return;
+    }
     this.setState((prevState) => {
       return {
         stars: prevState.stars + 0.5,
       };
     });
+  };
 
-    // ❌ Incorrect way: Direct state mutation (React will not re-render)
-    // this.state.stars += 0.5;
-    // console.log("this.state.stars: ", this.state.stars);
+  decStars = () => {
+    if (this.state.stars <= 0) {
+      return;
+    }
+    // this.setState({
+    //   stars: this.state.stars - 0.5,
+    // });
+    this.setState((prevState) => {
+      return {
+        stars: prevState.stars - 0.5,
+      };
+    });
   };
 
   render() {
+    console.log("Rendered the component!");
     const { title, plot, price, rating, stars } = this.state;
 
     return (
@@ -60,6 +75,7 @@ class MovieCard extends Component {
                   className="str-btn"
                   alt="decrease"
                   src="https://cdn-icons-png.flaticon.com/128/1828/1828901.png"
+                  onClick={this.decStars}
                 />
 
                 <img
@@ -68,7 +84,6 @@ class MovieCard extends Component {
                   src="https://cdn-icons-png.flaticon.com/128/1828/1828884.png"
                 />
 
-                {/* Increase star count when clicked */}
                 <img
                   className="str-btn"
                   alt="increase"
@@ -76,7 +91,6 @@ class MovieCard extends Component {
                   onClick={this.addStars}
                 />
 
-                {/* Display current star count */}
                 <span className="starCount">{stars}</span>
               </div>
 

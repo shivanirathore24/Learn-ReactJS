@@ -367,13 +367,46 @@ export default MovieCard;
 
 #### Changes made (step-by-step):
 
-1. Added a constructor to the class component.
-2. Initialized a state object inside the constructor.
-3. Moved movie information (title, plot, price, rating) into the state instead of keeping it hardcoded in the UI.
-4. Used destructuring to extract values from the state inside the render method.
-5. Displayed the values from state in the JSX instead of writing static text.
+1. Added a constructor
+   - The constructor is used to initialize the component when it is created.
+   - super() calls the parent Component constructor so that we can use this inside the class.
+   ```jsx
+   constructor() {
+     super();
+     this.state = { ... };
+   }
+   ```
+2. Initialized component state
+   - this.state is used to store dynamic data in a React class component.
+   - Here it holds the movie details instead of hardcoding them in the UI.
+   ```jsx
+   this.state = {
+     title: "The Avengers",
+     plot: "Supernatural powers shown in the movie.",
+     price: 199,
+     rating: 8.9,
+   };
+   ```
+3. Used destructuring in the render() method
 
-This change makes the component dynamic and easier to update using React state instead of static content.
+   ```jsx
+   const { title, plot, price, rating } = this.state;
+   ```
+
+   - Destructuring allows us to extract values from this.state into variables, making the JSX cleaner and easier to read.
+
+4. Displayed state values in JSX
+
+   ```jsx
+   <div className="title">{title}</div>
+   <div className="plot">{plot}</div>
+   <div className="price">Rs.{price}</div>
+   <div className="rating">{rating}</div>
+   ```
+
+   - Instead of writing static text, the UI now renders values from the component state, so the data can be updated dynamically.
+
+The component now uses React state to manage movie data, making it easier to update dynamically instead of using hardcoded values.
 
 ## Binding 'this'
 
@@ -502,6 +535,13 @@ export default MovieCard;
    - Previously the button had no action.
    - Now clicking the increase button triggers addStars and prints the component state in the console.
 
+#### Why binding is needed ?
+
+In React class components, `this` inside a method is not automatically bound to the component instance.
+When a method is used as an event handler, this may become undefined, so you cannot access `this.state` or `this.setState()`.
+
+Binding ensures that this correctly refers to the component instance, allowing the method to access and update the component’s state.
+
 #### 🖥️ What You See in Console:
 
 <img src="./images/binding_&apos;this&apos;.png" alt="binding 'this'" width="700" height="auto">
@@ -618,6 +658,7 @@ export default MovieCard;
    - Now it updates the stars value using setState().
 3. React provides two ways to update state using setState:
    - Form-1 (Object form)
+
      ```jsx
      this.setState({
        stars: this.state.stars + 0.5,
@@ -625,7 +666,9 @@ export default MovieCard;
      ```
 
      - Used when the new state does not depend on the previous state.
+
    - Form-2 (Functional form – used here)
+
      ```jsx
      this.setState((prevState) => ({
        stars: prevState.stars + 0.5,
@@ -635,24 +678,31 @@ export default MovieCard;
      - Used when the new state depends on the previous state value, which makes it safer and recommended.
 
 4. Direct state mutation example commented
+
    ```jsx
    // this.state.stars += 0.5;
    ```
 
    - This is not recommended in React because directly modifying state does not trigger a component re-rende
+
 5. State destructuring updated
+
    ```jsx
    const { title, plot, price, rating, stars } = this.state;
    ```
 
    - stars is added to the destructuring.
+
 6. Star count displayed in UI
+
    ```jsx
    <span className="starCount">{stars}</span>
    ```
 
    - The UI now shows the current star value.
+
 7. Increase button functionality
+
    ```jsx
    onClick={this.addStars}
    ```
@@ -662,3 +712,185 @@ export default MovieCard;
 #### 🖥️ What You See in Browser:
 
 <img src="./images/increase-stars_&apos;setState&apos;.png" alt="increase stars" width="700" height="auto">
+
+## More on setState()
+
+### Moviecard.js file:
+
+```jsx
+import { Component } from "react";
+
+class MovieCard extends Component {
+  constructor() {
+    super();
+
+    this.state = {
+      title: "The Avengers",
+      plot: "Supernatural powers shown in the movie.",
+      price: 199,
+      rating: 8.9,
+      stars: 0,
+    };
+  }
+
+  addStars = () => {
+    // Form-1: Object form of setState
+    // this.setState(
+    //   {
+    //     stars: this.state.stars + 0.5,
+    //   },
+    //   () => console.log("stars inside callback:", this.state.stars),
+    // );
+    // console.log("stars:", this.state.stars);
+
+    // Form-2: Functional form of setState (Recommended)
+    if (this.state.stars >= 5) {
+      return;
+    }
+    this.setState((prevState) => {
+      return {
+        stars: prevState.stars + 0.5,
+      };
+    });
+  };
+
+  decStars = () => {
+    if (this.state.stars <= 0) {
+      return;
+    }
+    // this.setState({
+    //   stars: this.state.stars - 0.5,
+    // });
+    this.setState((prevState) => {
+      return {
+        stars: prevState.stars - 0.5,
+      };
+    });
+  };
+
+  render() {
+    console.log("Rendered the component!");
+    const { title, plot, price, rating, stars } = this.state;
+
+    return (
+      <div className="main">
+        <div className="movie-card">
+          <div className="left">
+            <img
+              alt="Poster"
+              src="https://m.media-amazon.com/images/I/91GN7Bww3sL._SY522_.jpg"
+            />
+          </div>
+
+          <div className="right">
+            <div className="title">{title}</div>
+            <div className="plot">{plot}</div>
+            <div className="price">Rs.{price}</div>
+
+            <div className="footer">
+              <div className="rating">{rating}</div>
+
+              <div className="star-dis">
+                <img
+                  className="str-btn"
+                  alt="decrease"
+                  src="https://cdn-icons-png.flaticon.com/128/1828/1828901.png"
+                  onClick={this.decStars}
+                />
+
+                <img
+                  className="stars"
+                  alt="star"
+                  src="https://cdn-icons-png.flaticon.com/128/1828/1828884.png"
+                />
+
+                <img
+                  className="str-btn"
+                  alt="increase"
+                  src="https://cdn-icons-png.flaticon.com/128/3524/3524388.png"
+                  onClick={this.addStars}
+                />
+
+                <span className="starCount">{stars}</span>
+              </div>
+
+              <button className="favourite-btn">Favourite</button>
+              <button className="cart-btn">Add to cart</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+
+export default MovieCard;
+```
+
+#### Changes Added
+
+1. Decrease stars functionality added
+   - A new method decStars() is introduced to decrease the star count.
+   ```jsx
+   decStars = () => {
+     this.setState((prevState) => ({
+       stars: prevState.stars - 0.5,
+     }));
+   };
+   ```
+
+   - This allows the user to reduce the star value when the decrease button is clicked.
+2. Boundary checks added
+   - Conditions are added to keep the star value within a valid range.
+
+   ```jsx
+   if (this.state.stars >= 5) {
+     return;
+   }
+   ```
+
+   - Prevents stars from going above 5, maintaining a maximum limit.
+
+   ```jsx
+   if (this.state.stars <= 0) {
+     return;
+   }
+   ```
+
+   - Prevents stars from going below 0, maintaining a minimum limit.
+
+3. Decrease button connected to function
+   - The decrease button now triggers decStars.
+
+   ```jsx
+   onClick={this.decStars}
+   ```
+
+   - This connects the decrease button to the decStars method, so clicking it reduces the star value.
+
+4. Console log added in render()
+
+   ```jsx
+   console.log("Rendered the component!");
+   ```
+
+   - This helps demonstrate that the component re-renders whenever the state changes.
+
+5. setState callback example added (commented)
+
+   ```jsx
+   this.setState(
+     {
+       stars: this.state.stars + 0.5,
+     },
+     () => console.log("stars inside callback:", this.state.stars),
+   );
+   ```
+
+   - This shows how a callback can be used to access the updated state after setState completes, since state updates are asynchronous.
+
+The component now supports both increasing and decreasing stars with limits (0–5) and demonstrates React state updates, re-rendering, and `setState` callback usage.
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/decrease-stars_&apos;setState&apos;.png" alt="increase stars" width="700" height="auto">
