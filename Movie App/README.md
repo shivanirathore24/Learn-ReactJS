@@ -1099,6 +1099,7 @@ export default MovieCard;
      }
      ```
    - Replaced with:
+
      ```jsx
      <button
        className={fav ? "unfavourite-btn" : "favourite-btn"}
@@ -1111,6 +1112,7 @@ export default MovieCard;
      - Reason: Simplifies the conditional rendering by using **dynamic className and text** instead of writing two separate buttons.
 
 6. Added Cart button with toggle logic
+
    ```jsx
    <button
      className={isInCart ? "unfavourite-btn" : "cart-btn"}
@@ -1128,22 +1130,23 @@ The update introduces Favourite and Cart functionality by adding new state varia
 
 <img src="./images/click-button.png" alt="click button" width="700" height="auto">
 
-<img src="./images/toggle-button.png" alt="toggle button" width="600" height="auto">
+<img src="./images/toggle-button.png" alt="toggle button" width="700" height="auto">
 
 ## Creating Movie List
 
 ### MovieList.js
+
 ```jsx
 import { Component } from "react";
-import MovieCard from "./MovieCard"
+import MovieCard from "./MovieCard";
 
 class MovieList extends Component {
   render() {
-    return(
-        <>
+    return (
+      <>
         <MovieCard />
-        </>
-    )
+      </>
+    );
   }
 }
 
@@ -1151,6 +1154,7 @@ export default MovieList;
 ```
 
 ### App.js
+
 ```jsx
 import MovieList from "./MovieList";
 function App() {
@@ -1164,23 +1168,165 @@ function App() {
 
 export default App;
 ```
+
 #### Explaination
 
 1. Created a `MovieList` Component
-    - A new component `MovieList` was created to act as a container for movie cards.
+   - A new component `MovieList` was created to act as a container for movie cards.
 
-    - It imports and renders the `MovieCard` component inside it.
+   - It imports and renders the `MovieCard` component inside it.
 
 2. Updated `App.js`
-    - Previously, `App` was directly rendering the `MovieCard` component.
-    - Now, `App` renders `MovieList` instead of `MovieCard`.
+   - Previously, `App` was directly rendering the `MovieCard` component.
+   - Now, `App` renders `MovieList` instead of `MovieCard`.
 
 3. Improved Component Structure
-    - This change separates UI responsibility:
-      - `App` → Main application wrapper.
-      - `MovieList` → Manages the list of movies.
-      - `MovieCard` → Displays individual movie details.
+   - This change separates UI responsibility:
+     - `App` → Main application wrapper.
+     - `MovieList` → Manages the list of movies.
+     - `MovieCard` → Displays individual movie details.
 
 4. Better Scalability
-    - `MovieList` allows rendering multiple `MovieCard` components easily in the future.
-    - Keeps the code cleaner and more modular.
+   - `MovieList` allows rendering multiple `MovieCard` components easily in the future.
+   - Keeps the code cleaner and more modular.
+
+## Props in React
+
+A component can pass information to other components. Information that gets
+passed from one component to another is known as props short for properties. A
+component's props is an object which holds information about that component.
+
+Props are passed down from parent to child components as a key and value pair. If
+we want to pass information that is not string we have to wrap it with curly braces.
+This information will be stored inside of the props object of the child component.
+
+The most common use of props is to pass data and event handlers down to the child
+components.
+
+### Rules of Props
+
+There is only one strict rule in regard to props in React. Props are read-only. A
+component should never try to mutate or change the value of its props.
+
+### Default Props
+
+Default props can be used to define any props that you want to be set for a
+component. They can be used to ensure that props will have a value if it was not
+specified by the parent component.
+
+We can set default values for the props by assigning to the special defaultProps
+property on the component class.
+
+### Additional Information: Type Checking in Props
+
+&Note\*: Props type checking can be optionally used to ensure that the passed value
+is of the correct data. This can help prevent errors in rendering and force correct
+usage of components.
+
+Props type-checking can be used to validate props that are passed down from the
+parent for missing or incorrect data type values.
+
+Type checking of props can also help document the code to make it easier to
+understand and debug the component class.
+
+We can add type checking to our props by specifying it on the _propsTypes_ static
+property on the components class after it has been defined.The value of this property
+is an object that has multiple key and value pairs. Each key corresponds to a prop of
+that our component expects and the value should be the expected data type for that
+prop.
+
+We need to import the PropTypes object from ‘prop-types’ and use it to specify the
+expected data type for each prop.
+
+### Example Snippet-1
+
+```jsx
+import { Component } from "react";
+import PropTypes from "prop-types";
+
+export default class Navbar extends Component {
+  render() {
+    const { username, avatar } = this.props;
+
+    return (
+      <div>
+        <span>{username}</span>
+        <img alt={username} src={avatar} />
+      </div>
+    );
+  }
+}
+
+// setting default props
+Navbar.defaultProps = {
+  username: "Shivani",
+  avatar: "/image.png",
+};
+
+// type checking props
+Navbar.propTypes = {
+  username: PropTypes.string,
+  avatar: PropTypes.string,
+};
+```
+
+### Example Snippet-2
+
+#### Student.js
+
+```jsx
+import React from "react";
+
+class Student extends React.Component {
+  render() {
+    console.log(this.props);
+    const { name, marks } = this.props;
+    return (
+      <>
+        <h1>Hello, {name}</h1>
+        <p>You have secured {marks}%</p>
+        <hr />
+      </>
+    );
+  }
+}
+
+export default Student;
+```
+
+#### App.js
+
+```jsx
+import Student from "./Student";
+
+function App() {
+  return (
+    <>
+      <Student stuname="Shiv" marks={96} />
+      <Student stuname="Shakti" marks={91} />
+      <Student stuname="Sati" marks={95} />
+    </>
+  );
+}
+
+export default App;
+```
+
+1. Student Component (`Student.js`)
+   - A class component that receives data through props.
+   - It destructures `name` and `marks` from `this.props`.
+   - Displays the student's name and their percentage marks.
+   - `console.log(this.props)` is used to view the passed props in the browser console.
+
+2. Passing Props from `App.js`
+   - The `App` component renders the `Student` component three times.
+   - Each instance passes different values for `name` and `marks`.
+
+3. Dynamic Rendering
+   - The same `Student` component is reused with different props.
+
+   - This demonstrates component reusability and dynamic data rendering in React.
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/props-in-react.png" alt="Props in React" width="600" height="auto">
