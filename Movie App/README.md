@@ -47,7 +47,7 @@ root.render(
 
 ## Designing the Movie Card
 
-### Moviecard.js file:
+### MovieCard.js file:
 
 ```jsx
 import { Component } from "react";
@@ -87,7 +87,7 @@ export default MovieCard;
 ### App.js file:
 
 ```jsx
-import MovieCard from "./Moviecard";
+import MovieCard from "./MovieCard";
 function App() {
   return (
     <>
@@ -118,7 +118,7 @@ root.render(
 
 #### Explaination:
 
-1. **Moviecard.js (Class Component)**
+1. **MovieCard.js (Class Component)**
    - You created a class-based React component using
      `class MovieCard extends Component`.
    - Inside it, the render() method returns the UI (JSX).
@@ -135,7 +135,7 @@ root.render(
    - Exporting it lets you use `<MovieCard />` anywhere in the app.
 
 2. **App.js**
-   - Imports the component: `import MovieCard from "./Moviecard"`;
+   - Imports the component: `import MovieCard from "./MovieCard"`;
    - Displays:
      - A centered header: “Movie App”
      - The MovieCard component
@@ -163,7 +163,7 @@ root.render(
 
 ## Movie Card Continued...
 
-### Moviecard.js file:
+### MovieCard.js file:
 
 ```jsx
 import { Component } from "react";
@@ -298,7 +298,7 @@ export default class Navbar extends Component {
 }
 ```
 
-### Moviecard.js file:
+### MovieCard.js file:
 
 ```jsx
 import { Component } from "react";
@@ -410,7 +410,7 @@ The component now uses React state to manage movie data, making it easier to upd
 
 ## Binding 'this'
 
-### Moviecard.js file:
+### MovieCard.js file:
 
 ```jsx
 import { Component } from "react";
@@ -548,7 +548,7 @@ Binding ensures that this correctly refers to the component instance, allowing t
 
 ### Increasing Stars using setState()
 
-### Moviecard.js file:
+### MovieCard.js file:
 
 ```jsx
 import { Component } from "react";
@@ -715,7 +715,7 @@ export default MovieCard;
 
 ## More on setState()
 
-### Moviecard.js file:
+### MovieCard.js file:
 
 ```jsx
 import { Component } from "react";
@@ -899,7 +899,7 @@ The component now supports both increasing and decreasing stars with limits (0�
 
 ## Toggling the Favourite & AddToCart Button
 
-### Moviecard.js file:
+### MovieCard.js file:
 
 ```jsx
 import { Component } from "react";
@@ -1129,3 +1129,58 @@ The update introduces Favourite and Cart functionality by adding new state varia
 <img src="./images/click-button.png" alt="click button" width="700" height="auto">
 
 <img src="./images/toggle-button.png" alt="toggle button" width="600" height="auto">
+
+## Creating Movie List
+
+### MovieList.js
+```jsx
+import { Component } from "react";
+import MovieCard from "./MovieCard"
+
+class MovieList extends Component {
+  render() {
+    return(
+        <>
+        <MovieCard />
+        </>
+    )
+  }
+}
+
+export default MovieList;
+```
+
+### App.js
+```jsx
+import MovieList from "./MovieList";
+function App() {
+  return (
+    <>
+      <h1 className="app-title">Movie App</h1>
+      <MovieList />
+    </>
+  );
+}
+
+export default App;
+```
+#### Explaination
+
+1. Created a `MovieList` Component
+    - A new component `MovieList` was created to act as a container for movie cards.
+
+    - It imports and renders the `MovieCard` component inside it.
+
+2. Updated `App.js`
+    - Previously, `App` was directly rendering the `MovieCard` component.
+    - Now, `App` renders `MovieList` instead of `MovieCard`.
+
+3. Improved Component Structure
+    - This change separates UI responsibility:
+      - `App` → Main application wrapper.
+      - `MovieList` → Manages the list of movies.
+      - `MovieCard` → Displays individual movie details.
+
+4. Better Scalability
+    - `MovieList` allows rendering multiple `MovieCard` components easily in the future.
+    - Keeps the code cleaner and more modular.
