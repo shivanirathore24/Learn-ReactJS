@@ -831,6 +831,7 @@ export default MovieCard;
 
 1. Decrease stars functionality added
    - A new method decStars() is introduced to decrease the star count.
+
    ```jsx
    decStars = () => {
      this.setState((prevState) => ({
@@ -840,6 +841,7 @@ export default MovieCard;
    ```
 
    - This allows the user to reduce the star value when the decrease button is clicked.
+
 2. Boundary checks added
    - Conditions are added to keep the star value within a valid range.
 
@@ -893,4 +895,237 @@ The component now supports both increasing and decreasing stars with limits (0�
 
 #### 🖥️ What You See in Browser:
 
-<img src="./images/decrease-stars_&apos;setState&apos;.png" alt="increase stars" width="700" height="auto">
+<img src="./images/decrease-stars_&apos;setState&apos;.png" alt="decrease stars" width="700" height="auto">
+
+## Toggling the Favourite & AddToCart Button
+
+### Moviecard.js file:
+
+```jsx
+import { Component } from "react";
+
+class MovieCard extends Component {
+  constructor() {
+    super();
+
+    this.state = {
+      title: "The Avengers",
+      plot: "Supernatural powers shown in the movie.",
+      price: 199,
+      rating: 8.9,
+      stars: 0,
+      fav: false,
+      isInCart: false,
+    };
+  }
+
+  addStars = () => {
+    // Form-1: Object form of setState
+    // this.setState(
+    //   {
+    //     stars: this.state.stars + 0.5,
+    //   },
+    //   () => console.log("stars inside callback:", this.state.stars),
+    // );
+    // console.log("stars:", this.state.stars);
+
+    // Form-2: Functional form of setState (Recommended)
+    if (this.state.stars >= 5) {
+      return;
+    }
+    this.setState((prevState) => {
+      return {
+        stars: prevState.stars + 0.5,
+      };
+    });
+  };
+
+  decStars = () => {
+    if (this.state.stars <= 0) {
+      return;
+    }
+    // this.setState({
+    //   stars: this.state.stars - 0.5,
+    // });
+    this.setState((prevState) => {
+      return {
+        stars: prevState.stars - 0.5,
+      };
+    });
+  };
+
+  handleFav = () => {
+    this.setState({
+      fav: !this.state.fav,
+    });
+  };
+
+  handleAddToCart = () => {
+    this.setState({
+      isInCart: !this.state.isInCart,
+    });
+  };
+
+  render() {
+    console.log("Rendered the component!");
+    const { title, plot, price, rating, stars, fav, isInCart } = this.state;
+
+    return (
+      <div className="main">
+        <div className="movie-card">
+          <div className="left">
+            <img
+              alt="Poster"
+              src="https://m.media-amazon.com/images/I/91GN7Bww3sL._SY522_.jpg"
+            />
+          </div>
+
+          <div className="right">
+            <div className="title">{title}</div>
+            <div className="plot">{plot}</div>
+            <div className="price">Rs.{price}</div>
+
+            <div className="footer">
+              <div className="rating">{rating}</div>
+
+              <div className="star-dis">
+                <img
+                  className="str-btn"
+                  alt="decrease"
+                  src="https://cdn-icons-png.flaticon.com/128/1828/1828901.png"
+                  onClick={this.decStars}
+                />
+
+                <img
+                  className="stars"
+                  alt="star"
+                  src="https://cdn-icons-png.flaticon.com/128/1828/1828884.png"
+                />
+
+                <img
+                  className="str-btn"
+                  alt="increase"
+                  src="https://cdn-icons-png.flaticon.com/128/3524/3524388.png"
+                  onClick={this.addStars}
+                />
+
+                <span className="starCount">{stars}</span>
+              </div>
+
+              <!-- {fav ? (
+                <button className="unfavourite-btn" onClick={this.handleFav}>
+                  Un-Favourite
+                </button>
+              ) : (
+                <button className="favourite-btn" onClick={this.handleFav}>
+                  Favourite
+                </button>
+              )} -->
+
+              <button
+                className={fav ? "unfavourite-btn" : "favourite-btn"}
+                onClick={this.handleFav}
+              >
+                {fav ? "Unfavourite" : "Favourite"}
+              </button>
+
+              <button
+                className={isInCart ? "unfavourite-btn" : "cart-btn"}
+                onClick={this.handleAddToCart}
+              >
+                {isInCart ? "Remove from Cart" : "Add to cart"}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+
+export default MovieCard;
+```
+
+#### Explaination:
+
+1. Added new state variables
+
+   ```jsx
+   fav: false,
+   isInCart: false,
+   ```
+
+   - `fav` → tracks whether the movie is marked as Favourite.
+
+   - `isInCart` → tracks whether the movie is added to cart.
+
+2. Added `handleFav` method
+
+   ```jsx
+   handleFav = () => {
+     this.setState({
+       fav: !this.state.fav,
+     });
+   };
+   ```
+
+   - Toggles the `fav` state between true and false when the Favourite button is clicked.
+
+3. Added `handleAddToCart` method
+
+   ```jsx
+   handleAddToCart = () => {
+     this.setState({
+       isInCart: !this.state.isInCart,
+     });
+   };
+   ```
+
+   - Toggles the isInCart state to add or remove the movie from the cart.
+
+4. Updated destructuring in `render()`
+
+   ```jsx
+   const { title, plot, price, rating, stars, fav, isInCart } = this.state;
+   ```
+
+   - Added `fav` and `isInCart` so they can be used inside JSX.
+
+5. Replaced conditional JSX with dynamic button
+   - Old commented code:
+     ```jsx
+     {
+       /* {fav ? (...) : (...)} */
+     }
+     ```
+   - Replaced with:
+     ```jsx
+     <button
+       className={fav ? "unfavourite-btn" : "favourite-btn"}
+       onClick={this.handleFav}
+     >
+       {fav ? "Unfavourite" : "Favourite"}
+     </button>
+     ```
+
+     - Reason: Simplifies the conditional rendering by using **dynamic className and text** instead of writing two separate buttons.
+
+6. Added Cart button with toggle logic
+   ```jsx
+   <button
+     className={isInCart ? "unfavourite-btn" : "cart-btn"}
+     onClick={this.handleAddToCart}
+   >
+     {isInCart ? "Remove from Cart" : "Add to cart"}
+   </button>
+   ```
+
+   - Changes button style and text dynamically depending on whether the movie is already in the cart.
+
+The update introduces Favourite and Cart functionality by adding new state variables, toggle handlers, and dynamic buttons to improve interactivity and simplify conditional rendering.
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/click-button.png" alt="click button" width="700" height="auto">
+
+<img src="./images/toggle-button.png" alt="toggle button" width="600" height="auto">
