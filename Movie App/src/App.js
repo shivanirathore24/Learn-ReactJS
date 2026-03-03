@@ -9,8 +9,14 @@ function App() {
       <Student name="Shiv" marks={96} />
       <Student name="Shakti" marks={91} />
       <Student name="Sati" marks={95} />
+      <Student />
     </>
   );
 }
+
+Student.defaultProps = {
+  name: "Student",
+  marks: "N.A",
+};
 
 export default App;

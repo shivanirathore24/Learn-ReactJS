@@ -1270,6 +1270,19 @@ Navbar.propTypes = {
 };
 ```
 
+### State v/s Props
+
+Props and state are both plain JavaScript objects. While both hold information
+that influences the output of render, one important difference between the two
+is that Props get passed to the component whereas state is managed within
+the component.
+| State | Props |
+|------|------|
+| State can be changed (mutable). | Props are read-only and cannot be changed (immutable). |
+| State changes can be asynchronous. | Props cannot be changed. |
+| State is managed within the component. | Props are passed to the component. |
+| State is used to display changes within the component. | Props are used to pass information between components. |
+
 ### Example Snippet-2
 
 #### Student.js
@@ -1312,6 +1325,8 @@ function App() {
 export default App;
 ```
 
+#### Explaination
+
 1. Student Component (`Student.js`)
    - A class component that receives data through props.
    - It destructures `name` and `marks` from `this.props`.
@@ -1330,3 +1345,131 @@ export default App;
 #### 🖥️ What You See in Browser:
 
 <img src="./images/props-in-react.png" alt="Props in React" width="600" height="auto">
+
+## Default Props in React
+
+### Example Snippet-3
+
+#### student.js
+
+```jsx
+/* Case-1: Props in Class Component */
+
+// DefaultProps works properly with class components.
+// Props are accessed using this.props inside render().
+
+// import React from "react";
+// class Student extends React.Component {
+//   render() {
+//     // Destructuring values from this.props
+//     const { name, marks } = this.props;
+//     return (
+//       <>
+//         <h1>Hello, {name}</h1>
+//         <p>You have secured {marks}%</p>
+//         <hr />
+//       </>
+//     );
+//   }
+// }
+
+/* Case-2: Basic Functional Component */
+
+// In functional components, props are received as a parameter.
+// Using Student.defaultProps is not preferred in modern React.
+
+// function Student(props) {
+//   const { name, marks } = props;
+//   return (
+//     <>
+//       <h1>Hello, {name}</h1>
+//       <p>You have secured {marks}%</p>
+//       <hr />
+//     </>
+//   );
+// }
+
+/* Case-3: Functional Component with Default Values Inside */
+
+// Full props object is available (useful for debugging).
+// Default values are assigned during destructuring.
+
+// function Student(props) {
+//   console.log(props); // Prints complete props object on every render
+
+//   const { name = "Student", marks = "N.A" } = props;
+
+//   return (
+//     <>
+//       <h1>Hello, {name}</h1>
+//       <p>You have secured {marks}%</p>
+//     </>
+//   );
+// }
+
+/* Case-4: Recommended (Modern React Approach) */
+
+// Default values are assigned directly in function parameters.
+// Cleaner, shorter, and preferred in production code.
+
+function Student({ name = "Student", marks = "N.A" }) {
+  return (
+    <>
+      <h1>Hello, {name}</h1>
+      <p>You have secured {marks}%</p>
+      <hr />
+    </>
+  );
+}
+
+export default Student;
+```
+
+#### App.js
+
+```jsx
+import Student from "./Student";
+
+function App() {
+  return (
+    <>
+      <Student name="Shiv" marks={96} />
+      <Student name="Shakti" marks={91} />
+      <Student name="Sati" marks={95} />
+      <Student />
+    </>
+  );
+}
+
+Student.defaultProps = {
+  name: "Student",
+  marks: "N.A",
+};
+
+export default App;
+```
+
+#### Changes Added
+
+1. Converted Class Component to Functional Component
+   - Replaced `extends React.Component` with a functional component.
+   - Removed `render()` and `this.props`.
+   - Used parameter destructuring for cleaner syntax.
+
+2. Compared Multiple Approaches
+   - Included class version and different functional patterns for learning and comparison.
+
+3. Updated Default Values Handling
+   - Removed `Student.defaultProps` usage.
+   - Used default parameters inside the function:
+     ```jsx
+     function Student({ name = "Student", marks = "N.A" })
+     ```
+   - This is the recommended modern React approach.
+
+4. Added <Student /> Without Props
+   - Demonstrates how default values are automatically applied.
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/default-props.png" alt="Props in React" width="500" height="auto">
