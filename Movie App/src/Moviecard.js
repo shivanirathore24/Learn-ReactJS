@@ -1,128 +1,69 @@
-import { Component } from "react";
+import React from "react";
 
-class MovieCard extends Component {
-  addStars = () => {
-    // Form-1: Object form of setState
-    // this.setState(
-    //   {
-    //     stars: this.state.stars + 0.5,
-    //   },
-    //   () => console.log("stars inside callback:", this.state.stars),
-    // );
-    // console.log("stars:", this.state.stars);
-
-    // Form-2: Functional form of setState (Recommended)
-    if (this.state.stars >= 5) {
-      return;
-    }
-    this.setState((prevState) => {
-      return {
-        stars: prevState.stars + 0.5,
-      };
-    });
-  };
-
-  decStars = () => {
-    if (this.state.stars <= 0) {
-      return;
-    }
-    // this.setState({
-    //   stars: this.state.stars - 0.5,
-    // });
-    this.setState((prevState) => {
-      return {
-        stars: prevState.stars - 0.5,
-      };
-    });
-  };
-
-  handleFav = () => {
-    this.setState({
-      fav: !this.state.fav,
-    });
-  };
-
-  handleAddToCart = () => {
-    this.setState({
-      isInCart: !this.state.isInCart,
-    });
-  };
-
+class MovieCard extends React.Component {
   render() {
-    console.log("Rendered the component!");
-    console.log(this.props);
-    // const { movies: data } = this.props;
-    // console.log(data);
-    const { title, plot, price, rating, stars, fav, isInCart } =
+    const { movies, onIncStars, onClickFav, onClickAddtocart, onDecStars } =
+      this.props;
+    const { title, plot, poster, price, rating, stars, fav, isInCart } =
       this.props.movies;
-    // const { title, plot, price, rating, stars, fav, isInCart } = data;
 
     return (
-      <div className="main">
-        <div className="movie-card">
-          <div className="left">
-            <img
-              alt="Poster"
-              src="https://m.media-amazon.com/images/I/91GN7Bww3sL._SY522_.jpg"
-            />
-          </div>
+      //Movie Card
+      <div className="movie-card">
+        {/**Left section of Movie Card */}
+        <div className="left">
+          <img alt="poster" src={poster} />
+        </div>
 
-          <div className="right">
-            <div className="title">{title}</div>
-            <div className="plot">{plot}</div>
-            <div className="price">Rs.{price}</div>
+        {/**Right section Movie Card */}
+        <div className="right">
+          {/**Title, plot, price of the movie */}
+          <div className="title">{title}</div>
+          <div className="plot">{plot}</div>
+          <div className="price">Rs. {price}</div>
 
-            <div className="footer">
-              <div className="rating">{rating}</div>
+          {/**Footer starts here with ratings, stars and buttons */}
+          <div className="footer">
+            <div className="rating">{rating}</div>
 
-              <div className="star-dis">
-                <img
-                  className="str-btn"
-                  alt="decrease"
-                  src="https://cdn-icons-png.flaticon.com/128/1828/1828901.png"
-                  onClick={this.decStars}
-                />
-
-                <img
-                  className="stars"
-                  alt="star"
-                  src="https://cdn-icons-png.flaticon.com/128/1828/1828884.png"
-                />
-
-                <img
-                  className="str-btn"
-                  alt="increase"
-                  src="https://cdn-icons-png.flaticon.com/128/3524/3524388.png"
-                  onClick={this.addStars}
-                />
-
-                <span className="starCount">{stars}</span>
-              </div>
-
-              {/* {fav ? (
-                <button className="unfavourite-btn" onClick={this.handleFav}>
-                  Un-Favourite
-                </button>
-              ) : (
-                <button className="favourite-btn" onClick={this.handleFav}>
-                  Favourite
-                </button>
-              )} */}
-
-              <button
-                className={fav ? "unfavourite-btn" : "favourite-btn"}
-                onClick={this.handleFav}
-              >
-                {fav ? "Unfavourite" : "Favourite"}
-              </button>
-
-              <button
-                className={isInCart ? "unfavourite-btn" : "cart-btn"}
-                onClick={this.handleAddToCart}
-              >
-                {isInCart ? "Remove from Cart" : "Add to cart"}
-              </button>
+            {/**Star image with increase and decrease buttons and star count */}
+            <div className="star-dis">
+              <img
+                className="str-btn"
+                alt="Decrease"
+                src="https://cdn-icons-png.flaticon.com/128/2801/2801932.png"
+                onClick={() => onDecStars(movies)}
+              />
+              <img
+                className="stars"
+                alt="stars"
+                src="https://cdn-icons-png.flaticon.com/128/2107/2107957.png"
+              />
+              <img
+                className="str-btn"
+                alt="increase"
+                src="https://cdn-icons-png.flaticon.com/128/2997/2997933.png"
+                // No binding required as addStars() is an arrow function
+                onClick={() => onIncStars(movies)}
+              />
+              <span className="starCount">{stars}</span>
             </div>
+
+            {/**conditional rendering on Favourite button */}
+            <button
+              className={fav ? "unfavourite-btn" : "favourite-btn"}
+              onClick={() => onClickFav(movies)}
+            >
+              {fav ? "Un-favourite" : "Favourite"}
+            </button>
+
+            {/**Conditional Rendering on Add to Cart Button */}
+            <button
+              className={isInCart ? "unfavourite-btn" : "cart-btn"}
+              onClick={() => onClickAddtocart(movies)}
+            >
+              {isInCart ? "Remove from Cart" : "Add to Cart"}
+            </button>
           </div>
         </div>
       </div>
