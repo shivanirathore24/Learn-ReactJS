@@ -1476,6 +1476,8 @@ export default App;
 
 ## Passing data through props
 
+### MovieList.js & MovieCard.js
+
 #### Changes Added
 
 1. Moved Movie Data to `MovieList` State
@@ -1503,3 +1505,36 @@ export default App;
    - `MovieList` handles data (state management).
    - `MovieCard` handles UI rendering.
    - `Follows better separation of concerns.
+
+## Displaying Movie List with props
+
+### MovieList.js
+
+#### Changes Added
+
+1. Converted Single Movie Object to Movies Array
+   - Previously, `MovieList` stored data for only one movie in state.
+   - Updated state to store an array of movie objects inside `movies`.
+
+2. Implemented Dynamic Rendering
+   - Replaced single `<MovieCard />` with `.map()` method:
+
+   ```jsx
+   {
+     movies.map((movie) => <MovieCard movies={movie} />);
+   }
+   ```
+
+   - This allows rendering multiple movie cards dynamically.
+
+3. Improved Component Scalability
+   - Application now supports multiple movies instead of just one.
+   - Makes the UI dynamic and scalable.
+
+4. Better Data Structure
+   - Each movie object now contains complete details (title, plot, poster, rating, price, etc.).
+   - Follows real-world pattern for handling list-based data.
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/display-movielist.png" alt="Display MovieList" width="700" height="auto">

@@ -14,9 +14,9 @@ function App() {
   );
 }
 
-Student.defaultProps = {
-  name: "Student",
-  marks: "N.A",
-};
+// Student.defaultProps = {
+//   name: "Student",
+//   marks: "N.A",
+// };
 
 export default App;
