@@ -1,20 +1,6 @@
 import { Component } from "react";
 
 class MovieCard extends Component {
-  constructor() {
-    super();
-
-    this.state = {
-      title: "The Avengers",
-      plot: "Supernatural powers shown in the movie.",
-      price: 199,
-      rating: 8.9,
-      stars: 0,
-      fav: false,
-      isInCart: false,
-    };
-  }
-
   addStars = () => {
     // Form-1: Object form of setState
     // this.setState(
@@ -64,7 +50,12 @@ class MovieCard extends Component {
 
   render() {
     console.log("Rendered the component!");
-    const { title, plot, price, rating, stars, fav, isInCart } = this.state;
+    console.log(this.props);
+    // const { movies: data } = this.props;
+    // console.log(data);
+    const { title, plot, price, rating, stars, fav, isInCart } =
+      this.props.movies;
+    // const { title, plot, price, rating, stars, fav, isInCart } = data;
 
     return (
       <div className="main">
@@ -124,7 +115,7 @@ class MovieCard extends Component {
               >
                 {fav ? "Unfavourite" : "Favourite"}
               </button>
-              
+
               <button
                 className={isInCart ? "unfavourite-btn" : "cart-btn"}
                 onClick={this.handleAddToCart}

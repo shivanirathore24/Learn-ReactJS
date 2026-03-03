@@ -1473,3 +1473,33 @@ export default App;
 #### 🖥️ What You See in Browser:
 
 <img src="./images/default-props.png" alt="Props in React" width="500" height="auto">
+
+## Passing data through props
+
+#### Changes Added
+
+1. Moved Movie Data to `MovieList` State
+   - Previously, movie details were stored inside `MovieCard`.
+   - Now, movie data is managed in `MovieList` using `this.state`.
+   - This makes `MovieList` the parent data controller.
+
+2. . Passed Movie Data via Props
+   - Instead of hardcoding data inside `MovieCard`, the entire state is passed as a prop:
+     ```jsx
+     <MovieCard movies={this.state} />
+     ```
+   - Demonstrates parent → child data flow using props.
+
+3. Accessed Props Inside `MovieCard`
+   - Used `this.props.movies` to access passed data.
+   - Applied destructuring:
+     ```jsx
+     const { title, plot, price, rating, stars, fav, isInCart } =
+       this.props.movies;
+     ```
+   - This makes the component dynamic and reusable.
+
+4. Improved Component Architecture
+   - `MovieList` handles data (state management).
+   - `MovieCard` handles UI rendering.
+   - `Follows better separation of concerns.
