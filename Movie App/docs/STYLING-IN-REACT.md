@@ -200,7 +200,7 @@ export default Navbar;
 
 Inline CSS in React is written using the `style` attribute with double curly braces `{{ }}` because React expects a **JavaScript object** with **camelCase CSS properties** instead of a normal CSS string. Inline styles have **higher priority** and override other styles. They are useful for **quick testing and small styling tasks**, but they are **not reusable**, do not benefit from browser caching, and cannot support advanced CSS features like pseudo-classes, pseudo-elements, or media queries.
 
-#### Navbar.js
+### Navbar.js
 
 ```jsx
 import React from "react";
@@ -237,3 +237,80 @@ export default Navbar;
 - Implemented flexbox to align title and cart section using `justify-content: space-between`.
 - Updated title to "Movie-App".
 - Added cart count display (`3`) beside the cart icon.
+
+## CSS Scope in React
+
+### Navbar.js
+
+```jsx
+import React, { Component } from "react";
+
+class Navbar extends Component {
+  render() {
+    return (
+      <div style={styles.nav}>
+        <div style={styles.title}>Movie-App</div>
+        <div style={styles.cartIconContainer}>
+          <img
+            style={styles.cartIcon}
+            src="https://cdn-icons-png.flaticon.com/128/891/891462.png"
+            alt="cart-icon"
+          />
+          <span style={styles.cartCount}>3</span>
+        </div>
+      </div>
+    );
+  }
+}
+
+const styles = {
+  cartIcon: {
+    height: 48,
+    marginRight: 20,
+  },
+  nav: {
+    height: 70,
+    background: "#4267b2",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    position: "relative",
+  },
+  title: {
+    fontSize: 30,
+    color: "#fff",
+    fontWeight: 600,
+    fontFamily: '"Montserrat", sans-serif',
+    textTransform: "uppercase",
+    marginLeft: 20,
+  },
+
+  cartIconContainer: {
+    position: "relative",
+    cursor: "pointer",
+  },
+  cartCount: {
+    background: "orange",
+    borderRadius: "50%",
+    padding: "4px 8px",
+    position: "absolute",
+    right: 10,
+    top: -5,
+    fontSize: 12,
+  },
+};
+
+export default Navbar;
+```
+
+#### Changes Added
+
+- Replaced inline style inside JSX with a separate `styles` object.
+- Applied styles using `style={styles.property}` for better readability and organization.
+- Added cart icon image with styling.
+- Implemented cart count badge with absolute positioning.
+- Improved navbar design by adding background color, alignment, font styling, and positioning.
+
+#### 🖥️ What You See in Browser:
+
+<img src="../images/styling-in-react.png" alt="Styling in React" width="700" height="auto">
