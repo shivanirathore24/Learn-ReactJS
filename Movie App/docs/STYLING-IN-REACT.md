@@ -481,7 +481,65 @@ Navbar.js (Using Styled Components)
 - Each styled component acts like a React component with its own styles.
 - This makes the code cleaner, reusable, and easier to manage compared to large inline style objects.
 
-
 #### 🖥️ What You See in Browser:
 
 <img src="../images/styled-component.png" alt="Styled Component" width="700" height="auto">
+
+## Dynamic styles in Styled Components
+
+### Changes in Navbar.js
+
+#### 1. Added Hover Effect to Title
+
+```diff
+ const Title = styled.div`
+   font-size: 30px;
+   color: #fff;
+   font-weight: 600;
+   font-family: "Times New Roman", Times, serif;
+   text-transform: uppercase;
+   margin-left: 20px;
++  &:hover {
++    color: #0f0;
++  }
+ `;
+```
+
+---
+
+#### 2. Updated CartCount for Dynamic Styling
+
+```diff
+ const CartCount = styled.div`
+-  background: yellow;
++  background: ${(props) => props.color};
+
+   border-radius: 50%;
+   padding: 4px 8px;
+   position: absolute;
+   right: 10px;
+   top: -5px;
+   font-size: 12px;
+
++  visibility: ${(props) => (props.show ? "visible" : "hidden")};
+ `;
+```
+
+---
+
+#### 3. Updated JSX Usage
+
+```diff
+- <CartCount>5</CartCount>
++ <CartCount color="yellow" show={true}>5</CartCount>
+```
+
+### Explaination:
+
+- Added a hover effect to the `Title` styled component so the text color changes on hover.
+
+- Updated `CartCount` to support dynamic styling using props, allowing the background color to be controlled via the `color` prop.
+
+- Added a visibility toggle using the `show` prop to conditionally display or hide the cart count.
+
+- Updated the JSX to pass the new props: `color="yellow"` and show={true}.
