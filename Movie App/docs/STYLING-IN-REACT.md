@@ -543,3 +543,126 @@ Navbar.js (Using Styled Components)
 - Added a visibility toggle using the `show` prop to conditionally display or hide the cart count.
 
 - Updated the JSX to pass the new props: `color="yellow"` and show={true}.
+
+## CSS Modules
+
+A CSS Module is a CSS file with a `.module.css` extension in which all class names
+and animation names are scoped locally by default. One huge advantage of the CSS
+modules is that it is locally scoped to the component which prevents conflicting styles
+because of using the same selector names.
+
+The CSS properties are hashed into unique class names during compilation. You can
+use CSS Modules by creating a file with extension `.module.css` file and import it
+into the specific React Component file.
+
+### Example: Styling the Navbar
+
+#### Navbar.js
+
+```jsx
+import styles from "./Navbar.module.css";
+
+const Navbar = () => {
+  return (
+    <div className={styles.navbar}>
+      <span>Title of Navbar</span>
+      <span>
+        Cart Icon <sup>count</sup>
+      </span>
+    </div>
+  );
+};
+
+export default Navbar;
+```
+
+#### Navbar.module.css
+
+```jsx
+.navbar {
+  display: flex;
+  justify-content: space-between;
+}
+```
+
+**Note:** When you check it in the browser. On inspecting, The class name is
+\_src_Navbar_module\_\_navbar which is further transformed into a Unique Identifier.
+This will remove any chances of name collision in the React App.
+
+### Advantages:
+
+- Modular and reusable CSS
+- No more styling conflicts, So, you can use the same CSS class in multiple CSS files.
+
+### Disadvantages:
+
+- Using the styles object whenever constructing a className is compulsory.
+- Only allows usage of camelCase CSS class names.
+
+### Difference Between `.css` and `.module.css`
+
+| Feature              | `.css` File                                               | `.module.css` File                                               |
+| -------------------- | --------------------------------------------------------- | ---------------------------------------------------------------- |
+| Scope                | Global – styles apply across the entire application       | Local – styles are scoped to the specific component              |
+| Class Name Conflicts | Possible if the same class name is used in multiple files | Prevented because class names are hashed into unique identifiers |
+| Import Method        | `import "./Navbar.css";`                                  | `import styles from "./Navbar.module.css";`                      |
+| Applying Styles      | `className="navbar"`                                      | `className={styles.navbar}`                                      |
+| Best Use Case        | Global styles, layouts, resets, shared styles             | Component-specific styling in React                              |
+
+#### Simple Rule
+
+- Global styles → `.css`
+- Component-specific styles → `.module.css`
+
+### NavbarModule.js
+
+```jsx
+import React from "react";
+import styles from "./Navbar.module.css";
+
+class Navbar extends React.Component {
+  render() {
+    return (
+      <>
+        <div className={styles.nav}>
+          <div className={styles.title}>MOVIE APP</div>
+
+          <div className={styles.cartIconContainer}>
+            <img
+              className={styles.cartIcon}
+              alt="Cart-Icon"
+              src="https://cdn-icons-png.flaticon.com/128/891/891462.png"
+            />
+            <span className={styles.cartCount}>5</span>
+          </div>
+        </div>
+      </>
+    );
+  }
+}
+
+export default Navbar;
+```
+
+#### Changes added:
+
+Migrated Styling from Styled Components to CSS Modules
+
+- Removed styled-components based styling (styled.div, styled.img, etc.).
+
+- Implemented CSS Modules by creating `Navbar.module.css`.
+
+- Imported styles using:
+  ```jsx
+  import styles from "./Navbar.module.css";
+  ```
+- Applied styles using scoped class names:
+
+  ```diff
+  - <Nav>
+  + <div className={styles.nav}>
+  ```
+
+- Moved all styling rules (navbar layout, title, cart icon, badge) into nav.module.css.
+
+- This approach provides locally scoped CSS, preventing style conflicts and improving maintainability.
