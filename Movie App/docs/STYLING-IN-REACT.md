@@ -1045,7 +1045,7 @@ export default MovieCard;
 - Event handlers now call these parent functions with the movie object.
 - `MovieCard` only displays movie data and triggers actions, without managing its own state.
 
-### Visual Flow
+### Visual Flow (Simple Rule to Remember)
 
 ```text
 User Click
@@ -1063,8 +1063,6 @@ MovieList
 MovieCard + Navbar updated
 ```
 
-### Simple Rule to Remember
-
 #### Data Flow
 
 ```text
@@ -1076,3 +1074,100 @@ App → MovieList → MovieCard
 ```text
 MovieCard → MovieList → App
 ```
+
+## Showing the Cart Count
+
+### App.js
+
+#### Updated `handleAddtocart()` to manage `cartCount`
+
+```diff
+ handleAddtocart = (movie) => {
+-  const { movies } = this.state;
++  let { movies, cartCount } = this.state;
+   const movieId = movies.indexOf(movie);
+
+   movies[movieId].isInCart = !movies[movieId].isInCart;
+
++  if (movies[movieId].isInCart) {
++    cartCount = cartCount + 1;
++  } else {
++    cartCount -= 1;
++  }
+
+   this.setState({
+-    movies,
++    movies,
++    cartCount,
+   });
+ };
+```
+
+#### Passed `cartCount` to Navbar
+
+```diff
+ render() {
+- const { movies } = this.state;
++ const { movies, cartCount } = this.state;
+
+  return (
+    <>
+-      <Navbar />
++      <Navbar cartCount={cartCount} />
+
+      <MovieList
+        movies={movies}
+        addStars={this.handleAddStars}
+        decStars={this.handleDecStars}
+        toggleFav={this.handleToggleFav}
+        toggleCart={this.handleAddtocart}
+      />
+    </>
+  );
+}
+```
+
+#### Changes in App.js
+
+- Updated `handleAddtocart()` to update `cartCount` when a movie is added or removed from cart.
+
+- `cartCount` is now stored and managed in App state.
+
+- Passed `cartCount` to Navbar via props so the cart badge updates dynamically.
+
+### Navbar.js
+
+#### Received `cartCount` from props
+
+```diff
+ class Navbar extends React.Component {
+   render() {
++    const { cartCount } = this.props;
+```
+
+#### Replaced static cart value with dynamic value
+
+```diff
+- <CartCount color="yellow" show={true}>
+-   5
+- </CartCount>
+
++ <CartCount color="yellow" show={true}>
++   {cartCount}
++ </CartCount>
+```
+
+#### Changes in Navbar.js
+
+- `Navbar` now receives `cartCount` as a prop from App.
+
+- The cart badge value was changed from hardcoded `5` to dynamic `{cartCount}`.
+
+- This allows the cart count in the Navbar to update whenever movies are added or removed from the cart.
+
+#### 🖥️ What You See in Browser:
+
+<img src="../images/cart-count.png" alt="Cart Count" width="700" height="auto">
+
+
+

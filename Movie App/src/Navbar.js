@@ -45,6 +45,8 @@ const CartCount = styled.div`
 
 class Navbar extends React.Component {
   render() {
+    const { cartCount } = this.props;
+    console.log(this.props);
     return (
       <>
         <Nav>
@@ -55,8 +57,8 @@ class Navbar extends React.Component {
               alt="Cart-Icon"
               src="https://cdn-icons-png.flaticon.com/128/891/891462.png"
             />
-            <CartCount color="yellow" show={true}>
-              5
+            <CartCount color="yellow" show= {true}>
+              {cartCount}
             </CartCount>
           </CartIconContainer>
         </Nav>
