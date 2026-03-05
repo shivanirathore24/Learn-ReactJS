@@ -1169,5 +1169,373 @@ MovieCard → MovieList → App
 
 <img src="../images/cart-count.png" alt="Cart Count" width="700" height="auto">
 
+## Implementing Functional Component
 
+### Presentational Components
 
+A component that has to have a state, make calculations based on props or manage
+any other complex app logic is called a container component.
+
+A component whose only job is to contain some JSX and render it in UI is called a
+presentational component. A presentational component must be exported and will never
+render anything on its own. It will always be rendered by a container component.
+
+All presentation components can be changed from class-based to stateless functional
+components as shown in the following example.
+
+#### Navbar.js (class-based)
+
+```jsx
+import { Component } from "react";
+import styles from "./navbar.module.css";
+
+class Navbar extends Component {
+  render() {
+    return (
+      <div className={styles.navbar}>
+        <span>Title of Navbar</span>
+        <span>
+          Cart Icon<sup>count</sup>
+        </span>
+      </div>
+    );
+  }
+}
+
+export default Navbar;
+```
+
+#### Navbar.js (stateless functional)
+
+```jsx
+import styles from "./navbar.module.css";
+
+function Navbar() {
+  return (
+    <div className={styles.navbar}>
+      <span>Title of Navbar</span>
+      <span>
+        Cart Icon<sup>count</sup>
+      </span>
+    </div>
+  );
+}
+
+export default Navbar;
+```
+
+**Note:** Functional components can create and maintain their internal state using
+React hooks. They can also be a container component.
+
+### 1. MovieCard.js
+
+```jsx
+function MovieCard(props) {
+  const { movies, addStars, decStars, toggleFav, toggleCart } = props;
+  const { title, plot, poster, price, rating, stars, fav, isInCart } =
+    props.movies;
+
+  return (
+    //Movie Card
+    <div className="movie-card">
+      {/**Left section of Movie Card */}
+      <div className="left">
+        <img alt="poster" src={poster} />
+      </div>
+
+      {/**Right section Movie Card */}
+      <div className="right">
+        {/**Title, plot, price of the movie */}
+        <div className="title">{title}</div>
+        <div className="plot">{plot}</div>
+        <div className="price">Rs. {price}</div>
+
+        {/**Footer starts here with ratings, stars and buttons */}
+        <div className="footer">
+          <div className="rating">{rating}</div>
+
+          {/**Star image with increase and decrease buttons and star count */}
+          <div className="star-dis">
+            <img
+              className="str-btn"
+              alt="Decrease"
+              src="https://cdn-icons-png.flaticon.com/128/2801/2801932.png"
+              onClick={() => decStars(movies)}
+            />
+            <img
+              className="stars"
+              alt="stars"
+              src="https://cdn-icons-png.flaticon.com/128/2107/2107957.png"
+            />
+            <img
+              className="str-btn"
+              alt="increase"
+              src="https://cdn-icons-png.flaticon.com/128/2997/2997933.png"
+              // No binding required as addStars() is an arrow function
+              onClick={() => addStars(movies)}
+            />
+            <span className="starCount">{stars}</span>
+          </div>
+
+          {/**conditional rendering on Favourite button */}
+          <button
+            className={fav ? "unfavourite-btn" : "favourite-btn"}
+            onClick={() => toggleFav(movies)}
+          >
+            {fav ? "Un-favourite" : "Favourite"}
+          </button>
+
+          {/**Conditional Rendering on Add to Cart Button */}
+          <button
+            className={isInCart ? "unfavourite-btn" : "cart-btn"}
+            onClick={() => toggleCart(movies)}
+          >
+            {isInCart ? "Remove from Cart" : "Add to Cart"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default MovieCard;
+```
+
+- Converted the class component to a functional component.
+- Removed `React.Component` and `render()` method.
+- Used props directly inside the function to access movie data and handler functions.
+
+### MovieList.js
+
+```jsx
+import MovieCard from "./MovieCard";
+
+function MovieList(props) {
+  const { movies, addStars, decStars, toggleFav, toggleCart } = props;
+  console.log(props);
+
+  return (
+    <div className="main">
+      {movies.map((movie) => (
+        <MovieCard
+          movies={movie}
+          addStars={addStars}
+          decStars={decStars}
+          toggleFav={toggleFav}
+          toggleCart={toggleCart}
+          key={movie.id}
+        />
+      ))}
+    </div>
+  );
+}
+export default MovieList;
+```
+
+- Converted the class component to a functional component.
+- Removed the render() method and accessed props directly in the function.
+- Component now simply receives props and maps movies to MovieCard.
+
+### 3. Navbar.js
+
+```jsx
+import styled from "styled-components";
+
+const Nav = styled.div`
+  height: 70px;
+  background: linear-gradient(170deg, #1bc059, #0d47a1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+`;
+
+const Title = styled.div`
+  font-size: 30px;
+  color: #fff;
+  font-weight: 600;
+  font-family: "Times New Roman", Times, serif;
+  text-transform: uppercase;
+  margin-left: 20px;
+  &:hover {
+    color: #0f0;
+  }
+`;
+
+const CartImg = styled.img`
+  height: 48px;
+  margin-right: 20px;
+`;
+
+const CartIconContainer = styled.div`
+  position: relative;
+  cursor: pointer;
+`;
+
+const CartCount = styled.div`
+  background: ${(props) => props.color};
+  border-radius: 50%;
+  padding: 4px 8px;
+  position: absolute;
+  right: 10px;
+  top: -5px;
+  font-size: 12px;
+  visibility: ${(props) => (props.show ? "visible" : "hidden")};
+`;
+
+function Navbar(props) {
+  const { cartCount } = props;
+  console.log(props);
+  return (
+    <>
+      <Nav>
+        <Title>MOVIE APP</Title>
+
+        <CartIconContainer>
+          <CartImg
+            alt="Cart-Icon"
+            src="https://cdn-icons-png.flaticon.com/128/891/891462.png"
+          />
+          <CartCount color="yellow" show={true}>
+            {cartCount}
+          </CartCount>
+        </CartIconContainer>
+      </Nav>
+    </>
+  );
+}
+
+export default Navbar;
+```
+
+- Converted the class component to a functional component.
+- Removed `React.Component` and `render()` method.
+- Props such as `cartCount` are now accessed directly from the function parameters.
+
+### 4. App.js
+
+```jsx
+import React from "react";
+import MovieList from "./MovieList";
+import Navbar from "./Navbar";
+import { movies } from "./moviesData";
+import "./index.css";
+
+class App extends React.Component {
+  constructor() {
+    super();
+    //Creating the state object
+    this.state = {
+      movies: movies,
+      cartCount: 0,
+    };
+  }
+
+  handleAddStars = (movie) => {
+    const { movies } = this.state;
+    const movieId = movies.indexOf(movie);
+
+    if (movies[movieId].stars < 5) {
+      movies[movieId].stars += 0.5;
+    }
+
+    this.setState({
+      movies,
+    });
+  };
+
+  handleDecStars = (movie) => {
+    const { movies } = this.state;
+    const movieId = movies.indexOf(movie);
+
+    if (movies[movieId].stars > 0) {
+      movies[movieId].stars -= 0.5;
+    }
+
+    this.setState({
+      movies,
+    });
+  };
+
+  handleToggleFav = (movie) => {
+    const { movies } = this.state;
+    const movieId = movies.indexOf(movie);
+
+    movies[movieId].fav = !movies[movieId].fav;
+
+    this.setState({
+      movies,
+    });
+  };
+
+  handleAddtocart = (movie) => {
+    let { movies, cartCount } = this.state;
+    const movieId = movies.indexOf(movie);
+
+    movies[movieId].isInCart = !movies[movieId].isInCart;
+    console.log(movies[movieId].isInCart);
+
+    if (movies[movieId].isInCart) {
+      cartCount = cartCount + 1;
+    } else {
+      cartCount -= 1;
+    }
+
+    this.setState({
+      movies,
+      cartCount,
+    });
+
+    console.log(cartCount);
+  };
+
+  render() {
+    const { movies, cartCount } = this.state;
+    return (
+      <>
+        <Navbar cartCount={cartCount} />
+        <MovieList
+          movies={movies}
+          addStars={this.handleAddStars}
+          decStars={this.handleDecStars}
+          toggleFav={this.handleToggleFav}
+          toggleCart={this.handleAddtocart}
+        />
+      </>
+    );
+  }
+}
+
+export default App;
+```
+
+- App remains a class component and continues to manage the application state and pass props to child components.
+
+#### 🖥️ What You See in Browser:
+
+<img src="../images/movie-app.png" alt="Movie App" width="700" height="auto">
+
+## Summarising it
+
+Let’s summarise what we have learned in this Lecture:
+
+- Learned about the styling strategies in React.
+- Learned about styling React components using CSS Stylesheets.
+- Learned about styling React components using Inline Styling.
+- Learned about styling React components using styled components.
+- Learned about styling React components using CSS Modules.
+- Learned about lifting up the state.
+- Learned about presentational components.
+
+### Some References:
+
+[Inline CSS vs Raw CSS](https://www.pluralsight.com/resources/blog/guides/raw-css-versus-inline-styles-in-react)
+
+[Styled Components](https://styled-components.com/docs)
+[Dynamic Styling with styled-components](https://dev.to/vtrpldn/styled-components-dealing-with-dynamic-styling-1ja3)
+
+[CSS Modules](https://blog.logrocket.com/a-deep-dive-into-css-modules/)
+
+[Lifting state up in React](https://react.dev/learn/sharing-state-between-components)
+
+[Container vs Presentational components](https://www.patterns.dev/react/presentational-container-pattern/)
