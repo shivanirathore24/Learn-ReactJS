@@ -208,7 +208,7 @@ constructor → getDerivedStateFromProps → render → componentDidMount
 
 #### 🖥️ What You See in Browser:
 
-<img src="./images/order-of-lifecycle-methods1.png" alt="Order of Lifecycle Methods" width="650" height="auto">
+<img src="./images/order-of-lifecycle-methods1.png" alt="Order of Lifecycle Methods" width="500" height="auto">
 
 ## Lifecycle with Parent–Child Components
 
@@ -303,4 +303,124 @@ ComponentA componentDidMount
 
 #### 🖥️ What You See in Browser:
 
-<img src="./images/order-of-lifecycle-methods2.png" alt="Order of Lifecycle Methods" width="650" height="auto">
+<img src="./images/order-of-lifecycle-methods2.png" alt="Order of Lifecycle Methods" width="500" height="auto">
+
+## Causing Side-Effects
+
+### ComponentA.js
+
+```jsx
+import React from "react";
+
+class ComponentA extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      name: "ComponentA",
+      data: [],
+    };
+    console.log("ComponentA constructor!");
+  }
+
+  static getDerivedStateFromProps() {
+    console.log("ComponentA getDerivedStateByProps!");
+    return null;
+  }
+
+  componentDidMount() {
+    console.log("ComponentA componentDidMount!");
+    fetch("https://jsonplaceholder.typicode.com/users")
+      .then((response) => response.json())
+      .then((data) => this.setState({ data }));
+  }
+
+  render() {
+    console.log(this.state.data);
+    console.log("ComponentA render!");
+    return (
+      <>
+        <h1>{this.state.name}</h1>
+        <ul>
+          {this.state.data.map((d) => {
+            return <li key={d.id}>{d.username}</li>;
+          })}
+        </ul>
+      </>
+    );
+  }
+}
+
+export default ComponentA;
+```
+
+#### Explaination:
+
+1. Added State to Store API Data
+
+   ```jsx
+   data: [];
+   ```
+
+   - A new state variable `data` was introduced to store the list of users fetched from the API. This allows the component to render dynamic data after the API request completes.
+
+2. . Added API Call in `componentDidMount`
+
+   ```jsx
+   fetch("https://jsonplaceholder.typicode.com/users")
+     .then((response) => response.json())
+     .then((data) => this.setState({ data }));
+   ```
+
+   - The API request is performed inside `componentDidMount()` so that the data is fetched after the component is mounted. This ensures that the UI renders first and then updates when the data is received.
+
+3. Rendering Dynamic Data Using `map`
+
+   ```jsx
+   <ul>
+     {this.state.data.map((d) => {
+       return <li key={d.id}>{d.username}</li>;
+     })}
+   </ul>
+   ```
+
+   - `map()` is used to iterate over the fetched user data and dynamically create list items. The key attribute is added to help React efficiently update the DOM.
+
+### Why Side Effect Is Written in `componentDidMount`
+
+The API call is a side effect because it interacts with an external system (server) and updates the component state asynchronously.
+
+`componentDidMount()` is the correct place because:
+
+- It runs after the component is mounted to the DOM
+- It executes only once during the component lifecycle
+- It prevents unnecessary repeated API calls
+
+### Issues If Side Effects Are Written Elsewhere
+
+1. If written inside `render()`
+   - Problem:
+     - `render()` runs every time state changes
+     - `setState()` inside API response triggers another render
+   - Result:
+     ```text
+     render → fetch → setState → render → fetch → setState → infinite loop
+     ```
+   - This causes continuous API calls and performance issues.
+
+2. If written inside `constructor()`
+   - Problem:
+     - The component is not yet mounted
+     - Side effects should not run during state initialization
+     - Can lead to unexpected lifecycle behavior
+
+3. If written in `getDerivedStateFromProps()`
+   - Problem:
+     - This method is \***\*static**
+     - Cannot access `this`
+     - Must remain a pure function without side effects.
+
+The component was enhanced to demonstrate data fetching, state management, and dynamic rendering. The side effect (API request) was placed in `componentDidMount()` to ensure proper lifecycle behavior and avoid unnecessary or repeated executions.
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/causing_side-effects.png" alt="Causing Side Effects" width="500" height="auto">

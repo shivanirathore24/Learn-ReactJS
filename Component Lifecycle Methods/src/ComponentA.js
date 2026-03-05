@@ -1,11 +1,12 @@
 import React from "react";
-import ComponentB from "./ComponentB";
+//import ComponentB from "./ComponentB";
 
 class ComponentA extends React.Component {
   constructor() {
     super();
     this.state = {
       name: "ComponentA",
+      data: [],
     };
     console.log("ComponentA constructor!");
   }
@@ -17,14 +18,27 @@ class ComponentA extends React.Component {
 
   componentDidMount() {
     console.log("ComponentA componentDidMount!");
+
+    fetch("https://jsonplaceholder.typicode.com/users")
+      .then((response) => response.json())
+      .then((data) => this.setState({ data }));
   }
 
   render() {
+    console.log(this.state.data);
     console.log("ComponentA render!");
+
     return (
       <>
         <h1>{this.state.name}</h1>
-        <ComponentB />
+
+        <ul>
+          {this.state.data.map((d) => {
+            return <li key={d.id}>{d.username}</li>;
+          })}
+        </ul>
+
+        {/* <ComponentB /> */}
       </>
     );
   }
