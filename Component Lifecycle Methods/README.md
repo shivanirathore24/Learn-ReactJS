@@ -138,3 +138,74 @@ componentDidMount() {
   }, 1000);
 }
 ```
+
+## Order of Lifecycle Methods
+
+### App.js
+
+```jsx
+import React from "react";
+import ComponentA from "./ComponentA";
+
+class App extends React.Component {
+  render() {
+    return <ComponentA />;
+  }
+}
+
+export default App;
+```
+
+The App component simply imports and renders ComponentA, acting as the root component of the application.
+
+### ComponentA.js
+
+```jsx
+import React from "react";
+
+class ComponentA extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      name: "ComponentA",
+    };
+    console.log("ComponentA constructor!");
+  }
+
+  static getDerivedStateFromProps() {
+    console.log("ComponentA getDerivedStateByProps!");
+    return null;
+  }
+
+  componentDidMount() {
+    console.log("ComponentA componentDidMount!");
+  }
+
+  render() {
+    console.log("ComponentA render!");
+    return <h1>{this.state.name}</h1>;
+  }
+}
+
+export default ComponentA;
+```
+
+A class componentA created to demonstrate lifecycle methods:
+
+- constructor() initializes the component state with `name: "ComponentA"` and logs a message to show when the constructor is executed.
+
+- getDerivedStateFromProps() is a static lifecycle method used to sync state with props. Here it only logs a message and returns `null` since no state update is required.
+
+- componentDidMount() runs after the component is mounted to the DOM and logs a message to indicate that the component has been successfully rendered.
+
+- render() displays the value of `name` from the state inside an `<h1>` element and logs when rendering occurs.
+
+#### Order of execution of React class component lifecycle methods:
+
+```text
+constructor → getDerivedStateFromProps → render → componentDidMount
+```
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/order-of-lifecycle-methods.png" alt="Order of Lifecycle Methods" width="650" height="auto">
