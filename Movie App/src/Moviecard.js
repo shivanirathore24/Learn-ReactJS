@@ -2,10 +2,8 @@ import React from "react";
 
 class MovieCard extends React.Component {
   render() {
-    const { movies, onIncStars, onClickFav, onClickAddtocart, onDecStars } =
-      this.props;
-    const { title, plot, poster, price, rating, stars, fav, isInCart } =
-      this.props.movies;
+    const { movies, addStars, decStars, toggleFav, toggleCart } = this.props;
+    const { title, plot, poster, price, rating, stars, fav, isInCart } = movies;
 
     return (
       //Movie Card
@@ -32,7 +30,7 @@ class MovieCard extends React.Component {
                 className="str-btn"
                 alt="Decrease"
                 src="https://cdn-icons-png.flaticon.com/128/2801/2801932.png"
-                onClick={() => onDecStars(movies)}
+                onClick={() => decStars(movies)}
               />
               <img
                 className="stars"
@@ -44,7 +42,7 @@ class MovieCard extends React.Component {
                 alt="increase"
                 src="https://cdn-icons-png.flaticon.com/128/2997/2997933.png"
                 // No binding required as addStars() is an arrow function
-                onClick={() => onIncStars(movies)}
+                onClick={() => addStars(movies)}
               />
               <span className="starCount">{stars}</span>
             </div>
@@ -52,7 +50,7 @@ class MovieCard extends React.Component {
             {/**conditional rendering on Favourite button */}
             <button
               className={fav ? "unfavourite-btn" : "favourite-btn"}
-              onClick={() => onClickFav(movies)}
+              onClick={() => toggleFav(movies)}
             >
               {fav ? "Un-favourite" : "Favourite"}
             </button>
@@ -60,7 +58,7 @@ class MovieCard extends React.Component {
             {/**Conditional Rendering on Add to Cart Button */}
             <button
               className={isInCart ? "unfavourite-btn" : "cart-btn"}
-              onClick={() => onClickAddtocart(movies)}
+              onClick={() => toggleCart(movies)}
             >
               {isInCart ? "Remove from Cart" : "Add to Cart"}
             </button>

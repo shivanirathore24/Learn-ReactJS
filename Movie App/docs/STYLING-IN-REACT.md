@@ -666,3 +666,413 @@ Migrated Styling from Styled Components to CSS Modules
 - Moved all styling rules (navbar layout, title, cart icon, badge) into nav.module.css.
 
 - This approach provides locally scoped CSS, preventing style conflicts and improving maintainability.
+
+## Lifting State from MovieList to App
+
+Lifting state up is a common pattern that is essential for React developers to know. It
+helps you avoid more complex (and often unnecessary) patterns for managing your
+state. The app structure of the project is shown below:
+
+```text
+App
+├── Navbar
+│   └── Cart Count
+│
+└── MovieList
+    ├── State
+    │   └── movies: [{title, plot, price, poster, rating, stars, fav, isInCart}]
+    │
+    ├── Functions
+    │   ├── addStars()
+    │   ├── decStars()
+    │   ├── toggleFav()
+    │   └── toggleCart()
+    │
+    ├── MovieCard1
+    ├── MovieCard2
+    └── MovieCard3
+```
+
+In `<Navbar>`, we have a **cart count** which we want to increase/ decrease as the add
+to cart/ remove from cart button is pressed. These buttons are present under
+`<MovieCards>` but the logic/ event handlers for add to cart and remove from cart are
+written inside `<MovieList>`. We want to access cartCount in `<Navbar>` component
+which is a sibling of this component, but we cannot pass the data among siblings as
+per the rule we can only pass data from parent to child.
+
+```jsx
+this.state = {
+  movies: movies,
+  cartItems: [],
+  cartCount: 0,
+};
+```
+
+The solution is **Lifting up the state to App component** and passing the **cartCount**
+from `<App>` component to `<Navbar>`. So with states we can take all the handlers to
+the `<App>` component. And then we can pass everything as a **prop** to another
+component.
+
+```text
+App
+├── State
+│   └── movies: [{title, plot, price, poster, rating, stars, fav, isInCart}]
+│
+├── Functions
+│   ├── addStars()
+│   ├── decStars()
+│   ├── toggleFav()
+│   └── toggleCart()
+│
+├── Navbar
+│   └── Cart Count
+│
+└── MovieList
+    ├── MovieCard1
+    ├── MovieCard2
+    └── MovieCard3
+```
+
+```jsx
+render() {
+  const { movies, cartItems, cartCount } = this.state;
+
+  return (
+    <>
+      <Navbar cartItems={cartItems} cartCount={cartCount} />
+
+      <MovieListS
+        movies={movies}
+        decStars={this.decStars}
+        addStars={this.addStars}
+        toggleCart={this.toggleCart}
+        toggleFav={this.toggleFav}
+      />
+    </>
+  );
+}
+```
+
+In the Navbar component we can now access CartCount and in MovieList, we can
+access all the handlers through prop
+
+### moviesData.js
+
+```jsx
+export const movies = [
+  { id: 1, title: "The Avengers", ... },
+  { id: 2, title: "The Dark Knight", ... },
+  { id: 3, title: "Iron Man", ... }
+];
+```
+
+#### moviesData.js (New File Created)
+
+- Created a separate file to store the movies data array.
+- Exported the movie list using:
+
+```jsx
+export const movies = [...]
+```
+
+- This improves code organization by separating static data from components.
+
+### App.js
+
+```jsx
+import React from "react";
+import MovieList from "./MovieList";
+import Navbar from "./Navbar";
+import { movies } from "./moviesData";
+import "./index.css";
+
+class App extends React.Component {
+  constructor() {
+    super();
+    //Creating the state object
+    this.state = {
+      movies: movies,
+      cartCount: 0,
+    };
+  }
+
+  handleAddStars = (movie) => {
+    const { movies } = this.state;
+    const movieId = movies.indexOf(movie);
+
+    if (movies[movieId].stars < 5) {
+      movies[movieId].stars += 0.5;
+    }
+
+    this.setState({
+      movies,
+    });
+  };
+
+  handleDecStars = (movie) => {
+    const { movies } = this.state;
+    const movieId = movies.indexOf(movie);
+
+    if (movies[movieId].stars > 0) {
+      movies[movieId].stars -= 0.5;
+    }
+
+    this.setState({
+      movies,
+    });
+  };
+
+  handleToggleFav = (movie) => {
+    const { movies } = this.state;
+    const movieId = movies.indexOf(movie);
+
+    movies[movieId].fav = !movies[movieId].fav;
+
+    this.setState({
+      movies,
+    });
+  };
+
+  handleAddtocart = (movie) => {
+    const { movies } = this.state;
+    const movieId = movies.indexOf(movie);
+
+    movies[movieId].isInCart = !movies[movieId].isInCart;
+
+    this.setState({
+      movies,
+    });
+  };
+
+  render() {
+    const { movies } = this.state;
+    return (
+      <>
+        <Navbar />
+        <MovieList
+          movies={movies}
+          addStars={this.handleAddStars}
+          decStars={this.handleDecStars}
+          toggleFav={this.handleToggleFav}
+          toggleCart={this.handleAddtocart}
+        />
+      </>
+    );
+  }
+}
+
+export default App;
+```
+
+#### App.js (Main State Management)
+
+- Converted App from a functional component to a class component.
+
+- Imported movie data from moviesData.js.
+
+```jsx
+import { movies } from "./moviesData";
+```
+
+- Moved the main application state into App:
+
+```jsx
+this.state = {
+  movies: movies,
+  cartCount: 0,
+};
+```
+
+- Moved all handler functions to App:
+  - `handleAddStars` → increase stars
+  - `handleDecStars` → decrease stars
+  - `handleToggleFav` → toggle favourite
+  - `handleAddtocart` → toggle cart
+
+- Passed state and handlers to MovieList via props:
+
+```jsx
+<MovieList
+  movies={movies}
+  addStars={this.handleAddStars}
+  decStars={this.handleDecStars}
+  toggleFav={this.handleToggleFav}
+  toggleCart={this.handleAddtocart}
+/>
+```
+
+- This makes App the central controller of application state.
+
+### MovieList.js
+
+```jsx
+import React from "react";
+import MovieCard from "./MovieCard";
+
+class MovieList extends React.Component {
+  render() {
+    const { movies, addStars, decStars, toggleFav, toggleCart } = this.props;
+    console.log(this.props);
+
+    return (
+      <div className="main">
+        {movies.map((movie) => (
+          <MovieCard
+            movies={movie}
+            addStars={addStars}
+            decStars={decStars}
+            toggleFav={toggleFav}
+            toggleCart={toggleCart}
+            key={movie.id}
+          />
+        ))}
+      </div>
+    );
+  }
+}
+
+export default MovieList;
+```
+
+#### MovieList.js (Converted to Presentational Component)
+
+- Removed local state and handler functions from `MovieList`.
+- `MovieList` now receives data and functions through props:
+
+```jsx
+const { movies, addStars, decStars, toggleFav, toggleCart } = this.props;
+```
+
+- The component now focuses only on rendering movie cards.
+
+```jsx
+{
+  movies.map((movie) => (
+    <MovieCard
+      movies={movie}
+      addStars={addStars}
+      decStars={decStars}
+      toggleFav={toggleFav}
+      toggleCart={toggleCart}
+      key={movie.id}
+    />
+  ));
+}
+```
+
+- This makes MovieList a pure UI component.
+
+### MovieCard.js
+
+```jsx
+import React from "react";
+
+class MovieCard extends React.Component {
+  render() {
+    const { movies, addStars, decStars, toggleFav, toggleCart } = this.props;
+    const { title, plot, poster, price, rating, stars, fav, isInCart } = movies;
+
+    return (
+      //Movie Card
+      <div className="movie-card">
+        {/**Left section of Movie Card */}
+        <div className="left">
+          <img alt="poster" src={poster} />
+        </div>
+
+        {/**Right section Movie Card */}
+        <div className="right">
+          {/**Title, plot, price of the movie */}
+          <div className="title">{title}</div>
+          <div className="plot">{plot}</div>
+          <div className="price">Rs. {price}</div>
+
+          {/**Footer starts here with ratings, stars and buttons */}
+          <div className="footer">
+            <div className="rating">{rating}</div>
+
+            {/**Star image with increase and decrease buttons and star count */}
+            <div className="star-dis">
+              <img
+                className="str-btn"
+                alt="Decrease"
+                src="https://cdn-icons-png.flaticon.com/128/2801/2801932.png"
+                onClick={() => decStars(movies)}
+              />
+              <img
+                className="stars"
+                alt="stars"
+                src="https://cdn-icons-png.flaticon.com/128/2107/2107957.png"
+              />
+              <img
+                className="str-btn"
+                alt="increase"
+                src="https://cdn-icons-png.flaticon.com/128/2997/2997933.png"
+                // No binding required as addStars() is an arrow function
+                onClick={() => addStars(movies)}
+              />
+              <span className="starCount">{stars}</span>
+            </div>
+
+            {/**conditional rendering on Favourite button */}
+            <button
+              className={fav ? "unfavourite-btn" : "favourite-btn"}
+              onClick={() => toggleFav(movies)}
+            >
+              {fav ? "Un-favourite" : "Favourite"}
+            </button>
+
+            {/**Conditional Rendering on Add to Cart Button */}
+            <button
+              className={isInCart ? "unfavourite-btn" : "cart-btn"}
+              onClick={() => toggleCart(movies)}
+            >
+              {isInCart ? "Remove from Cart" : "Add to Cart"}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+
+export default MovieCard;
+```
+
+#### Changes in MovieCard.js
+
+- Updated to receive handler functions via props (`addStars`, `decStars`, `toggleFav`, `toggleCart`).
+- Event handlers now call these parent functions with the movie object.
+- `MovieCard` only displays movie data and triggers actions, without managing its own state.
+
+### Visual Flow
+
+```text
+User Click
+   ↓
+MovieCard
+   ↓
+MovieList (passes props)
+   ↓
+App (state updates)
+   ↓
+React re-render
+   ↓
+MovieList
+   ↓
+MovieCard + Navbar updated
+```
+
+### Simple Rule to Remember
+
+#### Data Flow
+
+```text
+App → MovieList → MovieCard
+```
+
+#### Action Flow (reverse)
+
+```text
+MovieCard → MovieList → App
+```

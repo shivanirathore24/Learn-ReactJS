@@ -1,5 +1,4 @@
 import React from "react";
-//import "./styles.css";
 import styled from "styled-components";
 
 const Nav = styled.div`
