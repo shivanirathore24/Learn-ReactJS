@@ -424,3 +424,117 @@ The component was enhanced to demonstrate data fetching, state management, and d
 #### 🖥️ What You See in Browser:
 
 <img src="./images/causing_side-effects.png" alt="Causing Side Effects" width="500" height="auto">
+
+## Updating Phase
+
+Changes to props or state can cause an update. These methods are called in the
+foll
+
+- `static getDerivedStateFromProps()`
+- `shouldComponentUpdate()`
+- `render()`
+- `getSnapshotBeforeUpdate()`
+- `componentDidUpdate()`
+  `shouldComponentUpdate()`
+
+### shouldComponentUpdate()
+
+- `shouldComponentUpdate()` is called as soon as `static
+getDerivedStateFromProps()` the method is invoked.
+- In the `shouldComponentUpdate()` method, you can return a Boolean value that
+  controls whether the component gets rerendered upon a change in
+  state/props. It defaults to `true`.
+- This method only exists as a performance optimization. Do not rely on it to
+  “prevent” a rendering, as this can lead to bugs.
+
+#### Example:
+
+It returns the boolean value true or false if you want to re-render or not.
+
+```jsx
+shouldComponentUpdate(nextProps, nextState) {
+  console.log("Counter shouldComponentUpdate");
+
+  if (this.state.count == nextState.count) {
+    return false;
+  }
+
+  return true;
+}
+```
+
+### getSnapshotBeforeUpdate()
+
+- `getSnapshotBeforeUpdate()` is invoked just after the render() method.
+- It stores the previous values of the state after the DOM is updated, meaning
+  that even after the update, you can check what the values were before the
+  update. Any value returned by this lifecycle method will be passed as a
+  parameter to `componentDidUpdate()`.
+- Most likely, you’ll rarely reach for this lifecycle method. But it comes in handy
+  when you need to grab information from the DOM (and potentially change it)
+  just after an update is made, like a chat thread that needs to handle the scroll
+  position.
+- A snapshot value (or null) should be returned.
+
+#### Example:
+
+```jsx
+getSnapshotBeforeUpdate(prevProps, prevState) {
+  console.log("Counter getSnapshotBeforeUpdate");
+  return prevState.time || null;
+}
+```
+
+### componentDidUpdate()
+
+- `componentDidUpdate()` is invoked immediately after updating occurs.
+  -mIt can operate on the DOM when the component has been updated.
+- This is also a good place to do network requests as long as you compare the
+  current props to previous props (e.g., a network request may not be
+  necessary if the props have not changed).
+- It is similar to `componentDidMount()` as you can use `setState`() or fetch API
+  call but you have to mention a condition to check if the previous state or props
+  has changed or not.
+
+#### Example:
+
+```jsx
+getSnapshotBeforeUpdate(prevProps, prevState) {
+  console.log("Counter getSnapshotBeforeUpdate");
+  return prevState.count || null;
+}
+
+componentDidUpdate(prevProps, prevState, snapshot) {
+  console.log("Counter componentDidUpdate");
+
+  if (snapshot !== null) {
+    this.setState({ count: 20 });
+  }
+}
+```
+
+## Unmounting Phase
+
+This method is called when a component is being removed from the DOM:
+
+- `componentWillUnmount()`
+
+### componentWillUnmount()
+
+- It is invoked immediately before a component is unmounted and destroyed.
+- Perform any necessary cleanup in this method, such as invalidating timers,
+  canceling network requests, or cleaning up any subscriptions that were
+  created in `componentDidMount()`.
+- You should not call `setState()` in `componentWillUnmount()` because the
+  component will never be re-rendered. Once a component instance is
+  unmounted, it will never be mounted again.
+
+#### Example:
+
+```jsx
+componentWillUnmount() {
+  if (this.count) {
+    clearInterval(this.timer);
+  }
+}
+```
