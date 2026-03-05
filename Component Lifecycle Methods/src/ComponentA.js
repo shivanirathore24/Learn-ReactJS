@@ -1,4 +1,5 @@
 import React from "react";
+import ComponentB from "./ComponentB";
 
 class ComponentA extends React.Component {
   constructor() {
@@ -20,7 +21,12 @@ class ComponentA extends React.Component {
 
   render() {
     console.log("ComponentA render!");
-    return <h1>{this.state.name}</h1>;
+    return (
+      <>
+        <h1>{this.state.name}</h1>
+        <ComponentB />
+      </>
+    );
   }
 }
 

@@ -192,13 +192,13 @@ export default ComponentA;
 
 A class componentA created to demonstrate lifecycle methods:
 
-- constructor() initializes the component state with `name: "ComponentA"` and logs a message to show when the constructor is executed.
+- **constructor()** initializes the component state with `name: "ComponentA"` and logs a message to show when the constructor is executed.
 
-- getDerivedStateFromProps() is a static lifecycle method used to sync state with props. Here it only logs a message and returns `null` since no state update is required.
+- **getDerivedStateFromProps()** is a static lifecycle method used to sync state with props. Here it only logs a message and returns `null` since no state update is required.
 
-- componentDidMount() runs after the component is mounted to the DOM and logs a message to indicate that the component has been successfully rendered.
+- **componentDidMount()** runs after the component is mounted to the DOM and logs a message to indicate that the component has been successfully rendered.
 
-- render() displays the value of `name` from the state inside an `<h1>` element and logs when rendering occurs.
+- **render()** displays the value of `name` from the state inside an `<h1>` element and logs when rendering occurs.
 
 #### Order of execution of React class component lifecycle methods:
 
@@ -208,4 +208,99 @@ constructor → getDerivedStateFromProps → render → componentDidMount
 
 #### 🖥️ What You See in Browser:
 
-<img src="./images/order-of-lifecycle-methods.png" alt="Order of Lifecycle Methods" width="650" height="auto">
+<img src="./images/order-of-lifecycle-methods1.png" alt="Order of Lifecycle Methods" width="650" height="auto">
+
+## Lifecycle with Parent–Child Components
+
+### ComponentB.js
+
+```jsx
+import React from "react";
+
+class ComponentB extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      name: "ComponentB",
+    };
+    console.log("ComponentB constructor!");
+  }
+
+  static getDerivedStateFromProps() {
+    console.log("ComponentB getDerivedStateByProps!");
+    return null;
+  }
+
+  componentDidMount() {
+    console.log("ComponentB componentDidMount!");
+  }
+
+  render() {
+    console.log("ComponentB render!");
+    return <h2>{this.state.name}</h2>;
+  }
+}
+
+export default ComponentB;
+```
+
+#### Created a new file ComponentB.js
+
+- Added a separate class component with its own:
+  - `constructor`
+  - `state`
+  - `getDerivedStateFromProps`
+  - `componentDidMount`
+  - `render`
+
+### ComponentA.js
+
+- Imported ComponentB
+
+  ```diff
+  + import ComponentB from "./ComponentB";
+  ```
+
+  - Allows ComponentA to use the ComponentB component.
+
+- Rendered ComponentB inside ComponentA
+
+  ```diff
+  render() {
+    console.log("ComponentA render!");
+    return (
+  -   <h1>{this.state.name}</h1>
+  +   <>
+  +     <h1>{this.state.name}</h1>
+  +     <ComponentB />
+  +   </>
+    );
+  }
+  ```
+
+  - ComponentB is now a child component of ComponentA.
+
+#### Lifecycle Impact (when the app loads)
+
+```text
+ComponentA constructor
+ComponentA getDerivedStateFromProps
+ComponentA render
+
+ComponentB constructor
+ComponentB getDerivedStateFromProps
+ComponentB render
+
+ComponentB componentDidMount
+ComponentA componentDidMount
+```
+
+#### Purpose of Change
+
+- Demonstrates parent–child component relationship.
+
+- Shows how lifecycle methods execute when nested components are used.
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/order-of-lifecycle-methods2.png" alt="Order of Lifecycle Methods" width="650" height="auto">
