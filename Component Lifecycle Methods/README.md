@@ -788,3 +788,111 @@ The mount/unmount condition is added to control whether the `Timer` component sh
 <img src="./images/mount-timer.png" alt="Mount Timer" width="450" height="auto">
 
 <img src="./images/unmount-timer.png" alt="Unmount Timer" width="450" height="auto">
+
+## Understanding Update Methods
+
+### Changes in Timer.js
+
+- Updated Timer Interval
+
+  ```diff
+  componentDidMount() {
+    console.log("Timer ComponentDidMount");
+    console.log("_________________________________");
+    this.timer = setInterval(() => {
+      this.setState((prevState) => ({ time: prevState.time + 1 }));
+  - }, 1000);
+  + }, 5000);
+  }
+  ```
+
+  - The timer interval was changed from 1 second to 5 seconds to slow down the updates.
+
+- Updated `getSnapshotBeforeUpdate()`
+
+  ```diff
+  getSnapshotBeforeUpdate(prevProp, prevState) {
+    console.log("Timer getSnapshotBeforeUpdate");
+  - return null;
+  + return 5;
+  }
+  ```
+
+  - Instead of returning `null`, it now returns a snapshot value (`5`) which is passed to `componentDidUpdate()`.
+
+- Modified componentDidUpdate()
+
+  ```diff
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    console.log("Timer componentDidUpdate");
+    console.log("_________________________________");
+
+  - if (this.state.time === 10) {
+  -   clearInterval(this.timer);
+  - }
+
+  + console.log("Previous Props:", prevProps);
+  + console.log("Previous State:", prevState);
+  + console.log("Snapshot from getSnapshotBeforeUpdate:", snapshot);
+  }
+  ```
+
+  - Removed the timer stop condition.
+  - Logging statements were added to demonstrate how `componentDidUpdate()` receives information about the previous render.
+    - `prevProps` shows the props the component had before the update.
+    - `prevState` shows the state values before the update happened.
+    - `snapshot` contains the value returned from `getSnapshotBeforeUpdate()`.
+
+### Changes in App.js
+
+- Replaced Mount/Unmount Logic with Timer Control
+
+  ```diff
+  constructor() {
+    super();
+    this.state = {
+  -   mount: false,
+  +   timerOn: false,
+    };
+  }
+  ```
+
+  - mount state was replaced with timerOn to control the timer behavior.
+
+- Updated Handler Function
+
+  ```diff
+  - handleMount = () => {
+  -   this.setState((prevState) => ({ mount: !prevState.mount }));
+  - };
+
+  + handleTimerOn = () => {
+  +   this.setState((prevState) => ({ timerOn: !prevState.timerOn }));
+  + };
+  ```
+
+  - Function renamed and updated to toggle the timer state.
+
+- Updated Component Rendering
+
+  ```diff
+  - {this.state.mount ? <Timer /> : null}
+  + <Timer timerOn={this.state.timerOn} />
+  ```
+
+- Updated Button Logic
+
+  ```diff
+  <button onClick={this.handleTimerOn}>
+  - {this.state.mount ? "Un-MOUNT" : "MOUNT"}
+  + {this.state.timerOn ? "STOP" : "START"}
+  </button>
+  ```
+
+  - Button now starts or stops the timer instead of mounting or unmounting the component.
+
+This helps demonstrate how React allows access to previous state, previous props, and snapshot values after a component updates, which is useful for debugging, comparing values, or performing operations based on changes.
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/update-method.png" alt="Update Methods" width="450" height="auto">
