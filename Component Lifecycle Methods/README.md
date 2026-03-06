@@ -783,7 +783,7 @@ export default App;
 
 The mount/unmount condition is added to control whether the `Timer` component should be present in the DOM. `componentWillUnmount()` only runs when React removes a component from the DOM. If the `Timer` component is always rendered, it will never be removed and this method will never execute. By using a `mount` state and conditional rendering, the component can be mounted or unmounted, which allows React to trigger `componentWillUnmount()` and perform cleanup tasks like clearing timers.
 
-#### 🖥️ What You See in Browser:
+#### 🖥️ What You See in Console:
 
 <img src="./images/mount-timer.png" alt="Mount Timer" width="450" height="auto">
 
@@ -893,6 +893,82 @@ The mount/unmount condition is added to control whether the `Timer` component sh
 
 This helps demonstrate how React allows access to previous state, previous props, and snapshot values after a component updates, which is useful for debugging, comparing values, or performing operations based on changes.
 
-#### 🖥️ What You See in Browser:
+#### 🖥️ What You See in Console:
 
 <img src="./images/update-method.png" alt="Update Methods" width="450" height="auto">
+
+## Controlling the Timer
+
+### Changes in Timer.js
+
+1. Timer Initialization
+   - First Version
+
+     ```jsx
+     componentDidMount() {
+       this.timer = setInterval(() => {
+         this.setState(prevState => ({ time: prevState.time + 1 }));
+       }, 5000);
+     }
+     ```
+
+     - Timer starts automatically when the component mounts.
+     - Runs every 5 seconds.
+     - Independent of any props.
+
+   - Second Version
+
+     ```jsx
+     componentDidUpdate(prevProps, prevState, snapshot) {
+       if (this.props.timerOn) {
+         this.timer = setInterval(() => {
+           this.setState(prevState => ({ time: prevState.time + 1 }));
+         }, 1000);
+       } else {
+         clearInterval(this.timer);
+       }
+     }
+     ```
+
+     - Timer is controlled using the `timerOn` prop.
+     - Starts when `timerOn` = `true`.
+     - Stops when `timerOn` = `false`.
+     - Runs every `1` second.
+
+2. Lifecycle Method Responsibility
+
+   | Version | Lifecycle Method Used |
+   | ------- | --------------------- |
+   | First   | `componentDidMount`   |
+   | Second  | `componentDidUpdate`  |
+   - First version: timer starts once when the component mounts.
+   - Second version: timer reacts to prop changes.
+
+3. Component Control
+
+   | First Version         | Second Version           |
+   | --------------------- | ------------------------ |
+   | Self-controlled timer | Parent-controlled timer  |
+   | Starts automatically  | Starts/stops using props |
+
+4. Cleanup
+   - Both versions stop the timer in:
+
+     ```jsx
+     componentWillUnmount() {
+       clearInterval(this.timer);
+     }
+     ```
+
+   - This prevents memory leaks when the component is removed.
+
+#### ✅ Final Summary
+
+- First component: Simple timer that starts automatically when the component mounts.
+
+- Second component: Timer controlled by a `timerOn` prop, allowing the parent component to start or stop the timer dynamically.
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/start-timer.png" alt="Start Timer" width="450" height="auto">
+<img src="./images/stop-timer.png" alt="Stop Timer" width="450" height="auto">
