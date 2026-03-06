@@ -1,27 +1,34 @@
 import React from "react";
-//import ComponentA from "./ComponentA";
-import Timer from "./Timer";
+import ComponentA from "./ComponentA";
+import ComponentB from "./ComponentB";
+import ErrorBoundary from "./ErrorBoundary";
+//import Timer from "./Timer";
 
 class App extends React.Component {
   constructor() {
     super();
-    this.state = {
-      timerOn: false,
-    };
+    // this.state = {
+    //   timerOn: false,
+    // };
   }
 
-  handleTimerOn = () => {
-    this.setState((prevState) => ({ timerOn: !prevState.timerOn }));
-  };
+  // handleTimerOn = () => {
+  //   this.setState((prevState) => ({ timerOn: !prevState.timerOn }));
+  // };
 
   render() {
     return (
       <>
-        <Timer timerOn={this.state.timerOn} />
+        <ErrorBoundary>
+          <ComponentA />
+        </ErrorBoundary>
+        <ErrorBoundary>
+          <ComponentB />
+        </ErrorBoundary>
+        {/* <Timer timerOn={this.state.timerOn} />
         <button onClick={this.handleTimerOn}>
           {this.state.timerOn ? "STOP" : "START"}
-        </button>
-        {/* <ComponentA /> */}
+        </button> */}
       </>
     );
   }

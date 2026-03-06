@@ -18,7 +18,8 @@ class ComponentA extends React.Component {
 
   componentDidMount() {
     console.log("ComponentA componentDidMount!");
-
+    // Intentionally change the API endpoint to `/user` instead of `/users`
+    // to simulate an error and test the ErrorBoundary component.
     fetch("https://jsonplaceholder.typicode.com/users")
       .then((response) => response.json())
       .then((data) => this.setState({ data }));
@@ -31,13 +32,11 @@ class ComponentA extends React.Component {
     return (
       <>
         <h1>{this.state.name}</h1>
-
         <ul>
           {this.state.data.map((d) => {
             return <li key={d.id}>{d.username}</li>;
           })}
         </ul>
-
         {/* <ComponentB /> */}
       </>
     );

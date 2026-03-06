@@ -1023,7 +1023,8 @@ Whenever state or props change, React normally re-renders the component. Before 
 
 - Shows how React can update state frequently while limiting UI updates for better performance.
 
-### Timer.js 
+### Timer.js
+
 ```jsx
 import React from "react";
 
@@ -1091,6 +1092,7 @@ export default class Timer extends React.Component {
 ```
 
 ### App.js
+
 ```jsx
 import React from "react";
 import Timer from "./Timer";
@@ -1122,8 +1124,196 @@ class App extends React.Component {
 export default App;
 ```
 
-
 #### 🖥️ What You See in Browser:
 
 <img src="./images/refresh_after_5-seconds.png" alt="Refreshing the App after 5 seconds" width="500" height="auto">
 
+## Error-Handling Phase
+
+These methods are called when an error occurs during rendering, in a lifecycle
+method, or the constructor of any child component.
+
+- `static getDerivedStateFromError()`
+- `componentDidCatch()`
+
+### static getDerivedStateFromError()
+
+- This lifecycle is invoked after a descendant component has thrown an error.
+- It receives the error thrown as a parameter and should return a value to
+  update the state.
+- `getDerivedStateFromError()` is called during the “render” phase, so side
+  effects are not permitted. For those use cases, use `componentDidCatch()`
+  instead.
+
+#### Example:
+
+Whenever an error is thrown in a descendant component, the error will be logged to
+the console i.e `console.error(error)`, and an object is returned from the
+`getDerivedStateFromError` method. This will be used to update the state of the
+ErrorBoundary component i.e. with `hasError: true`.
+
+```jsx
+static getDerivedStateFromError(error) {
+  console.log("Error:", error);
+  return {
+    hasError: true,
+    error: error
+  };
+}
+```
+
+### componentDidCatch()
+
+- This lifecycle is invoked after a descendant component has thrown an error. It
+  receives two parameters:
+  - `error` - The error that was thrown.
+  - `info` - An object with a componentStack key containing information
+    about which component threw the error.
+- `componentDidCatch()` is called during the “commit” phase, so side effects are
+  permitted. It should be used for things like logging errors.
+
+### Example:
+
+```jsx
+componentDidCatch(error, info) {
+  console.log("Error:", error);
+  console.log("Error Info:", info);
+}
+```
+
+### Error boundaries
+
+Error boundaries are React components that catch JavaScript errors anywhere in
+their child component tree, log those errors, and display a fallback UI instead of the
+component tree that crashed.
+
+### 1️⃣ New File Added — ErrorBoundary.js
+
+```jsx
+import { Component } from "react";
+
+class ErrorBoundary extends Component {
+  constructor() {
+    super();
+    this.state = {
+      hasError: false,
+      error: "",
+    };
+  }
+
+  static getDerivedStateFromError(error) {
+    return {
+      hasError: true,
+      error: error,
+    };
+  }
+
+  componentDidCatch(error, info) {
+    console.log("Error:", error);
+    console.log("Error Info: ", info);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <h1>
+          Something Went Wrong with {this.props.children.type.name}! <br />{" "}
+          Please contact the admin.
+        </h1>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+export default ErrorBoundary;
+```
+
+- Created a custom Error Boundary component to handle runtime errors in child components.
+- Added `getDerivedStateFromError()` to update the state when an error occurs.
+- Added `componentDidCatch()` to log error details and debugging information.
+- Implemented conditional rendering to display a fallback UI when an error is detected instead of crashing the entire application.
+
+- Purpose: To prevent the whole React app from crashing when an error occurs in a component.
+
+### 2️⃣ Changes in ComponentA.js
+
+- Introduced an Error Scenario
+
+  ```diff
+  -fetch("https://jsonplaceholder.typicode.com/users") +
+  +fetch("https://jsonplaceholder.typicode.com/user");
+  ```
+
+  - Modified the API endpoint from `users` to `user`.
+  - This intentionally causes invalid data or runtime errors, which helps demonstrate how ErrorBoundary catches component errors.
+
+- Purpose: To simulate an error so the Error Boundary can handle it.
+
+### 3️⃣ Changes in App.js
+
+```jsx
+import React from "react";
+import ComponentA from "./ComponentA";
+import ComponentB from "./ComponentB";
+import ErrorBoundary from "./ErrorBoundary";
+
+class App extends React.Component {
+  constructor() {
+    super();
+  }
+
+  render() {
+    return (
+      <>
+        <ErrorBoundary>
+          <ComponentA />
+        </ErrorBoundary>
+
+        <ErrorBoundary>
+          <ComponentB />
+        </ErrorBoundary>
+      </>
+    );
+  }
+}
+
+export default App;
+```
+
+- Wrapped Components with ErrorBoundary
+  - Each component is wrapped with ErrorBoundary.
+  - If an error occurs in ComponentA or ComponentB, only that component will show the fallback UI instead of crashing the entire application.
+
+- Purpose: To isolate errors in individual components and display a fallback message.
+
+Added a custom Error Boundary to handle runtime errors, introduced an intentional API error in ComponentA, and wrapped components in App.js with ErrorBoundary to prevent the app from crashing.
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/error-handling-methods.png" alt="Error Handling Methods" width="700" height="auto">
+
+### Overview
+
+React follows a proper path of calling all lifecycle methods, which are called in
+different phases of a component’s lifetime. Starting before the component is created,
+when the component is mounted, updated, or unmounted, and finally, during error
+handling. They all have roles, but some are used more often than others. The only
+required method in the whole lifecycle is the `render()` method.
+
+<img src="./images/lifecycle-methods-diagram.png" alt="Lifecycle Methods Diagram" width="600" height="auto">
+
+## Summarising it
+
+Let’s summarise what we have learned in this Lecture:
+- Learned about the component lifecycle.
+- Learned about different phases of a lifecycle.
+- Learned about lifecycle methods in different phases.
+- Learned about the order in which lifecycle methods are called during Execution.
+- Learned about how and where to perform side effects.
+
+### Some References:
+
+[Component Lifecycle](https://www.geeksforgeeks.org/reactjs/reactjs-lifecycle-components/)
+
+[React Lifecycle Methods](https://www.devcript.com/react-lifecycle-methods/)
