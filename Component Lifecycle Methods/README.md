@@ -538,3 +538,171 @@ componentWillUnmount() {
   }
 }
 ```
+
+## Setting the TImer
+
+```jsx
+import React from "react";
+
+export default class Timer extends React.Component {
+  constructor() {
+    super();
+
+    this.state = {
+      time: 0,
+    };
+
+    this.timer = null;
+    console.log("Timer Constructor");
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    console.log("Timer getDerivedStateFromProps");
+    return null;
+  }
+
+  componentDidMount() {
+    console.log("Timer ComponentDidMount");
+    console.log("_________________________________");
+    this.timer = setInterval(() => {
+      this.setState((prevState) => ({ time: prevState.time + 1 }));
+    }, 1000);
+  }
+
+  getSnapshotBeforeUpdate(prevProp, prevState) {
+    console.log("Timer getSnapshotBeforeUpdate");
+    return null;
+  }
+
+  //   shouldComponentUpdate(nextProps, nextState) {
+  //     console.log("Timer shouldComponentUpdate");
+  //     return true;
+  //   }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    console.log("Timer componentDidUpdate");
+    console.log("_________________________________");
+  }
+
+  render() {
+    console.log("Timer render");
+    return (
+      <div>
+        <h2>Time Spent: {this.state.time}</h2>
+        {new Date(this.state.time * 1000).toISOString().slice(11, 19)}
+      </div>
+    );
+  }
+}
+```
+
+#### Timer Component
+
+This component creates a simple timer that increases every second and demonstrates the React class component lifecycle during updates.
+
+1. Constructor
+
+   ```jsx
+   constructor() {
+     super();
+
+     this.state = {
+       time: 0,
+     };
+
+     this.timer = null;
+   }
+   ```
+
+   - Initializes the component.
+   - `time` state is set to 0 seconds.
+   - `this.timer` stores the interval ID so the timer can be controlled later.
+   - A console log is added to observe lifecycle execution.
+
+2. getDerivedStateFromProps
+
+   ```jsx
+   static getDerivedStateFromProps(props, state)
+   ```
+
+   - Runs before every render (both mount and update).
+   - Used when state needs to be updated from props.
+   - In this case it does nothing and returns `null`.
+   - Purpose here: only to observe lifecycle order in console.
+
+3. componentDidMount
+   - Runs once after the component is added to the DOM.
+   - Starts a timer using `setInterval`.
+   - Every second: `time` increases by 1 using `setState`.
+     ```jsx
+     this.timer = setInterval(() => {
+       this.setState((prevState) => ({ time: prevState.time + 1 }));
+     }, 1000);
+     ```
+
+4. getSnapshotBeforeUpdate
+   - Runs right before DOM updates.
+   - Can capture information (like scroll position).
+   - Here it just logs execution and returns `null`.
+
+5. componentDidUpdate
+   - Runs after the component updates.
+   - Triggered every time time changes.
+   - Used for side effects after updates.
+   - Here it only logs lifecycle execution.
+
+6. Render Method
+   - Displays the timer.
+   - Two formats are shown:
+     - Raw seconds
+
+       ```jsx
+       <h2>Time Spent: {this.state.time}</h2>
+       ```
+
+     - Formatted time (HH:MM:SS)
+
+       ```jsx
+       {
+         new Date(this.state.time * 1000).toISOString().slice(11, 19);
+       }
+       ```
+
+   - Example display:
+
+     ```text
+     Time Spent: 5
+     00:00:05
+     ```
+
+7. shouldComponentUpdate (Commented)
+   - Used to control re-rendering for performance.
+   - If it returns `false`, the component will not update.
+
+### Overall Flow
+
+Every second this happens:
+
+```text
+setState()
+   ↓
+getDerivedStateFromProps
+   ↓
+shouldComponentUpdate (if used)
+   ↓
+render
+   ↓
+getSnapshotBeforeUpdate
+   ↓
+componentDidUpdate
+```
+
+#### ✅ Purpose of this code
+
+- Demonstrates React lifecycle methods during updates
+- Shows state updates with setInterval
+- Displays formatted time
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/setting-timer.png" alt="Setting Timer" width="450" height="auto">
