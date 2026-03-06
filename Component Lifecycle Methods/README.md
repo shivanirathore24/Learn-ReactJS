@@ -541,6 +541,8 @@ componentWillUnmount() {
 
 ## Setting the TImer
 
+### Timer.js
+
 ```jsx
 import React from "react";
 
@@ -595,8 +597,6 @@ export default class Timer extends React.Component {
   }
 }
 ```
-
-#### Timer Component
 
 This component creates a simple timer that increases every second and demonstrates the React class component lifecycle during updates.
 
@@ -706,3 +706,85 @@ componentDidUpdate
 #### 🖥️ What You See in Browser:
 
 <img src="./images/setting-timer.png" alt="Setting Timer" width="450" height="auto">
+
+## Stopping & Un-Mounting the Timer
+
+### Changes in Timer.js
+
+1. Stop Timer at 10 Seconds
+
+   ```diff
+   componentDidUpdate(prevProps, prevState, snapshot) {
+     console.log("Timer componentDidUpdate");
+     console.log("_________________________________");
+   + if (this.state.time === 10) {
+   +   clearInterval(this.timer);
+   + }
+   }
+   ```
+
+   - Added a condition to stop the timer when `time` reaches 10 seconds.
+   - `clearInterval(this.timer)` prevents further state updates.
+
+2. Added `componentWillUnmount()` for Cleanup
+
+   ```diff
+   + componentWillUnmount() {
+   +   console.log("Timer componentWillUnmount");
+   +   clearInterval(this.timer);
+   + }
+   ```
+
+   - Ensures the interval timer is cleared when the component is removed from the DOM.
+   - Prevents memory leaks or unnecessary background timers.
+
+### Changes in App.js
+
+```jsx
+import React from "react";
+import Timer from "./Timer";
+
+class App extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      mount: false,
+    };
+  }
+
+  handleMount = () => {
+    this.setState((prevState) => ({ mount: !prevState.mount }));
+  };
+
+  render() {
+    return (
+      <>
+        <button onClick={this.handleMount}>
+          {this.state.mount ? "Un-MOUNT" : "MOUNT"}
+        </button>
+        {this.state.mount ? <Timer /> : null}
+      </>
+    );
+  }
+}
+
+export default App;
+```
+
+- Added a state variable (`mount`)
+  - Used to control whether the `Timer` component should be rendered or removed from the DOM.
+- Added `handleMount` method
+  - This method toggles the `mount` state between `true` and `false`.
+- Added a button
+  - The button allows the user to mount or unmount the `Timer` component by clicking it.
+- Added conditional rendering for `Timer`
+  - The `Timer` component renders only when `mount` is `true`.
+    When `mount` becomes `false`, the `Timer` component is removed from the DOM, triggering the `componentWillUnmount()` lifecycle method.
+
+The mount/unmount condition is added to control whether the `Timer` component should be present in the DOM. `componentWillUnmount()` only runs when React removes a component from the DOM. If the `Timer` component is always rendered, it will never be removed and this method will never execute. By using a `mount` state and conditional rendering, the component can be mounted or unmounted, which allows React to trigger `componentWillUnmount()` and perform cleanup tasks like clearing timers.
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/mount-timer.png" alt="Mount Timer" width="450" height="auto">
+
+<img src="./images/unmount-timer.png" alt="Unmount Timer" width="450" height="auto">
