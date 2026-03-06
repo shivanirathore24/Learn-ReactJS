@@ -208,7 +208,7 @@ constructor → getDerivedStateFromProps → render → componentDidMount
 
 #### 🖥️ What You See in Browser:
 
-<img src="./images/order-of-lifecycle-methods1.png" alt="Order of Lifecycle Methods" width="500" height="auto">
+<img src="./images/order-of-lifecycle-methods1.png" alt="Order of Lifecycle Methods" width="600" height="auto">
 
 ## Lifecycle with Parent–Child Components
 
@@ -303,7 +303,7 @@ ComponentA componentDidMount
 
 #### 🖥️ What You See in Browser:
 
-<img src="./images/order-of-lifecycle-methods2.png" alt="Order of Lifecycle Methods" width="500" height="auto">
+<img src="./images/order-of-lifecycle-methods2.png" alt="Order of Lifecycle Methods" width="600" height="auto">
 
 ## Causing Side-Effects
 
@@ -423,7 +423,7 @@ The component was enhanced to demonstrate data fetching, state management, and d
 
 #### 🖥️ What You See in Browser:
 
-<img src="./images/causing_side-effects.png" alt="Causing Side Effects" width="500" height="auto">
+<img src="./images/causing_side-effects.png" alt="Causing Side Effects" width="600" height="auto">
 
 ## Updating Phase
 
@@ -705,7 +705,7 @@ componentDidUpdate
 
 #### 🖥️ What You See in Browser:
 
-<img src="./images/setting-timer.png" alt="Setting Timer" width="450" height="auto">
+<img src="./images/setting-timer.png" alt="Setting Timer" width="500" height="auto">
 
 ## Stopping & Un-Mounting the Timer
 
@@ -785,9 +785,9 @@ The mount/unmount condition is added to control whether the `Timer` component sh
 
 #### 🖥️ What You See in Console:
 
-<img src="./images/mount-timer.png" alt="Mount Timer" width="450" height="auto">
+<img src="./images/mount-timer.png" alt="Mount Timer" width="500" height="auto">
 
-<img src="./images/unmount-timer.png" alt="Unmount Timer" width="450" height="auto">
+<img src="./images/unmount-timer.png" alt="Unmount Timer" width="500" height="auto">
 
 ## Understanding Update Methods
 
@@ -895,7 +895,7 @@ This helps demonstrate how React allows access to previous state, previous props
 
 #### 🖥️ What You See in Console:
 
-<img src="./images/update-method.png" alt="Update Methods" width="450" height="auto">
+<img src="./images/update-method.png" alt="Update Methods" width="500" height="auto">
 
 ## Controlling the Timer
 
@@ -970,5 +970,160 @@ This helps demonstrate how React allows access to previous state, previous props
 
 #### 🖥️ What You See in Browser:
 
-<img src="./images/start-timer.png" alt="Start Timer" width="450" height="auto">
-<img src="./images/stop-timer.png" alt="Stop Timer" width="450" height="auto">
+<img src="./images/start-timer.png" alt="Start Timer" width="500" height="auto">
+<img src="./images/stop-timer.png" alt="Stop Timer" width="500" height="auto">
+
+## Refreshing the Timer after 5 seconds
+
+### Changes Made in Timer.js
+
+Added `shouldComponentUpdate()` for Render Optimization
+
+```diff
++ shouldComponentUpdate(nextProps, nextState) {
++   return nextProps.timerOn !== this.props.timerOn || nextState.time % 5 === 0;
++ }
+```
+
+#### Explaination
+
+- Introduced `shouldComponentUpdate()` to control when the component should re-render.
+- The component now updates only when:
+  - `timerOn` prop changes (START / STOP button is clicked), or
+  - `time` becomes a multiple of 5.
+
+This reduces unnecessary renders and demonstrates how `shouldComponentUpdate()` can be used for performance optimization.
+
+#### How it Controls Re-render
+
+Whenever state or props change, React normally re-renders the component. Before doing that, React calls `shouldComponentUpdate()`.
+
+- If the function returns `true` → React re-renders the component.
+- If the function returns `false` → React skips the render.
+
+#### Behavior Change
+
+- Previously:
+  - The component re-rendered every second whenever `time` changed.
+- Now:
+  - The timer still increments every second, but the UI re-renders only every 5 seconds.
+- Example:
+
+  ```text
+  time = 1 → no render
+  time = 2 → no render
+  time = 3 → no render
+  time = 4 → no render
+  time = 5 → render
+  ```
+
+#### Purpose of This Change
+
+- Demonstrates how `shouldComponentUpdate()` prevents unnecessary re-renders.
+
+- Shows how React can update state frequently while limiting UI updates for better performance.
+
+### Timer.js 
+```jsx
+import React from "react";
+
+export default class Timer extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      time: 0,
+    };
+    this.timer = null;
+    console.log("Timer Constructor");
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    console.log("Timer getDerivedStateFromProps");
+    return null;
+  }
+
+  componentDidMount() {
+    console.log("Timer ComponentDidMount");
+    console.log("_________________________________");
+  }
+
+  getSnapshotBeforeUpdate(prevProp, prevState) {
+    console.log("Timer getSnapshotBeforeUpdate");
+    return 5;
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    //console.log("Timer shouldComponentUpdate");
+    return nextProps.timerOn !== this.props.timerOn || nextState.time % 5 === 0;
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    console.log("Timer componentDidUpdate");
+    console.log("_________________________________");
+    if (prevProps.timerOn !== this.props.timerOn) {
+      if (this.props.timerOn) {
+        this.timer = setInterval(() => {
+          this.setState((prevState) => ({ time: prevState.time + 1 }));
+        }, 1000);
+      } else {
+        clearInterval(this.timer);
+      }
+    }
+  }
+
+  componentWillUnmount() {
+    console.log("Timer componentWillUnmount");
+    clearInterval(this.timer);
+  }
+
+  render() {
+    console.log("Timer render");
+    return (
+      <div>
+        <h2>
+          Time Spent:{" "}
+          {new Date(this.state.time * 1000).toISOString().slice(11, 19)}
+        </h2>
+      </div>
+    );
+  }
+}
+```
+
+### App.js
+```jsx
+import React from "react";
+import Timer from "./Timer";
+
+class App extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      timerOn: false,
+    };
+  }
+
+  handleTimerOn = () => {
+    this.setState((prevState) => ({ timerOn: !prevState.timerOn }));
+  };
+
+  render() {
+    return (
+      <>
+        <Timer timerOn={this.state.timerOn} />
+        <button onClick={this.handleTimerOn}>
+          {this.state.timerOn ? "STOP" : "START"}
+        </button>
+      </>
+    );
+  }
+}
+
+export default App;
+```
+
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/refresh_after_5-seconds.png" alt="Refreshing the App after 5 seconds" width="500" height="auto">
+

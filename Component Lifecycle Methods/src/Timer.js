@@ -27,10 +27,10 @@ export default class Timer extends React.Component {
     return 5;
   }
 
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   console.log("Timer shouldComponentUpdate");
-  //   return true;
-  // }
+  shouldComponentUpdate(nextProps, nextState) {
+    //console.log("Timer shouldComponentUpdate");
+    return nextProps.timerOn !== this.props.timerOn || nextState.time % 5 === 0;
+  }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     console.log("Timer componentDidUpdate");
