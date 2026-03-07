@@ -203,7 +203,7 @@ const heading = React.createElement("h1", null, "Hello");
 const para = React.createElement(
   "p",
   { className: "para" },
-  "Welcome to the session"
+  "Welcome to the session",
 );
 
 const btn = React.createElement("button", { className: "btn" }, "Click");
@@ -557,7 +557,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <App1 />
     <App2 />
     <Name />
-  </>
+  </>,
 );
 
 /* Benefits of Arrow function over normal function: */
@@ -581,7 +581,7 @@ Let’s summarise what we have learned in this module:
 - Learned about types of components.
 - Learned how to create components using arrow functions
 
-### Some Additional Resources: To explore more
+### Some References:
 
 [React Official Documentation](http://react.dev/learn)
 
