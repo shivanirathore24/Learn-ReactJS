@@ -9,6 +9,15 @@ export default function Input() {
     document.title = name + " " + lastName;
   }, [lastName]);
 
+  useEffect(() => {
+    const timer = setInterval(() => {
+      console.log("Window-width: ", window.innerWidth);
+    }, 2000);
+    return () => {
+      clearInterval(timer);
+    };
+  });
+
   return (
     <>
       <div className="section">

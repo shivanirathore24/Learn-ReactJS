@@ -1,4 +1,4 @@
-# REACT HOOKS
+# REACT HOOKS PART-I
 
 ## Introduction
 
@@ -478,3 +478,212 @@ useEffect(() => {
 <img src="./images/useEffect-hook1.png" alt="useEffect() Hook" width="700" height="auto">
 
 <img src="./images/useEffect-hook2.png" alt="useEffect() Hook" width="700" height="auto">
+
+## Performing Multiple Side-Effects
+
+### InputWithFunction.js
+
+```diff
++ useEffect(() => {
++   let timer = setInterval(() => {
++     console.log("Window Width: ", window.innerWidth);
++   }, 2000);
++
++   return clearInterval(timer);
++ });
+```
+
+#### Functional Component – Added Second useEffect
+
+- Added another `useEffect()` to run a timer using `setInterval`.
+- The interval logs the window width every 2 seconds.
+- Demonstrates how multiple `useEffect()` hooks can be used for different side effects.
+
+### InputWithClass.js
+
+```diff
+componentDidMount() {
+  document.title = this.state.name + " " + this.state.lastName;
++ this.timer = setInterval(() => {
++   console.log("Window-width: ", window.innerWidth);
++ }, 2000);
+}
+
++ componentWillUnmount() {
++   clearInterval(this.timer);
++ }
+```
+
+#### Class Component – Added Timer and Cleanup
+
+- Added a `setInterval` timer inside `componentDidMount()` to log the window width every 2 seconds.
+- Introduced `componentWillUnmount()` to clear the timer and prevent memory leaks.
+
+In functional components, each `useEffect()` can manage a separate side effect, whereas class components typically handle multiple effects inside lifecycle methods.
+
+#### 🖥️ What You See in Console:
+
+<img src="./images/side-effect.png" alt="Performing Multiple Side-Effects" width="600" height="auto">
+
+## React Class Components vs Hooks
+
+### InputWithClass.js
+
+```jsx
+import React from "react";
+
+export default class Input extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      name: "Tony",
+      lastName: "Stark",
+    };
+    this.timer = null;
+  }
+
+  handleNameChange = (e) => {
+    this.setState({
+      name: e.target.value,
+    });
+  };
+
+  handleLastnameChange = (e) => {
+    this.setState({
+      lastName: e.target.value,
+    });
+  };
+
+  componentDidMount() {
+    document.title = this.state.name + " " + this.state.lastName;
+    this.timer = setInterval(() => {
+      console.log("Window-width: ", window.innerWidth);
+    }, 2000);
+  }
+
+  componentDidUpdate() {
+    document.title = this.state.name + " " + this.state.lastName;
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timer);
+  }
+
+  render() {
+    return (
+      <>
+        <div className="section">
+          <Row label="Name">
+            <input
+              className="input"
+              value={this.state.name}
+              onChange={this.handleNameChange}
+            />
+          </Row>
+          <Row label="Last Name">
+            <input
+              className="input"
+              value={this.state.lastName}
+              onChange={this.handleLastnameChange}
+            />
+          </Row>
+        </div>
+
+        <h2>Hello, {this.state.name + " " + this.state.lastName}</h2>
+      </>
+    );
+  }
+}
+
+function Row(props) {
+  const { label } = props;
+  return (
+    <>
+      <label>
+        {label}
+        <br />
+      </label>
+      {props.children}
+      <hr />
+    </>
+  );
+}
+```
+
+### InputWithFunction.js
+
+```jsx
+import { useState, useEffect } from "react";
+
+export default function Input() {
+  const [name, setName] = useState("");
+  const [lastName, setLastName] = useState("");
+
+  // Similar to componentDidMount and componentDidUpdate for `lastName` changes
+  useEffect(() => {
+    document.title = name + " " + lastName;
+  }, [lastName]);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      console.log("Window-width: ", window.innerWidth);
+    }, 2000);
+    return () => {
+      clearInterval(timer);
+    };
+  });
+
+  return (
+    <>
+      <div className="section">
+        <Row label="Name">
+          <input
+            className="input"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </Row>
+        <Row label="Last Name">
+          <input
+            className="input"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+          />
+        </Row>
+      </div>
+      <h2>
+        Hello, {name} {lastName}
+      </h2>
+    </>
+  );
+}
+
+function Row(props) {
+  const { label } = props;
+  return (
+    <>
+      <lable>
+        {label}
+        <br />
+      </lable>
+      {props.children}
+      <hr />
+    </>
+  );
+}
+```
+
+### 🔁 Class Components vs Functional Components (Hooks)
+
+| Class Component (`InputWithClass`)                                                       | Functional Component (`InputWithFunction`)                             |
+| ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| Uses `this.state` to manage component state                                              | Uses `useState()` Hook to manage component state                       |
+| State updated using `this.setState()`                                                    | State updated using setter functions (`setName`, `setLastName`)        |
+| Side effects handled using lifecycle methods (`componentDidMount`, `componentDidUpdate`) | Side effects handled using `useEffect()`                               |
+| Timer created inside `componentDidMount()`                                               | Timer created inside `useEffect()`                                     |
+| Cleanup handled using `componentWillUnmount()`                                           | Cleanup handled using return function inside `useEffect()`             |
+| Lifecycle logic spread across multiple lifecycle methods                                 | `useEffect()` can handle multiple lifecycle behaviors in a single hook |
+
+**Key Idea:** Functional components with Hooks (useState, useEffect) provide a simpler and more flexible way to manage state and side effects compared to class lifecycle methods.
+
+---
