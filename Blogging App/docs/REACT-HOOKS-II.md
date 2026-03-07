@@ -153,3 +153,101 @@ export default App;
 #### 🖥️ What You See in Browser:
 
 <img src="../images/adding-blogs.png" alt="Adding a new Blog" width="700" height="auto">
+
+## Passing an Object in useState()
+
+### Blog.js
+
+```diff
+ import { useState } from "react";
+
+ export default function Blog() {
+-  const [title, setTitle] = useState("");
+-  const [content, setContent] = useState("");
++  const [formData, setFormData] = useState({ title: "", content: "" });
+   const [blogs, setBlogs] = useState([]);
+
+   function handleSubmit(e) {
+     e.preventDefault();
+
+-    setBlogs([{ title, content }, ...blogs]);
++    setBlogs([{ title: formData.title, content: formData.content }, ...blogs]);
++    setFormData({ title: "", content: "" });
+     console.log(blogs);
+   }
+
+   return (
+     <>
+       ...
+       <Row label="Title">
+         <input
+-          value={title}
+-          onChange={(e) => setTitle(e.target.value)}
++          value={formData.title}
++          onChange={(e) =>
++            setFormData({
++              title: e.target.value,
++              content: formData.content,
++            })
++          }
+         />
+       </Row>
+
+       <Row label="Content">
+         <textarea
+-          value={content}
+-          onChange={(e) => setContent(e.target.value)}
++          value={formData.content}
++          onChange={(e) =>
++            setFormData({
++              title: formData.title,
++              content: e.target.value,
++            })
++          }
+         />
+       </Row>
+       ...
+     </>
+   );
+ }
+```
+
+#### Changes in Blog.js
+
+- Replaced two individual state variables (`title`, `content`) with a single state object `formData`.
+- Updated form inputs to use `formData.title` and `formData.content` as values.
+- Updated `onChange` handlers to update specific fields inside the `formData `object.
+- Modified `handleSubmit()` to create new blog entries using `formData` values.
+- Added form reset logic `(setFormData({ title: "", content: "" }))` after blog submission to clear the inputs.
+
+#### Why the Entire `formData` Object is Passed to `setFormData`?
+
+- `formData` is **one object state**. So when you call `setFormData`(), React expects the complete new object.
+
+- If you update only one field like this:
+
+  ```jsx
+  setFormData({ title: e.target.value });
+  ```
+
+  - React will replace the whole object and `content` will be lost.
+
+- So we pass the entire object:
+  ```jsx
+  setFormData({
+    title: e.target.value, // changed field
+    content: formData.content, // unchanged field (kept from previous state)
+  });
+  ```
+
+  - `title`→ updated with the new value from the input.
+  - `content` → remains the same by using the existing value from `formData`
+
+- This ensures both fields remain in the state object.
+
+The entire `formData` object is passed to `setFormData` because React replaces the whole state object during updates, so unchanged fields must be preserved.
+
+
+#### 🖥️ What You See in Browser:
+
+<img src="../images/form-reset.png" alt="Form Reset" width="700" height="auto">
