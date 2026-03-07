@@ -1,8 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Input() {
   const [name, setName] = useState("");
   const [lastName, setLastName] = useState("");
+
+  // Similar to componentDidMount and componentDidUpdate for `lastName` changes
+  useEffect(() => {
+    document.title = name + " " + lastName;
+  }, [lastName]);
+
   return (
     <>
       <div className="section">

@@ -1,6 +1,6 @@
 import "./index.css";
-// import Input from "./InputWithClass";
-import Input from "./InputWithFunction";
+import Input from "./InputWithClass";
+//import Input from "./InputWithFunction";
 
 function App() {
   return (

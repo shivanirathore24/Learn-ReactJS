@@ -361,3 +361,120 @@ export default App;
 - Rendered the component inside `App` to display the form and greeting message.
 
 - This setup demonstrates state management in functional components using `useState()` instead of class-based state.
+
+NOTE: The output for the functional component using `useState()` will be the same as the class component example shown above.
+
+## The useEffect hook
+
+**useEffect** is a React Hook that lets you synchronize a component with an external
+system.
+
+### Parameters
+
+1. **Setup:**
+   - The **useEffect** hook in React takes a function as its first argument,
+     which contains the logic of your effect. This function may also return a
+     cleanup function. When your component is initially added to the DOM, React
+     will execute the setup function you provided in the useEffect hook. On
+     subsequent re-renders React will first call the cleanup function with the
+     previous values. After that, React will run your setup function with the new
+     values.
+
+   - Finally, when your component is removed from the DOM, React will execute
+     your cleanup function one last time. This ensures that your component's side
+     effects are properly added and removed throughout its lifecycle.
+
+2. **Options (dependencies):**
+   - The **useEffect** hook in React takes a dependency
+     array as its second argument, which contains all the reactive values
+     referenced inside the setup code. These values include props, state, and all
+     variables and functions declared directly in the component body. The list of
+     dependencies must have a constant number of items and be written inline in
+     the form of **[dep1, dep2, dep3]**.
+   - React compares each dependency with its previous value using a comparison
+     algorithm. If you don't provide the dependency array, your effect will run after
+     every re-render of the component.
+
+### Returns
+
+The **useEffect** hook does not return an value.
+
+#### Example 1: Usage of useEffect hook
+
+```jsx
+useEffect(() => {
+  setInterval(() => {
+    setTimer((prev) => prev++);
+  }, 1000);
+}, []);
+```
+
+- This code snippet uses the **useEffect** hook to set an interval that increments the
+  state value of timer after every second. The effect runs only once on mount due to
+  an empty dependency array.
+
+#### Example 2: Usage of useEffect hook (with a cleanup function)
+
+```jsx
+useEffect(() => {
+  const interval = setInterval(() => {
+    setTimer((prev) => prev++);
+  }, 1000);
+
+  return () => clearInterval(interval);
+}, []);
+```
+
+- This code snippet uses the useEffect hook to create a timer that updates every
+  second. It sets up an interval to update the timer and clears it on unmount using the
+  cleanup function. The effect runs only once on mount due to an empty dependency
+  array.
+
+### InputWithFunction.js
+
+```diff
+- import { useState } from "react";
++ import { useState, useEffect } from "react";
+```
+
+```diff
++ useEffect(() => {
++   document.title = name + " " + lastName;
++ }, [lastName]);
+```
+
+#### Functional Component with `useEffect`
+
+- Added the `useEffect()` Hook to perform a side effect after rendering.
+- The effect updates the browser tab title using the current `name` and `lastName`.
+- A dependency array [`lastName`] was added so the effect runs only when `lastName` changes.
+- Demonstrates how `useEffect()` handles lifecycle behavior in functional components similar to class lifecycle methods.
+- Purpose of useEffect() here:
+  - Run logic after the component renders.
+  - Update document title whenever the dependency changes.
+
+### InputWithClass.js
+
+```diff
++ componentDidMount() {
++   document.title = this.state.name + " " + this.state.lastName;
++ }
+
++ componentDidUpdate() {
++   document.title = this.state.name + " " + this.state.lastName;
++ }
+```
+
+#### Added Lifecycle Methods in Class Component
+
+- Added lifecycle methods `componentDidMount()` and `componentDidUpdate()`.
+- These methods update the document title whenever the component mounts or state changes.
+- Demonstrates how side effects are handled in class components using lifecycle methods.
+
+`useEffect()` is used in functional components to perform side effects such as updating the document title, fetching data, or setting timers. In class components, similar behavior is handled using lifecycle methods like `componentDidMount()` (runs after the component mounts) and `componentDidUpdate()` (runs after updates). The dependency array in `useEffect()` controls when the effect should run, making it a flexible way to replicate lifecycle behavior that previously required multiple class lifecycle methods.
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/useEffect-hook1.png" alt="useEffect() Hook" width="700" height="auto">
+
+<img src="./images/useEffect-hook2.png" alt="useEffect() Hook" width="700" height="auto">
