@@ -594,51 +594,87 @@ const reducer = (state, action) => {
 #### Explanation
 
 1. Introduced `useReducer`
-
-    - The `useReducer` hook was added to manage the blogs state instead of using `useState`.
-    It is useful when state logic involves multiple actions such as adding and removing blogs.
+   - The `useReducer` hook was added to manage the blogs state instead of using `useState`.
+     It is useful when state logic involves multiple actions such as adding and removing blogs.
 
 2. Created a Reducer Function (`blogsReducer`)
+   - A reducer function was defined to control how the blogs state updates based on actions.
+     - `"ADD"` → Adds a new blog at the beginning of the blogs array.
+     - `"REMOVE"` → Removes a blog using its index.
+     - `default` → Returns an empty array if no action matches.
 
-    - A reducer function was defined to control how the blogs state updates based on actions.
-      - `"ADD"` → Adds a new blog at the beginning of the blogs array.
-      - `"REMOVE"` → Removes a blog using its index.
-      - `default` → Returns an empty array if no action matches.
-
-    - This keeps state update logic centralized and predictable.
+   - This keeps state update logic centralized and predictable.
 
 3. Replaced `useState` with `useReducer`
-
-    - `useState([])` → simple state update
-    - `useReducer(blogsReducer, [])` → state managed through actions and reducer logic. `useReducer` returns:
-      - blogs → current state
-      - dispatch → function used to send actions to update state.
+   - `useState([])` → simple state update
+   - `useReducer(blogsReducer, [])` → state managed through actions and reducer logic. `useReducer` returns:
+     - blogs → current state
+     - dispatch → function used to send actions to update state.
 
 4. Replaced `setBlogs` with `dispatch`
+   - Adding a blog
+     - Instead of directly updating state, an ADD action is dispatched:
+       ```jsx
+       dispatch({
+         type: "ADD",
+         blog: { title: formData.title, content: formData.content },
+       });
+       ```
+     - The reducer handles this action and updates the state.
 
-    - Adding a blog
-      - Instead of directly updating state, an ADD action is dispatched:
-        ```jsx
-        dispatch({
-          type: "ADD",
-          blog: { title: formData.title, content: formData.content },
-        });
-        ```
-      - The reducer handles this action and updates the state.
+   - Removing a blog
+     - To delete a blog, a REMOVE action is dispatched:
 
-    - Removing a blog
-      - To delete a blog, a REMOVE action is dispatched:
+     ```jsx
+     dispatch({ type: "REMOVE", index: i });
+     ```
 
-      ```jsx
-      dispatch({ type: "REMOVE", index: i });
-      ```
-
-      - The reducer filters the blog list and removes the selected blog.
+     - The reducer filters the blog list and removes the selected blog.
 
 5. Benefit of Using `useReducer`
-    - Organizes state update logic in one place
-    - Makes complex state updates easier to manage
-    - Improves code readability and scalability
-    - Separates state logic from component UI logic
+   - Organizes state update logic in one place
+   - Makes complex state updates easier to manage
+   - Improves code readability and scalability
+   - Separates state logic from component UI logic
 
 `useReducer` replaces `useState` for the blogs list and manages blog operations through actions (`ADD`, `REMOVE`) handled by a reducer function.
+
+## Custom Hooks
+
+- Custom hooks are functions in React that allow you to reuse stateful logic across
+  multiple components. They follow the naming convention of starting with the word
+  "use" and can be defined and used in the same way as the built-in hooks provided
+  by React.
+
+- Custom hooks are a way to abstract and share logic that is not tied to a specific
+  component, which makes your code more modular, easier to read and maintain.
+  They can encapsulate complex stateful logic and make it easy to use in multiple
+  components, without having to repeat the same code in each component.
+
+- Custom hooks can use other built-in hooks and can also be composed with other
+  custom hooks, which makes it easy to create complex and reusable logic that can be
+  used across different parts of your application.
+
+#### Example: The `useLocalStorage` custom hook
+
+```jsx
+import { useState, useEffect } from "react";
+
+const useLocalStorage = (key, initialValue) => {
+  const [value, setValue] = useState(() => {
+    const storedValue = localStorage.getItem(key);
+    return storedValue !== null ? JSON.parse(storedValue) : initialValue;
+  });
+
+  useEffect(() => {
+    localStorage.setItem(key, JSON.stringify(value));
+  }, [key, value]);
+
+  return [value, setValue];
+};
+```
+
+This custom hook allows you to store and retrieve data in the browser's localStorage.
+It takes a key and initial value as arguments and returns a state `value` and a
+`setValue` function to update it.
+

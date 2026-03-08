@@ -1,4 +1,4 @@
-.section {
+/* .section {
   padding: 15px;
   padding-left: 15px;
   margin: auto;
@@ -90,3 +90,15 @@ h1 {
 background: -webkit-linear-gradient(right, #565318, #3C464E);
 background: -moz-linear-gradient(right, #565318, #3C464E);
 background: linear-gradient(to left, #565318, #3C464E); */
+*/ 
+
+.App {
+  font-family: sans-serif;
+  text-align: center;
+}
+button {
+  margin: 20px;
+}
+input {
+  margin: 10px;
+}
