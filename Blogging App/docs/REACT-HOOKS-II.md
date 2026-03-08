@@ -233,6 +233,7 @@ export default App;
   - React will replace the whole object and `content` will be lost.
 
 - So we pass the entire object:
+
   ```jsx
   setFormData({
     title: e.target.value, // changed field
@@ -247,7 +248,67 @@ export default App;
 
 The entire `formData` object is passed to `setFormData` because React replaces the whole state object during updates, so unchanged fields must be preserved.
 
-
 #### 🖥️ What You See in Browser:
 
 <img src="../images/form-reset.png" alt="Form Reset" width="700" height="auto">
+
+## Deleting a Blog
+
+### Blog.js
+
+```diff
+ export default function Blog() {
+
+  function handleSubmit(e) {
+    e.preventDefault();
+
+    setBlogs([{ title: formData.title, content: formData.content }, ...blogs]);
+    setFormData({ title: "", content: "" });
+  }
+
++  // Function to remove a blog
++  function removeBlog(i) {
++    setBlogs(blogs.filter((blog, index) => index !== i));
++  }
+
+  return (
+    <>
+      ...
+      <h2>Blogs</h2>
+
+      {blogs.map((blog, i) => (
+        <div className="blog" key={i}>
+          <h1>{blog.title}</h1>
+          <p>{blog.content}</p>
+
++          <div className="blog-btn">
++            <button
++              className="btn remove"
++              onClick={() => removeBlog(i)}
++            >
++              Delete
++            </button>
++          </div>
+
+        </div>
+      ))}
+    </>
+  );
+}
+```
+
+#### Changes in Blog.js
+
+- Added a new function `removeBlog()` to delete a blog from the `blogs` state.
+
+- Implemented `Array.filter()` to remove the selected blog based on its index.
+
+- Added a Delete button inside each blog card to trigger blog removal.
+
+- Attached an `onClick` event handler to call `removeBlog(i)` when the Delete button is clicked.
+
+- This update allows users to dynamically remove blogs from the list.
+
+#### 🖥️ What You See in Browser:
+
+<img src="../images/delete-blog.png" alt="Delete blog" width="700" height="auto">
