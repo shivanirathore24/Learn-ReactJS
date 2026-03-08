@@ -312,3 +312,70 @@ The entire `formData` object is passed to `setFormData` because React replaces t
 #### 🖥️ What You See in Browser:
 
 <img src="../images/delete-blog.png" alt="Delete blog" width="700" height="auto">
+
+## Focus on input field
+
+### Blog.js
+
+```diff
+-import { useState } from "react";
++import { useState, useRef, useEffect } from "react";
+
+ export default function Blog() {
+   const [formData, setFormData] = useState({ title: "", content: "" });
+   const [blogs, setBlogs] = useState([]);
++  const titleRef = useRef(null);
+
++  useEffect(() => {
++    titleRef.current.focus();
++  }, []);
+
+   function handleSubmit(e) {
+     e.preventDefault();
+
+     setBlogs([{ title: formData.title, content: formData.content }, ...blogs]);
+     setFormData({ title: "", content: "" });
+     titleRef.current.focus();
+     console.log(blogs);
+   }
+
+   function removeBlog(i) {
+     setBlogs(blogs.filter((blog, index) => index !== i));
+   }
+
+   return (
+     <>
+       <h1>Write a Blog!</h1>
+
+       ...
+       <Row label="Title">
+         <input
+           className="input"
+           placeholder="Enter the Title of the Blog here.."
+           value={formData.title}
++          ref={titleRef}
+           onChange={(e) =>
+             setFormData({
+               title: e.target.value,
+               content: formData.content,
+             })
+           }
+         />
+       </Row>
+       ...
+     </>
+   );
+}
+```
+
+#### Use of `useRef` for Managing Input Focus
+
+- Added the `useRef` hook to create a reference (`titleRef`) for the title input field so the DOM element can be accessed directly.
+- Attached the reference to the input using `ref={titleRef}`, allowing the component to control the input programmatically.
+- Used `titleRef.current.focus()` inside `useEffect()` to automatically focus the title input when the component first renders, enabling the user to start typing immediately.
+- Used `titleRef.current.focus()` inside `handleSubmit()` to return focus to the title input after a blog is submitted and the form is reset.
+- This improves the **user experience by keeping the cursor in the title field**, making it easier to quickly add multiple blogs.
+
+#### 🖥️ What You See in Browser:
+
+<img src="../images/focus_input-field.png" alt="Focus on input field" width="650" height="auto">
