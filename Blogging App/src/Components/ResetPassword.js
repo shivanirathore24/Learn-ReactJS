@@ -10,6 +10,10 @@ export default function Reset() {
     }
   }, []);
 
+  useEffect(() => {
+    localStorage.setItem("email", email);
+  }, [email]);
+
   return (
     <>
       <h3>Reset Password for</h3>

@@ -859,5 +859,111 @@ When switching between components, the email remains available because it is sto
 
 #### 🖥️ What You See in Browser:
 
-<img src="../images/login-page.png" alt="Login Page" width="650" height="auto">
-<img src="../images/reset-page.png" alt="Reset Page" width="650" height="auto">
+<img src="../images/login-page1.png" alt="Login Page" width="650" height="auto">
+<img src="../images/reset-page1.png" alt="Reset Page" width="650" height="auto">
+
+## Order of Hooks
+
+### LoginPage.js
+
+```diff
+import { useState, useEffect } from "react";
+
+export default function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
++ useEffect(() => {
++   let email = localStorage.getItem("email");
++   if (email) {
++     setEmail(email);
++   }
++ }, []);
+
+  useEffect(() => {
+    localStorage.setItem("email", email);
+  }, [email]);
+
+  return (
+    <>
+      ...
+    </>
+  );
+}
+```
+
+- Earlier
+  - Email was only saved to localStorage when the user typed in the email field.
+  - If the page refreshed, the input field started empty, even if an email was already stored.
+- Updated Version
+  - Two useEffect hooks are used to handle both reading and saving email.
+- Flow
+  1. When the component loads, it reads the email from localStorage and fills the input field.
+  2. When the user changes the email, it updates localStorage with the new value.
+
+- Result:
+  - The email is automatically pre-filled and stays updated in localStorage.
+
+### ResultPassword.js
+
+```diff
+import { useEffect, useState } from "react";
+
+export default function Reset() {
+  const [email, setEmail] = useState("");
+
+  useEffect(() => {
+    let email = localStorage.getItem("email");
+    if (email) {
+      setEmail(email);
+    }
+  }, []);
+
++ useEffect(() => {
++   localStorage.setItem("email", email);
++ }, [email]);
+
+  return (
+    <>
+      ...
+    </>
+  );
+}
+```
+
+- Earlier
+  - The component only read the email from localStorage when it loaded.
+- Updated Version
+  - Two hooks manage both reading and saving.
+- Flow
+  1. When the component loads, it retrieves the stored email and shows it in the input field.
+  2. If the user edits the email, the updated value is saved back to localStorage.
+- Result:
+  - The reset form loads the saved email and keeps localStorage updated.
+
+### Overall Flow
+
+- User enters email in Login.
+- Email is saved in localStorage.
+- When Login or Reset loads, the stored email is retrieved and displayed.
+- Any change to the email updates localStorage again.
+
+This keeps the email persisted and synchronized across components.
+
+### Order of Hooks
+
+The hooks are placed in this order to maintain the correct **data flow between state and localStorage**.
+
+1. First `useEffect` – Retrieve Data
+   Runs when the component mounts and loads the saved email from localStorage into state.
+2. Second `useEffect` – Store Data
+   Runs whenever the email state changes and updates localStorage.
+
+**Reason:** Retrieving first ensures the stored email is loaded before any updates happen, preventing the saved value from being overwritten.
+
+#### 🖥️ What You See in Browser:
+
+<img src="../images/login-page1.png" alt="Login Page" width="650" height="auto">
+<img src="../images/reset-page1.png" alt="Reset Page" width="650" height="auto">
+<img src="../images/reset-page2.png" alt="Reset Page" width="650" height="auto">
+<img src="../images/login-page2.png" alt="Login Page" width="650" height="auto">
