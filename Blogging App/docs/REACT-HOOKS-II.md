@@ -435,6 +435,7 @@ The entire `formData` object is passed to `setFormData` because React replaces t
    );
 }
 ```
+
 - Added a second `useEffect` hook that runs whenever the `blogs` state changes.
 - This effect updates the browser tab title (`document.title`) with the title of the most recently added blog (`blogs[0].title`).
 - If no blogs exist, the tab title is set to "No Blogs".
@@ -445,3 +446,199 @@ The entire `formData` object is passed to `setFormData` because React replaces t
 
 <img src="../images/setting-title1.png" alt="Setting the Title" width="650" height="auto">
 <img src="../images/setting-title2.png" alt="Setting the Title" width="650" height="auto">
+
+## The useReducer Hook
+
+`useReducer` is a React Hook that lets you add a reducer to your component. It is
+typically used when you have complex state transitions that involve multiple
+sub-values or when the next state depends on the previous state.
+
+It is a more powerful alternative to the useState hook and is particularly useful when
+managing state for large or deeply nested objects. The `useReducer` hook provides a
+simple API for dispatching actions and updating state in a predictable way.
+
+### Parameters
+
+1. `reducer`: In React, the `useReducer` hook takes a pure reducer function as its
+   first argument, which defines how the state gets updated. The reducer
+   function should take in the current state and an action as arguments and
+   return the new state. The state and action can be of any type.
+2. `initialState`: The value that represents the initial state of the component. This
+   can be any value, including an object or an array.
+
+### Returns
+
+`useReducer` returns an array with exactly two values:
+
+1. The current state. During the first render, it’s set to the initialState.
+2. The dispatch function that lets you update the state to a different value and
+   trigger a re-render.
+
+#### Example: Usage of useReducer hook
+
+```jsx
+const [state, dispatch] = useReducer(reducer, initialState);
+```
+
+This code snippet uses the `useReducer` hook to define a state variable named `state`
+with an initial value of `initialState`, and a function named `dispatch` that can be used
+to dispatch updates to the state.
+
+### The dispatch function
+
+The `dispatch` function returned by `useReducer` lets you update the state to a
+different value and trigger a re-render. You need to pass the `action` as the only
+argument to the dispatch function
+
+#### Example:
+
+```jsx
+const [timer, dispatch] = useReducer(reducer, initialState);
+
+const handleIncrement = () => {
+  dispatch({ type: "INCREMENT_COUNT" });
+};
+```
+
+This code snippet uses the `dispatch` function from the `useReducer` hook and
+passes an action object of type "INCREMENT_COUNT". The reducer function then
+checks this action type to update the state of the timer.
+
+### Writing the reducer function
+
+The `reducer` function used in useReducer hook of React is a pure function that takes
+the current state and an action as arguments, and returns the new state.
+
+The reducer function evaluates the type of the action and updates the state based on
+the type of action.
+
+#### Example:
+
+```jsx
+const reducer = (state, action) => {
+  switch (action.type) {
+    case "incremented_age": {
+      return {
+        name: state.name,
+        age: state.age + 1,
+      };
+    }
+
+    case "changed_name": {
+      return {
+        name: action.nextName,
+        age: state.age,
+      };
+    }
+
+    default:
+      return state;
+  }
+};
+```
+
+## Blogs using useReducer()
+
+### Blog.js
+
+```diff
+-import { useState, useRef, useEffect } from "react";
++import { useState, useRef, useEffect, useReducer } from "react";
+
++// Reducer function to manage blogs state
++const blogsReducer = (state, action) => {
++  switch (action.type) {
++    case "ADD":
++      return [action.blog, ...state];
++    case "REMOVE":
++      return state.filter((blog, index) => index !== action.index);
++    default:
++      return [];
++  }
++};
+
+ export default function Blog() {
+
+   const [formData, setFormData] = useState({ title: "", content: "" });
+
+-  const [blogs, setBlogs] = useState([]);
++  // Replaced useState with useReducer for blogs state management
++  const [blogs, dispatch] = useReducer(blogsReducer, []);
+
+   const titleRef = useRef(null);
+
+   ...
+
+   function handleSubmit(e) {
+     e.preventDefault();
+
+-    setBlogs([{ title: formData.title, content: formData.content }, ...blogs]);
++    dispatch({
++      type: "ADD",
++      blog: { title: formData.title, content: formData.content },
++    });
+
+     setFormData({ title: "", content: "" });
+     titleRef.current.focus();
+   }
+
+   function removeBlog(i) {
+-    setBlogs(blogs.filter((blog, index) => index !== i));
++    dispatch({ type: "REMOVE", index: i });
+   }
+
+   ...
+}
+```
+
+#### Explanation
+
+1. Introduced `useReducer`
+
+    - The `useReducer` hook was added to manage the blogs state instead of using `useState`.
+    It is useful when state logic involves multiple actions such as adding and removing blogs.
+
+2. Created a Reducer Function (`blogsReducer`)
+
+    - A reducer function was defined to control how the blogs state updates based on actions.
+      - `"ADD"` → Adds a new blog at the beginning of the blogs array.
+      - `"REMOVE"` → Removes a blog using its index.
+      - `default` → Returns an empty array if no action matches.
+
+    - This keeps state update logic centralized and predictable.
+
+3. Replaced `useState` with `useReducer`
+
+    - `useState([])` → simple state update
+    - `useReducer(blogsReducer, [])` → state managed through actions and reducer logic. `useReducer` returns:
+      - blogs → current state
+      - dispatch → function used to send actions to update state.
+
+4. Replaced `setBlogs` with `dispatch`
+
+    - Adding a blog
+      - Instead of directly updating state, an ADD action is dispatched:
+        ```jsx
+        dispatch({
+          type: "ADD",
+          blog: { title: formData.title, content: formData.content },
+        });
+        ```
+      - The reducer handles this action and updates the state.
+
+    - Removing a blog
+      - To delete a blog, a REMOVE action is dispatched:
+
+      ```jsx
+      dispatch({ type: "REMOVE", index: i });
+      ```
+
+      - The reducer filters the blog list and removes the selected blog.
+
+5. Benefit of Using `useReducer`
+    - Organizes state update logic in one place
+    - Makes complex state updates easier to manage
+    - Improves code readability and scalability
+    - Separates state logic from component UI logic
+
+`useReducer` replaces `useState` for the blogs list and manages blog operations through actions (`ADD`, `REMOVE`) handled by a reducer function.
