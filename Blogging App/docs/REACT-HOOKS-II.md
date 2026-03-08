@@ -591,7 +591,7 @@ const reducer = (state, action) => {
 }
 ```
 
-#### Explanation
+#### Explaination
 
 1. Introduced `useReducer`
    - The `useReducer` hook was added to manage the blogs state instead of using `useState`.
@@ -678,3 +678,186 @@ This custom hook allows you to store and retrieve data in the browser's localSto
 It takes a key and initial value as arguments and returns a state `value` and a
 `setValue` function to update it.
 
+## Using localStorage
+
+### 1. LoginPage.js
+
+```jsx
+import { useState, useEffect } from "react";
+
+export default function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  useEffect(() => {
+    localStorage.setItem("email", email);
+  }, [email]);
+
+  return (
+    <>
+      <h1>Login to the Portal!</h1>
+      <h3>Login</h3>
+      <input
+        placeholder="Enter Email"
+        value={email}
+        onChange={(e) => {
+          setEmail(e.target.value);
+        }}
+      />
+      <br />
+      <input
+        placeholder="Enter Password"
+        type="password"
+        value={password}
+        onChange={(e) => {
+          setPassword(e.target.value);
+        }}
+      />
+      <br />
+      <button
+        onClick={() => {
+          console.log("Form submitted");
+        }}
+      >
+        Submit
+      </button>
+      <br />
+    </>
+  );
+}
+```
+
+#### Explaination:
+
+- The LoginPage component displays a login form where users enter their email and password. The important functionality in this component is storing the entered email in localStorage so it can be reused later.
+
+- localStorage Implementation
+
+  ```jsx
+  useEffect(() => {
+    localStorage.setItem("email", email);
+  }, [email]);
+  ```
+
+  - Explaination:
+    - This `useEffect` runs whenever the `email` state changes.
+    - `localStorage.setItem("email", email)` saves the email value in the browser's localStorage.
+    - `"email"` acts as the key, and the entered email is the stored value.
+    - The data persists in the browser even if the component changes or the page reloads.
+
+  - Purpose:
+    - To store the user's email so it can be accessed in other components.
+    - Helps avoid asking the user to enter the email again when resetting the password.
+
+- Thus, the Login component stores the user's email in localStorage, allowing the data to persist and be reused by other components such as the Reset Password form.
+
+### 2. ResetPassword.js
+
+```jsx
+import { useEffect, useState } from "react";
+
+export default function Reset() {
+  const [email, setEmail] = useState("");
+
+  useEffect(() => {
+    let email = localStorage.getItem("email");
+    if (email) {
+      setEmail(email);
+    }
+  }, []);
+
+  return (
+    <>
+      <h3>Reset Password for</h3>
+      <input
+        placeholder="Enter Email"
+        value={email}
+        onChange={(e) => {
+          setEmail(e.target.value);
+        }}
+      />
+      <br />
+      <button
+        onClick={() => {
+          // Logic to send a new password follows
+        }}
+      >
+        Submit
+      </button>
+      <br />
+    </>
+  );
+}
+```
+
+#### Explaination:
+
+- The ResetPassword component allows users to reset their password. It retrieves the stored email from localStorage and automatically fills the email input field.
+
+- Retrieving Email from localStorage
+
+  ```jsx
+  useEffect(() => {
+    let email = localStorage.getItem("email");
+    if (email) {
+      setEmail(email);
+    }
+  }, []);
+  ```
+
+  - Explanation
+    - The empty dependency array `[]` ensures the effect runs only once when the component mounts.
+    - `localStorage.getItem("email")` retrieves the stored email from the browser storage.
+    - If a stored email exists, `setEmail(email)` updates the component state.
+    - This causes the input field to be pre-filled with the saved email.
+  - Purpose
+    - To reuse previously stored data from the login form.
+    - Improves user experience by reducing repeated input
+
+- Thus, the Reset component retrieves the stored email from localStorage and automatically pre-fills the input field, improving user convenience during password reset.
+
+### 3. App.js
+
+```jsx
+import Login from "./Components/LoginPage";
+import Reset from "./Components/ResetPassword";
+
+import { useState } from "react";
+
+function App() {
+  const [form, setForm] = useState("login");
+
+  return (
+    <div className="App">
+      <h1>Welcome!</h1>
+      {form === "login" ? <Login /> : <Reset />}
+      <button
+        onClick={() => {
+          setForm(form === "login" ? "reset" : "login");
+        }}
+      >
+        {form === "login" ? "Forgot Password" : "Back to Login"}
+      </button>
+    </div>
+  );
+}
+
+export default App;
+```
+
+`App.js` manages which component (LoginPage or ResetPassword) is displayed.
+When switching between components, the email remains available because it is stored in localStorage, which persists independently of React components.
+
+### localStorage Data Flow
+
+- User enters email in **Login component**.
+- `useEffect` stores the email using `localStorage.setItem`.
+- User clicks **Forgot Password**.
+- Reset component loads.
+- `localStorage.getItem` retrieves the stored email.
+- The email input field is automatically **pre-filled**.
+
+#### 🖥️ What You See in Browser:
+
+<img src="../images/login-page.png" alt="Login Page" width="650" height="auto">
+<img src="../images/reset-page.png" alt="Reset Page" width="650" height="auto">
