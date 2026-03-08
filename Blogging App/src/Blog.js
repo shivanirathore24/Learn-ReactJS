@@ -11,6 +11,14 @@ export default function Blog() {
     titleRef.current.focus();
   }, []);
 
+  useEffect(() => {
+    if (blogs.length && blogs[0].title) {
+      document.title = blogs[0].title;
+    } else {
+      document.title = "No Blogs";
+    }
+  }, [blogs]);
+
   function handleSubmit(e) {
     e.preventDefault();
 
@@ -50,6 +58,7 @@ export default function Blog() {
               className="input content"
               placeholder="Content of the Blog goes here.."
               value={formData.content}
+              required
               onChange={(e) =>
                 setFormData({ title: formData.title, content: e.target.value })
               }
@@ -67,17 +76,6 @@ export default function Blog() {
         <div className="blog" key={i}>
           <h1>{blog.title}</h1>
           <p>{blog.content}</p>
-
-          {/* <div className="blog-btn">
-            <button
-              onClick={() => {
-                removeBlog(i);
-              }}
-              className="btn remove"
-            >
-              Delete
-            </button>
-          </div> */}
 
           <div className="blog-btn">
             <button

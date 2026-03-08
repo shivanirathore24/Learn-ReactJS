@@ -378,4 +378,70 @@ The entire `formData` object is passed to `setFormData` because React replaces t
 
 #### 🖥️ What You See in Browser:
 
-<img src="../images/focus_input-field.png" alt="Focus on input field" width="650" height="auto">
+<img src="../images/focus_input-field.png" alt="Focus on input field" width="700" height="auto">
+
+## Setting the Title
+
+### Blogs.js
+
+```diff
+ export default function Blog() {
+
+   const [formData, setFormData] = useState({ title: "", content: "" });
+   const [blogs, setBlogs] = useState([]);
+   const titleRef = useRef(null);
+
+   useEffect(() => {
+     titleRef.current.focus();
+   }, []);
+
++  useEffect(() => {
++    if (blogs.length && blogs[0].title) {
++      document.title = blogs[0].title;
++    } else {
++      document.title = "No Blogs";
++    }
++  }, [blogs]);
+
+   function handleSubmit(e) {
+     e.preventDefault();
+
+     setBlogs([{ title: formData.title, content: formData.content }, ...blogs]);
+     setFormData({ title: "", content: "" });
+     titleRef.current.focus();
+     console.log(blogs);
+   }
+
+   function removeBlog(i) {
+     setBlogs(blogs.filter((blog, index) => index !== i));
+   }
+
+   return (
+     <>
+       ...
+       <Row label="Content">
+         <textarea
+           className="input content"
+           placeholder="Content of the Blog goes here.."
+           value={formData.content}
++          required
+           onChange={(e) =>
+             setFormData({ title: formData.title, content: e.target.value })
+           }
+         />
+       </Row>
+       ...
+     </>
+   );
+}
+```
+- Added a second `useEffect` hook that runs whenever the `blogs` state changes.
+- This effect updates the browser tab title (`document.title`) with the title of the most recently added blog (`blogs[0].title`).
+- If no blogs exist, the tab title is set to "No Blogs".
+- This demonstrates the use of `useEffect` for handling side effects, specifically interacting with the browser outside the React component.
+- Added the `required` attribute to the content textarea to enforce form validation, ensuring that blog content must be entered before submitting the form.
+
+#### 🖥️ What You See in Browser:
+
+<img src="../images/setting-title1.png" alt="Setting the Title" width="650" height="auto">
+<img src="../images/setting-title2.png" alt="Setting the Title" width="650" height="auto">
