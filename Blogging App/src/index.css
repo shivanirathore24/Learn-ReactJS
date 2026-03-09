@@ -1,4 +1,4 @@
-/* .section {
+.section {
   padding: 15px;
   padding-left: 15px;
   margin: auto;
@@ -83,26 +83,4 @@ h1 {
   text-align: end;
   margin-right: 10px;
   margin-bottom: 10px;
-}
-
-/* Created with https://www.css-gradient.com */
-/* background: #565318;
-background: -webkit-linear-gradient(right, #565318, #3C464E);
-background: -moz-linear-gradient(right, #565318, #3C464E);
-background: linear-gradient(to left, #565318, #3C464E); */
-*/ 
-
-.App {
-  font-family: sans-serif;
-  text-align: center;
-}
-
-button {
-  margin: 8px 0;
-  display: block;
-}
-
-input {
-  margin: 8px 0;
-  display: block;
 }
