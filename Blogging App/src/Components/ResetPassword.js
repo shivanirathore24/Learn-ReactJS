@@ -1,22 +1,25 @@
-import { useEffect, useState } from "react";
+//import { useEffect, useState } from "react";
+import useLocalStorage from "./useLocalStorage";
 
 export default function Reset() {
-  const [email, setEmail] = useState("");
+  //const [email, setEmail] = useState("");
 
-  useEffect(() => {
-    let email = localStorage.getItem("email");
-    if (email) {
-      setEmail(email);
-    }
-  }, []);
+  // useEffect(() => {
+  //   let email = localStorage.getItem("email");
+  //   if (email) {
+  //     setEmail(email);
+  //   }
+  // }, []);
 
-  useEffect(() => {
-    localStorage.setItem("email", email);
-  }, [email]);
+  // useEffect(() => {
+  //   localStorage.setItem("email", email);
+  // }, [email]);
+
+  const { email, setEmail } = useLocalStorage();
 
   return (
     <>
-      <h3>Reset Password for</h3>
+      <h3>Reset Password for:</h3>
       <input
         placeholder="Enter Email"
         value={email}

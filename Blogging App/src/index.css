@@ -96,9 +96,13 @@ background: linear-gradient(to left, #565318, #3C464E); */
   font-family: sans-serif;
   text-align: center;
 }
+
 button {
-  margin: 20px;
+  margin: 8px 0;
+  display: block;
 }
+
 input {
-  margin: 10px;
+  margin: 8px 0;
+  display: block;
 }

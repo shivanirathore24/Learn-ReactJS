@@ -967,3 +967,208 @@ The hooks are placed in this order to maintain the correct **data flow between s
 <img src="../images/reset-page1.png" alt="Reset Page" width="650" height="auto">
 <img src="../images/reset-page2.png" alt="Reset Page" width="650" height="auto">
 <img src="../images/login-page2.png" alt="Login Page" width="650" height="auto">
+
+## Implementing Custom Hooks
+
+### useLocalStorage.js
+
+```jsx
+import { useState, useEffect } from "react";
+
+export default function useLocalStorage() {
+  const [email, setEmail] = useState("");
+
+  useEffect(() => {
+    let email = localStorage.getItem("email");
+    if (email) {
+      setEmail(email);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("email", email);
+  }, [email]);
+
+  return { email, setEmail };
+}
+```
+
+#### Created `useLocalStorage` Custom Hook
+
+- A new custom hook `useLocalStorage` was created to centralize the localStorage logic.
+- Purpose:
+  - Handles both retrieving and storing email in localStorage.
+  - Prevents repeating the same `useEffect` logic in multiple components.
+- What it does:
+  - Retrieves the saved email from `localStorage` when the component mounts.
+  - Updates `localStorage` whenever the email state changes.
+  - Returns `email` and `setEmail` so components can use them.
+
+### LoginPage.js
+
+```jsx
+import { useState } from "react";
+import useLocalStorage from "./useLocalStorage";
+
+export default function Login() {
+  //const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { email, setEmail } = useLocalStorage();
+
+  // useEffect(() => {
+  //   let email = localStorage.getItem("email");
+  //   if (email) {
+  //     setEmail(email);
+  //   }
+  // }, []);
+
+  // useEffect(() => {
+  //   localStorage.setItem("email", email);
+  // }, [email]);
+
+  return (
+    <>
+      <h1>Login to the Portal!</h1>
+      <h3>Login</h3>
+      <input
+        placeholder="Enter Email"
+        value={email}
+        onChange={(e) => {
+          setEmail(e.target.value);
+        }}
+      />
+      <br />
+      <input
+        placeholder="Enter Password"
+        type="password"
+        value={password}
+        onChange={(e) => {
+          setPassword(e.target.value);
+        }}
+      />
+      <br />
+      <button
+        onClick={() => {
+          console.log("Form submitted");
+        }}
+      >
+        Submit
+      </button>
+      <br />
+    </>
+  );
+}
+```
+
+#### Changes in Login.js
+
+- Before:
+  - `Login` managed its own:
+    - `email` state
+    - `useEffect` for retrieving email
+    - `useEffect` for storing email
+
+- After:
+  - The localStorage logic was removed from the component.
+  - `useLocalStorage` hook is imported and used instead.
+- Result:
+  - `Login` now simply uses:
+    - `email`
+    - `setEmail`
+  - The component becomes cleaner and easier to maintain.
+
+### ResetPassword.js
+
+```jsx
+//import { useEffect, useState } from "react";
+import useLocalStorage from "./useLocalStorage";
+
+export default function Reset() {
+  //const [email, setEmail] = useState("");
+
+  // useEffect(() => {
+  //   let email = localStorage.getItem("email");
+  //   if (email) {
+  //     setEmail(email);
+  //   }
+  // }, []);
+
+  // useEffect(() => {
+  //   localStorage.setItem("email", email);
+  // }, [email]);
+
+  const { email, setEmail } = useLocalStorage();
+
+  return (
+    <>
+      <h3>Reset Password for:</h3>
+      <input
+        placeholder="Enter Email"
+        value={email}
+        onChange={(e) => {
+          setEmail(e.target.value);
+        }}
+      />
+      <br />
+      <button
+        onClick={() => {
+          // Logic to send a new password follows
+        }}
+      >
+        Submit
+      </button>
+      <br />
+    </>
+  );
+}
+```
+
+#### Changes in Reset.js
+
+- Before:
+  - `Reset` also had its own:
+    - `email` state
+    - `localStorage` useEffect hooks.
+- After:
+  - These were removed.
+  - The component now uses the same `useLocalStorage` hook.
+- Result:
+  - Both `Login` and `Reset` share the same localStorage logic.
+
+### Overall Benefit
+
+- Removes duplicate code.
+- Makes components simpler and more readable.
+- Ensures consistent localStorage behavior across components.
+- Follows React's custom hook pattern for reusable logic.
+
+### Summary
+
+We have discussed the advantages of using hooks in functional components instead
+of relying on class-based lifecycle methods. The three main hooks covered were
+`useState`, `useEffect`, and `useReducer`, with useState used for state management,
+useEffect for handling side effects, and useReducer for more complex state
+management. These hooks are a newer addition to React and make managing
+stateful logic in functional components easier.
+
+## Summarising it
+
+Let’s summarise what we have learned in this Lecture:
+
+- What are hooks?
+- Motivation to use hooks.
+- Rules of hooks.
+- Order of hooks.
+- State in function and class based components.
+- The useState hook and usage
+- The useEffect hook and usage
+- The useReducer hook and usage
+- Custom hooks in React
+
+### Some References:
+
+[Lifecycle methods vs Hooks in React](https://medium.com/crossml/react-lifecycle-methods-vs-hooks-6acf5e049f64)
+
+[Hooks in React](https://react.dev/reference/react#state-hooks)
+
+[Custom hooks](https://react.dev/learn/reusing-logic-with-custom-hooks)
