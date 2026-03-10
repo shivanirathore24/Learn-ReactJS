@@ -71,6 +71,7 @@ storing extensive collections of small documents. Documents live in collections,
 which are simply containers for documents.
 For example, you could have a users collection to contain your various users, each
 represented by a document:
+
 <img src="../images/cloud-firestore1.png" alt="Cloud Firestore" width="600" height="auto">
 
 Data types that Cloud Firestore supports are Array, Boolean, Bytes, Date and time,
@@ -105,3 +106,87 @@ the changes, and changes will get updated for all the devices. Only the new data
 changes get updated.
 
 <img src="../images/cloud-firestore2.png" alt="Cloud Firestore" width="600" height="auto">
+
+## Using Firestore in your Application
+
+For more detailed steps, you can check this [link](https://firebase.google.com/docs/firestore/quickstart).
+
+### Create a Cloud Firestore Database
+
+1. In the [Firebase console](https://console.firebase.google.com/u/0/), click **Add project**, then follow the on-screen
+   instructions to create a Firebase project. Enter a project name, then click
+   Continue. Select your Firebase account from the dropdown or click Create a
+   new account if you don't already have one. Click Continue once the process
+   completes.
+2. Next, click the Web icon (</>) towards the top-left of the following page to set
+   up Firebase for the web. Enter a nickname for your app in the provided field.
+   Then click the Register app.
+3. Copy the generated code and keep it for the following step (discussed in the
+   following section). Click Continue to the console.
+4. Navigate to the **Cloud Firestore** section of the Firebase console. Now, Follow
+   the database creation workflow. Select a starting mode for your Cloud
+   Firestore Security Rules:
+
+- **Test mode**
+  - Good for getting started with the mobile and web client libraries, but
+    allows anyone to read and overwrite your data.
+- **Locked mode**
+  - Denies all reads and writes from mobile and web clients. Your
+    authenticated application servers (C#, Go, Java, Node.js, PHP, Python,
+    or Ruby) can still access your database.
+
+5. Select a location for your database.
+6. Click Done.
+
+### Initialize Firebase in Your React App
+
+1. Install Firebase using npm:
+
+```sh
+npm install firebase
+```
+
+2. Create a firebaseinit.js file and paste the code generated earlier into this file.
+   You can also find this code in Project Overview > Project Settings.
+3. Replace the TODOs with your app's Firebase project configuration.
+4. Export the firebase db object from the file and import this object into the files
+   where it is needed.
+
+## Connecting Firebase to the App
+
+### firebaseInit.js
+
+```jsx
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyAnZ_FA_zslYPwBFM9lz-ZKKHgpsixHAsI",
+  authDomain: "blogging-app-6a6ef.firebaseapp.com",
+  projectId: "blogging-app-6a6ef",
+  storageBucket: "blogging-app-6a6ef.firebasestorage.app",
+  messagingSenderId: "62739173448",
+  appId: "1:62739173448:web:6e0fb1125aa58ffba1487d",
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+export const db = getFirestore(app);
+```
+
+- Added **Firebase project configuration** to connect the React application with Firebase.
+- Initialized the **Firebase app** using `initializeApp(firebaseConfig)`.
+- Initialized **Firestore database** using `getFirestore` and exported it as `db` so it can be used in other components.
+
+### Blog.js
+
+```diff
++ import { db } from "./firebaseInit";
+```
+
+- Firestore database import was added to enable database operations.
+- Purpose: Allows the Blog component to interact with the **Firestore database** using the exported db instance.
