@@ -406,3 +406,162 @@ export default function Blog() {
      ```
 
 NOTE: `setDoc()` gives **more control over the document reference and ID**, while `addDoc()` simply **adds a document automatically**.
+
+## Fetching Data from the Database
+
+### Get Data
+
+The following example shows how to retrieve the contents of a single document
+using get():
+
+```jsx
+import { doc, getDoc } from "firebase/firestore";
+
+const docRef = doc(db, "cities", "SF");
+const docSnap = await getDoc(docRef);
+
+if (docSnap.exists()) {
+  console.log("Document data:", docSnap.data());
+} else {
+  // doc.data() will be undefined in this case
+  console.log("No such document!");
+}
+```
+
+You can also retrieve multiple documents with one request by querying documents in
+a collection. For example, you can use where() to query for all of the documents that
+meet a certain condition, then use get() to retrieve the results:
+
+```jsx
+import { collection, query, where, getDocs } from "firebase/firestore";
+const q = query(collection(db, "cities"), where("capital", "==", true));
+const querySnapshot = await getDocs(q);
+querySnapshot.forEach((doc) => {
+  // doc.data() is never undefined for query doc snapshots
+  console.log(doc.id, " => ", doc.data());
+});
+```
+
+In addition, you can retrieve all documents in a collection by omitting the where()
+filter entirely:
+
+```jsx
+import { collection, getDocs } from "firebase/firestore";
+
+const querySnapshot = await getDocs(collection(db, "cities"));
+
+querySnapshot.forEach((doc) => {
+  // doc.data() is never undefined for query doc snapshots
+  console.log(doc.id, " => ", doc.data());
+});
+```
+
+### Blog.js
+
+```diff
+-import { collection, doc, setDoc } from "firebase/firestore";
++import { collection, doc, setDoc, getDocs } from "firebase/firestore";
+
+...
+
+const blogsReducer = (state, action) => {
+  switch (action.type) {
+    case "ADD":
+      return [action.blog, ...state];
+
+    case "REMOVE":
+      return state.filter((blog, index) => index !== action.index);
+
++   case "INIT":
++     return action.blogs;
+
+-   default:
+-     return [];
++   default:
++     return state;
+  }
+};
+
+...
+
+export default function Blog() {
+
+  ...
+
++ useEffect(() => {
++   async function fetchData() {
++     const snapShot = await getDocs(collection(db, "blogs"));
++
++     const blogs = snapShot.docs.map((doc) => {
++       return {
++         id: doc.id,
++         ...doc.data(),
++       };
++     });
++
++     dispatch({
++       type: "INIT",
++       blogs: blogs,
++     });
++   }
++
++   fetchData();
++ }, []);
+
+  ...
+}
+```
+
+#### Changes Made
+
+1. Added Firestore Function to Read Data
+   - `getDocs` was added to read blog documents from Firestore.
+
+   ```jsx
+   import { collection, doc, setDoc, getDocs } from "firebase/firestore";
+   ```
+
+2. Added `INIT` Case in Reducer
+   - A new reducer action `INIT` was added to initialize the blog state with data fetched from Firestore.
+
+   ```jsx
+   case "INIT":
+     return action.blogs;
+   ```
+
+3. Added `useEffect` to Fetch Blogs from Firestore
+   - A new `useEffect` hook was added to load existing blogs when the component mounts (page loads).
+   - Inside this hook:
+     1. `getDocs(collection(db, "blogs"))` reads all blog documents from the Firestore blogs collection.
+     2. The returned snapshot contains multiple documents.
+     3. `map()`is used to convert each Firestore document into a normal JavaScript blog object.
+     4. `doc.id` extracts the document ID, and `doc.data()` extracts the stored blog data.
+     5. The fetched blogs are then stored in the reducer state using `dispatch` with the `INIT` action.
+
+   ```jsx
+   useEffect(() => {
+     async function fetchData() {
+       const snapShot = await getDocs(collection(db, "blogs"));
+
+       const blogs = snapShot.docs.map((doc) => {
+         return {
+           id: doc.id,
+           ...doc.data(),
+         };
+       });
+
+       dispatch({
+         type: "INIT",
+         blogs: blogs,
+       });
+     }
+
+     fetchData();
+   }, []);
+   ```
+
+The application now retrieves existing blog documents from Firestore when the component loads and initializes the reducer state with that data, allowing previously stored blogs to appear in the UI.
+
+#### 🖥️ What You See in Browser:
+
+<img src="../images/firebase-get-blogs.png" alt="Get Blogs" width="700" height="auto">
