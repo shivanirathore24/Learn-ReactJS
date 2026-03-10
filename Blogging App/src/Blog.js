@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useReducer } from "react";
 import { db } from "./firebaseInit";
-import { collection, doc, setDoc, getDocs } from "firebase/firestore";
+import { collection, doc, setDoc, onSnapshot } from "firebase/firestore";
 
 // 2. Reducer function
 const blogsReducer = (state, action) => {
@@ -42,22 +42,39 @@ export default function Blog() {
   }, [blogs]);
 
   useEffect(() => {
-    async function fetchData() {
-      const snapShot = await getDocs(collection(db, "blogs"));
-      console.log(snapShot);
+    const unsub = onSnapshot(collection(db, "blogs"), (snapShot) => {
       const blogs = snapShot.docs.map((doc) => {
         return {
           id: doc.id,
           ...doc.data(),
         };
       });
+
       console.log(blogs);
+
       dispatch({
         type: "INIT",
         blogs: blogs,
       });
-    }
-    fetchData();
+    });
+    return () => unsub(); // cleanup
+
+    // async function fetchData() {
+    //   const snapShot = await getDocs(collection(db, "blogs"));
+    //   console.log(snapShot);
+    //   const blogs = snapShot.docs.map((doc) => {
+    //     return {
+    //       id: doc.id,
+    //       ...doc.data(),
+    //     };
+    //   });
+    //   console.log(blogs);
+    //   dispatch({
+    //     type: "INIT",
+    //     blogs: blogs,
+    //   });
+    // }
+    // fetchData();
   }, []);
 
   async function handleSubmit(e) {

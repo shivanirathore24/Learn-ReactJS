@@ -565,3 +565,119 @@ The application now retrieves existing blog documents from Firestore when the co
 #### 🖥️ What You See in Browser:
 
 <img src="../images/firebase-get-blogs.png" alt="Get Blogs" width="700" height="auto">
+
+## Real-Time Updates
+
+### Data Sync - Getting Realtime updates
+
+You can listen to a document with the onSnapshot() method. An initial call using the
+callback you provide creates a document snapshot immediately with the current
+contents of the single document. Then, each time the contents change, another call
+updates the document snapshot.
+
+```jsx
+import { doc, onSnapshot } from "firebase/firestore";
+const unsub = onSnapshot(doc(db, "cities", "SF"), (doc) => {
+  console.log("Current data: ", doc.data());
+});
+```
+
+### Blog.js
+
+```diff
+-import { collection, doc, setDoc, getDocs } from "firebase/firestore";
++import { collection, doc, setDoc, getDocs, onSnapshot } from "firebase/firestore";
+
+...
+
+export default function Blog() {
+
+  ...
+
+  useEffect(() => {
+-    async function fetchData() {
+-      const snapShot = await getDocs(collection(db, "blogs"));
+-
+-      const blogs = snapShot.docs.map((doc) => {
+-        return {
+-          id: doc.id,
+-          ...doc.data(),
+-        };
+-      });
+-
+-      dispatch({
+-        type: "INIT",
+-        blogs: blogs,
+-      });
+-    }
+-
+-    fetchData();
++    const unsub = onSnapshot(collection(db, "blogs"), (snapShot) => {
++      const blogs = snapShot.docs.map((doc) => {
++        return {
++          id: doc.id,
++          ...doc.data(),
++        };
++      });
++
++      dispatch({
++        type: "INIT",
++        blogs: blogs,
++      });
++    });
++   return () => unsub(); // cleanup
+  }, []);
+
+  ...
+
+}
+```
+
+#### Changes Made
+
+1. Added Firestore Real-time Listener
+   - Imported `onSnapshot` from Firestore to enable **real-time updates** from the database.
+
+   ```jsx
+   import { collection, doc, setDoc, onSnapshot } from "firebase/firestore";
+   ```
+
+2. Replaced `getDocs()` with `onSnapshot()`
+   - Earlier, blog data was fetched using `getDocs()`, which retrieves the **data only once when the component loads**.
+   - Now, `onSnapshot()` is used to create a **real-time listener** on the `blogs` collection.
+
+   ```jsx
+   const unsub = onSnapshot(collection(db, "blogs"), (snapShot) => {
+     const blogs = snapShot.docs.map((doc) => {
+       return {
+         id: doc.id,
+         ...doc.data(),
+       };
+     });
+
+     dispatch({
+       type: "INIT",
+       blogs: blogs,
+     });
+   });
+   ```
+
+3. Real-time State Updates
+   - Whenever a blog document is added, updated, or removed in Firestore, the `onSnapshot` listener automatically triggers.
+   - The latest blog data is converted into objects and stored in the reducer state using `dispatch` with the `INIT` action.
+
+4. Cleanup Firestore Listener
+   - `unsub()` is returned from `useEffect` to stop the Firestore real-time listener when the component unmounts, preventing unnecessary background listeners or memory leaks.
+   ```jsx
+   return () => unsub();
+   ```
+
+The application now uses `onSnapshot()` instead of `getDocs()`, **enabling real-time synchronization with Firestore so the UI automatically updates whenever the blog data changes in the database**.
+
+#### 🖥️ What You See in Browser:
+
+When the application is opened in two browser tabs, adding a blog in one tab automatically updates the blog list in the other tab without needing to refresh the page.
+
+<img src="../images/realtime-update1.png" alt="Realtime Update" width="700" height="auto">
+
+<img src="../images/realtime-update2.png" alt="Realtime Update" width="700" height="auto">
