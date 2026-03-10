@@ -190,3 +190,114 @@ export const db = getFirestore(app);
 
 - Firestore database import was added to enable database operations.
 - Purpose: Allows the Blog component to interact with the **Firestore database** using the exported db instance.
+
+## Adding Data to Firebase
+
+### Add a document
+
+When you use set() to create a document, you must specify an ID for the document
+to create. For example:
+
+```jsx
+import { doc, setDoc } from "firebase/firestore";
+await setDoc(doc(db, "cities", "new-city-id"), data);
+```
+
+But sometimes there isn't a meaningful ID for the document, and it's more
+convenient to let Cloud Firestore auto-generate an ID for you. You can do this by
+calling the following language-specific add() methods:
+
+```jsx
+import { collection, addDoc } from "firebase/firestore";
+
+// Add a new document with a generated id.
+const docRef = await addDoc(collection(db, "cities"), {
+  name: "Tokyo",
+  country: "Japan",
+});
+
+console.log("Document written with ID: ", docRef.id);
+```
+
+### Blog.js
+
+```diff
+import { useState, useRef, useEffect, useReducer } from "react";
+import { db } from "./firebaseInit";
++import { collection, addDoc } from "firebase/firestore";
+
+...
+
+export default function Blog() {
+
+  const [formData, setFormData] = useState({ title: "", content: "" });
+  const [blogs, dispatch] = useReducer(blogsReducer, []);
+  const titleRef = useRef(null);
+
+  ...
+
+- function handleSubmit(e) {
++ async function handleSubmit(e) {
+    e.preventDefault();
+
+    dispatch({
+      type: "ADD",
+      blog: { title: formData.title, content: formData.content },
+    });
+
++   const docRef = collection(db, "blogs");
++   await addDoc(docRef, {
++     title: formData.title,
++     content: formData.content,
++     createdOn: new Date(),
++   });
+
+    setFormData({ title: "", content: "" });
+    titleRef.current.focus();
+    console.log(blogs);
+  }
+
+  ...
+}
+```
+
+#### Changes Made
+
+1. Firebase Firestore Integration Added
+   - Imported Firestore functions to store blogs in the database.
+   ```jsx
+   import { collection, addDoc } from "firebase/firestore";
+   ```
+2. handleSubmit Converted to Async
+   - The `handleSubmit` function was changed to `async` to allow asynchronous database operations.
+
+3. Firestore Collection Reference Created
+   - A reference to the blogs collection in Firestore is created before adding data.
+
+   ```jsx
+   const docRef = collection(db, "blogs");
+   ```
+
+4. Blog Data Stored in Firestore
+   - When a blog is added, it is now saved to Firestore using addDoc.
+
+   ```jsx
+   await addDoc(docRef, {
+     title: formData.title,
+     content: formData.content,
+     createdOn: new Date(),
+   });
+   ```
+
+5. Timestamp Added
+   - A `createdOn` field was added to store the blog creation date.
+
+The updated code connects the blog form to Firebase Firestore, allowing newly created blogs to be stored in the database instead of existing only in the local React state.
+
+#### 🖥️ What You See in Firebase:
+
+<img src="../images/add-blogs.png" alt="Add Blogs" width="700" height="auto">
+
+<img src="../images/firebase-add-blog1.png" alt="dd Blogs" width="700" height="auto">
+
+<img src="../images/firebase-add-blog2.png" alt="dd Blogs" width="700" height="auto">

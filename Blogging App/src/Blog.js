@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useReducer } from "react";
 import { db } from "./firebaseInit";
+import { collection, addDoc } from "firebase/firestore";
 
 // 2. Reducer function
 const blogsReducer = (state, action) => {
@@ -35,7 +36,7 @@ export default function Blog() {
     }
   }, [blogs]);
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
 
     //setBlogs([{ title: formData.title, content: formData.content }, ...blogs]);
@@ -43,6 +44,13 @@ export default function Blog() {
     dispatch({
       type: "ADD",
       blog: { title: formData.title, content: formData.content },
+    });
+    const docRef = collection(db, "blogs");
+
+    await addDoc(docRef, {
+      title: formData.title,
+      content: formData.content,
+      createdOn: new Date(),
     });
 
     setFormData({ title: "", content: "" });
