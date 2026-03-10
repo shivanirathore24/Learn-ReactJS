@@ -301,3 +301,108 @@ The updated code connects the blog form to Firebase Firestore, allowing newly cr
 <img src="../images/firebase-add-blog1.png" alt="dd Blogs" width="700" height="auto">
 
 <img src="../images/firebase-add-blog2.png" alt="dd Blogs" width="700" height="auto">
+
+## addDoc vs setDoc
+
+### Set a document
+
+To create or overwrite a single document, use the following language-specific set()
+methods:
+
+```jsx
+import { doc, setDoc } from "firebase/firestore";
+
+// Add a new document in collection "cities"
+await setDoc(doc(db, "cities", "LA"), {
+  name: "Los Angeles",
+  state: "CA",
+  country: "USA",
+});
+```
+
+If the document does not exist, it will be created. If the document does exist, its
+contents will be overwritten with the newly provided data unless you specify that the
+data should be merged into the existing document, as follows:
+
+```jsx
+import { doc, setDoc } from "firebase/firestore";
+const cityRef = doc(db, "cities", "BJ");
+setDoc(cityRef, { capital: true }, { merge: true });
+```
+
+setDoc is useful where you are generating IDs by yourself or adding a new one.
+
+### Blog.js
+
+```diff
+-import { collection, addDoc } from "firebase/firestore";
++import { collection, doc, setDoc } from "firebase/firestore";
+
+...
+
+export default function Blog() {
+
+  ...
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+
+    dispatch({
+      type: "ADD",
+      blog: { title: formData.title, content: formData.content },
+    });
+
+-   const docRef = collection(db, "blogs");
+-   await addDoc(docRef, {
++   const docRef = doc(collection(db, "blogs"));
++   await setDoc(docRef, {
+      title: formData.title,
+      content: formData.content,
+      createdOn: new Date(),
+    });
+
+    setFormData({ title: "", content: "" });
+    titleRef.current.focus();
+    console.log(blogs);
+  }
+
+}
+```
+
+#### Changes Made
+
+1. Additional Firestore Functions Imported
+   - Added doc and setDoc to create and write documents manually.
+
+   ```jsx
+   import { collection, doc, setDoc } from "firebase/firestore";
+   ```
+
+2. Changed Firestore Write Method
+   - Earlier Code – `addDoc()`
+     - `addDoc()` directly adds a new document to the collection.
+     - Firestore **automatically generates the document ID**.
+     - The developer **cannot control the document ID**.
+     ```jsx
+     await addDoc(collection(db, "blogs"), {
+       title: formData.title,
+       content: formData.content,
+       createdOn: new Date(),
+     });
+     ```
+   - Updated Code – `doc()` + `setDoc()`
+     - `doc()` creates a document reference first.
+     - `setDoc()` **writes data to that specific document reference**.
+     - This approach **allows specifying or controlling the document ID if required**.
+
+     ```jsx
+     const docRef = doc(collection(db, "blogs"));
+
+     await setDoc(docRef, {
+       title: formData.title,
+       content: formData.content,
+       createdOn: new Date(),
+     });
+     ```
+
+NOTE: `setDoc()` gives **more control over the document reference and ID**, while `addDoc()` simply **adds a document automatically**.
