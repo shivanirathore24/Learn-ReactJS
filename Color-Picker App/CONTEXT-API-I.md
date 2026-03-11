@@ -121,7 +121,142 @@ This component receives the `color` prop and displays it in a paragraph. The tex
 
 #### 🖥️ What You See in Browser:
 
-<img src="./images/color-picker1.png" alt="Color Picker" width="700" height="auto">
+<img src="./images/color-picker1.png" alt="Color Picker" width="600" height="auto">
 
-<img src="./images/color-picker2.png" alt="Color Picker" width="700" height="auto">
+<img src="./images/color-picker2.png" alt="Color Picker" width="600" height="auto">
 
+## React Context API
+
+The React Context API is a component structure that allows us to share data across
+all levels of the application. The main aim of Context API is to solve the problem of
+prop drilling (also called "Threading"). There are three steps to using React context:
+
+1. **Create context** - using the `createContext` method.
+2. **Provide Context** - Setup a `Context.provider` and define the data which
+   you want to store.
+3. **Consume the Context** - Use a `Context.consumer` or `useContext` hook
+   whenever you need the data from the store.
+
+Let’s consider the following example:
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/context-api-flow.png" alt="Context-API Flow" width="600" height="auto">
+
+### Creating the Context
+
+#### **React.createContext**
+
+```text
+const MyContext = React.createContext(defaultValue);
+```
+
+It is used for creating a Context object. When React renders a component
+subscribing to this Context object, it will read the current context value from the
+closest matching Provider above it in the tree.
+
+```jsx
+import { createContext } from "react";
+export const colorContext = createContext();
+```
+
+### Providing the Context
+
+#### **Context.Provider**
+
+```text
+<MyContext.Provider value={/* some value */}>
+```
+
+Every Context object has a Provider React component which allows consuming
+components to subscribe to context changes. It acts as a delivery service. When a
+consumer component asks for something, it finds it in the context and provides it to
+where it is needed. The provider accepts a prop (value), and the data in this prop
+can be used in all the other child components. This value could be anything from the
+component state.
+
+All consumers that are child components of a Provider will re-render whenever the
+Provider’s value prop changes. Changes are determined by comparing the new and
+old values using the same algorithm as Object.is.
+
+```jsx
+import { useState } from "react";
+import ChildComponent from "./ChildComponent";
+import { colorContext } from "../context";
+
+const ParentComponent = (props) => {
+  const [color, setColor] = useState("#000000");
+
+  return (
+    <>
+      <h1>Pick a color</h1>
+
+      <input
+        type="color"
+        onChange={(e) => {
+          setColor(e.target.value);
+        }}
+        value={color}
+      />
+
+      {/* Providing the context to the child component */}
+      <colorContext.Provider value={{ color, setColor }}>
+        <ChildComponent />
+      </colorContext.Provider>
+    </>
+  );
+};
+
+export default ParentComponent;
+```
+
+## Implementing Context
+
+### Context Creation (context.js)
+
+```jsx
+import { createContext } from "react";
+
+export const colorContext = createContext();
+```
+
+- A new context called `colorContext` is created using `createContext()`.
+- Purpose: This context allows data (like color) to be shared across components without passing props manually through each component.
+
+### ParentComponent.js
+
+```diff
+ import { useState } from "react";
+ import ChildComponent from "./ChildComponent";
++import { colorContext } from "../context";
+
+ const ParentComponent = (props) => {
+   const [color, setColor] = useState("#000000");
+
+   return (
+     <>
+       <h1>Pick a color</h1>
+       <input
+         type="color"
+         onChange={(e) => {
+           setColor(e.target.value);
+         }}
+         value={color}
+       />
+-      <ChildComponent color={color} />
++      <colorContext.Provider value="red">
++        <ChildComponent />
++      </colorContext.Provider>
+     </>
+   );
+ };
+
+ export default ParentComponent;
+```
+
+- `colorContext` was imported.
+- `ChildComponent` was wrapped inside `colorContext.Provider`.
+- The Provider supplies a value (`"red"`) to all components inside it.
+- Purpose: The Provider makes the context value available to all nested components without passing props.
+
+A `colorContext` is created using `createContext()` and provided in `ParentComponent` using `colorContext.Provider` so that child components can access shared data without prop drilling.
