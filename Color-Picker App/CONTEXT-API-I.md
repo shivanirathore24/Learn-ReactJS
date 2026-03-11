@@ -381,3 +381,80 @@ The color state is now shared using the **React Context API**.
 
 <img src="./images/get-value-useContext().png" alt="Getting value using useCOntext()" width="700" height="auto">
 
+## Consuming the Context in Class-Based Components
+
+#### Context.Consumer
+
+```text
+<MyContext.Consumer>
+  {value => /* render something based on the context value */}
+</MyContext.Consumer>
+```
+
+A React component that subscribes to context changes. Requires a function as a
+child. The function receives the current context value and returns a React node. The
+value argument passed to the function will equal the value prop of the closest
+Provider for this context in the component tree. If there is no Provider for this context,
+the value argument will be equal to the defaultValue, which was passed to
+createContext().
+
+```jsx
+import React from "react";
+import { colorContext } from "../context";
+
+class GrandChildComponent extends React.Component {
+  render() {
+    return (
+      <colorContext.Consumer>
+        {(value) => (
+          <p style={{ color: value.color }}>Color code: {value.color}</p>
+        )}
+      </colorContext.Consumer>
+    );
+  }
+}
+```
+
+## Getting the Value - Consumer
+
+### GrandChildComponent.js
+
+```diff
+-import { useContext } from "react";
+ import { colorContext } from "../context";
+
+ function GrandChildComponent() {
+-  const color = useContext(colorContext);
+-  return <p style={{ color: color }}>Color: {color}</p>;
++  return (
++    <colorContext.Consumer>
++      {(value) => (
++        <p style={{ color: value.color }}>
++          Color: {value.color}
++        </p>
++      )}
++    </colorContext.Consumer>
++  );
+ }
+
+ export default GrandChildComponent;
+```
+
+Instead of the `useContext` hook, the component consumes the context using `colorContext.Consumer`. The provided value is received in the **callback function** and used to display the color.
+
+### ParentComponent.js
+
+```diff
+- <colorContext.Provider value={color}>
++ <colorContext.Provider value={{ color, setColor }}>
+    <ChildComponent />
+  </colorContext.Provider>
+```
+
+The context provider was updated to pass an **object containing both the color state and the state updater function** instead of passing only the color value. This allows child components to **access the current color as well as update the color through the context**.
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/get-value-Consumer.png" alt="Getting value using Consumer" width="700" height="auto">
+
+---
