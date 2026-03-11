@@ -1191,7 +1191,7 @@ Let’s summarise what we have learned in this module:
 - Learned about how to use tables in JSX.
 - Learned about different types of conditional rendering in JSX.
 
-### Additional References (if you want to explore more):
+### Some References:
 
 [To apply React Developer tools](https://chromewebstore.google.com/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi?hl=en)
 
