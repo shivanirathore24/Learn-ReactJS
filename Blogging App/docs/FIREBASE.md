@@ -681,3 +681,138 @@ When the application is opened in two browser tabs, adding a blog in one tab aut
 <img src="../images/realtime-update1.png" alt="Realtime Update" width="700" height="auto">
 
 <img src="../images/realtime-update2.png" alt="Realtime Update" width="700" height="auto">
+
+## Deleting the Documents from Database
+
+To delete a document, use the following language-specific delete() methods:
+
+```jsx
+import { doc, deleteDoc } from "firebase/firestore";
+await deleteDoc(doc(db, "cities", "DC"));
+```
+
+Deletes the document with ID "DC" from the "cities" collection in Firestore using deleteDoc().
+
+### Blog.js
+
+```diff
+-import { collection, doc, setDoc, onSnapshot } from "firebase/firestore";
++import { collection, doc, setDoc, onSnapshot, deleteDoc } from "firebase/firestore";
+
+...
+
+export default function Blog() {
+
+  ...
+
+- function removeBlog(i) {
+-   dispatch({ type: "REMOVE", index: i });
+- }
++ async function removeBlog(id) {
++   const docRef = doc(db, "blogs", id);
++   await deleteDoc(docRef);
++ }
+
+  ...
+
+  return (
+    <>
+      ...
+
+      <h2>Blogs</h2>
+-     {blogs.map((blog, i) => (
+-       <div className="blog" key={i}>
++     {blogs.map((blog) => (
++       <div className="blog" key={blog.id}>
+          <h1>{blog.title}</h1>
+          <p>{blog.content}</p>
+
+          <div className="blog-btn">
+            <button
+              className="btn remove"
+              onClick={() => {
+-               removeBlog(i);
++               removeBlog(blog.id);
+              }}
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      ))}
+
+      ...
+    </>
+  );
+
+}
+```
+
+#### Changes Made
+
+1. Added Firestore Delete Function
+   - Imported `deleteDoc` from Firestore to enable deleting blog documents from the database.
+
+   ```jsx
+   import {
+     collection,
+     doc,
+     setDoc,
+     onSnapshot,
+     deleteDoc,
+   } from "firebase/firestore";
+   ```
+
+2. Updated `removeBlog` Function
+   - The `removeBlog` function was modified to delete the blog directly from Firestore instead of only updating the local state.
+   - A document reference is created using `doc(db, "blogs", id)` and `deleteDoc()` removes the document from the database.
+
+   ```jsx
+   async function removeBlog(id) {
+     const docRef = doc(db, "blogs", id);
+     await deleteDoc(docRef);
+   }
+   ```
+
+3. Updated Blog Mapping
+   - The blog list rendering now uses blog.id as the key and passes the document ID to the delete function.
+
+   ```jsx
+   {blogs.map((blog) => (
+     <div className="blog" key={blog.id}>
+   ```
+
+   ```jsx
+   onClick={() => {
+     removeBlog(blog.id);
+   }}
+   ```
+
+The delete functionality was updated to **remove blog documents from Firestore** using `deleteDoc()`, ensuring that the deletion is reflected in the database and automatically synchronized across the UI through the real-time `onSnapshot` listener.
+
+#### 🖥️ What You See in Browser & Firebase:
+
+#### Before Delete
+
+<img src="../images/firebase-before-delete-blog.png" alt="Before Delete" width="700" height="auto">
+
+<img src="../images/before-delete-blog.png" alt="Before Delete" width="700" height="auto">
+
+#### After Delete
+
+<img src="../images/firebase-after-delete-blog.png" alt="After Delete" width="700" height="auto">
+
+<img src="../images/after-delete-blog.png" alt="After Delete" width="700" height="auto">
+
+## Summarizing it
+
+Let’s summarize what we have learned in this Lecture:
+
+- Learned about SQL and No SQL Databases.
+- Learned about Realtime Databases.
+- Learned about Cloud Firestore and configuration.
+- Learned how to add and get data from Cloud Firestore.
+- Learned how to display real-time updates.
+- Learned how to delete documents from the database.
+
+---

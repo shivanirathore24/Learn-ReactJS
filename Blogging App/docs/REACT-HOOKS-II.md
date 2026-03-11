@@ -1142,7 +1142,7 @@ export default function Reset() {
 - Ensures consistent localStorage behavior across components.
 - Follows React's custom hook pattern for reusable logic.
 
-### Summary
+### Conclusion
 
 We have discussed the advantages of using hooks in functional components instead
 of relying on class-based lifecycle methods. The three main hooks covered were
@@ -1169,6 +1169,6 @@ Let’s summarise what we have learned in this Lecture:
 
 [Lifecycle methods vs Hooks in React](https://medium.com/crossml/react-lifecycle-methods-vs-hooks-6acf5e049f64)
 
-[Hooks in React](https://react.dev/reference/react#state-hooks)
+[Hooks in React](https://react.dev/reference/react/hooks)
 
 [Custom hooks](https://react.dev/learn/reusing-logic-with-custom-hooks)

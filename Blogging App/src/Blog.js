@@ -1,6 +1,12 @@
 import { useState, useRef, useEffect, useReducer } from "react";
 import { db } from "./firebaseInit";
-import { collection, doc, setDoc, onSnapshot } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  setDoc,
+  onSnapshot,
+  deleteDoc,
+} from "firebase/firestore";
 
 // 2. Reducer function
 const blogsReducer = (state, action) => {
@@ -99,10 +105,12 @@ export default function Blog() {
     console.log(blogs);
   }
 
-  function removeBlog(i) {
+  async function removeBlog(id) {
     //setBlogs(blogs.filter((blog, index) => index !== i));
     //4. Replacing setBlogs with dispatch
-    dispatch({ type: "REMOVE", index: i });
+    // dispatch({ type: "REMOVE", index: i });
+    const docRef = doc(db, "blogs", id);
+    await deleteDoc(docRef);
   }
 
   return (
@@ -145,8 +153,8 @@ export default function Blog() {
       <hr />
 
       <h2>Blogs</h2>
-      {blogs.map((blog, i) => (
-        <div className="blog" key={i}>
+      {blogs.map((blog) => (
+        <div className="blog" key={blog.id}>
           <h1>{blog.title}</h1>
           <p>{blog.content}</p>
 
@@ -154,7 +162,7 @@ export default function Blog() {
             <button
               className="btn remove"
               onClick={() => {
-                removeBlog(i);
+                removeBlog(blog.id);
               }}
             >
               Delete
