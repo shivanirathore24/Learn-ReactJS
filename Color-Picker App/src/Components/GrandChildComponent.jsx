@@ -1,5 +1,10 @@
-const GrandChildComponent = (props) => (
-  <p style={{ color: props.color }}>Color: {props.color}</p>
-);
+import { useContext } from "react";
+import { colorContext } from "../context";
+
+function GrandChildComponent() {
+  const color = useContext(colorContext);
+  console.log(color);
+  return <p style={{ color: color }}>Color: {color}</p>;
+}
 
 export default GrandChildComponent;

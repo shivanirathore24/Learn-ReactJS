@@ -260,3 +260,124 @@ export const colorContext = createContext();
 - Purpose: The Provider makes the context value available to all nested components without passing props.
 
 A `colorContext` is created using `createContext()` and provided in `ParentComponent` using `colorContext.Provider` so that child components can access shared data without prop drilling.
+
+## Consuming the Context in Functional Components
+
+### Consuming the Context
+
+#### **useContext hook**
+
+```text
+const value = useContext(SomeContext);
+```
+
+`useContext` is a React Hook that lets you read and subscribe to context from your
+component. It can be used with the useState Hook to share the state between deeply
+nested components more easily.
+
+```jsx
+import { useContext } from "react";
+import { colorContext } from "../context";
+
+const GrandChildComponent = () => {
+  // Consuming the context
+  const { value } = useContext(colorContext);
+
+  return <p style={{ color: value.color }}>Color code: {value.color}</p>;
+};
+
+export default GrandChildComponent;
+```
+
+## Getting the Value - useContext()
+
+### GrandChildComponent.js
+
+```diff
++import { useContext } from "react";
++import { colorContext } from "../context";
+
+-const GrandChildComponent = (props) => (
+-  <p style={{ color: props.color }}>Color: {props.color}</p>
+-);
++function GrandChildComponent() {
++  const color = useContext(colorContext);
++
++  return <p style={{ color: color }}>Color: {color}</p>;
++}
+
+ export default GrandChildComponent;
+```
+
+- `useContext` was imported from React.
+- `colorContext` was imported from the context file.
+- The component now reads the color value using `useContext(colorContext)`.
+- The color is applied to the text style and displayed directly.
+- Purpose: Allows the component to access the shared color value directly from the context instead of receiving it through props.
+
+### ChildComponent.js
+
+```diff
+ const ChildComponent = (props) => (
+   <div
+     style={{
+       border: `10px solid #000000`,
+       margin: "50px",
+       padding: "10px",
+       fontSize: "30px",
+       width: "300px",
+     }}
+   >
+-    <GrandChildComponent color={props.color} />
++    <GrandChildComponent />
+   </div>
+ );
+```
+
+- The `color` prop was removed from `GrandChildComponent`.
+- `GrandChildComponent` is now rendered without passing any props.
+- Purpose: Since the color value is accessed through the context, intermediate components no longer need to pass the prop. This eliminates prop drilling.
+
+### ParentComponent.js
+
+```diff
+ import { useState } from "react";
+import ChildComponent from "./ChildComponent";
++import { colorContext } from "../context";
+
+const ParentComponent = (props) => {
+  const [color, setColor] = useState("#000000");
+
+  return (
+    <>
+      <h1>Pick a color</h1>
+
+      <input
+        type="color"
+        onChange={(e) => {
+          setColor(e.target.value);
+        }}
+        value={color}
+      />
+
+-      <ChildComponent color={color} />
++      <colorContext.Provider value={color}>
++        <ChildComponent />
++      </colorContext.Provider>
+    </>
+  );
+};
+```
+
+- `colorContext` was imported from the context file.
+- `ChildComponent` was wrapped inside colorContext.Provider.
+- The `color` state value is passed to the Provider using `value={color}`.
+- Purpose: The Provider makes the color value available to all nested components so they can access it using the Context API.
+
+The color state is now shared using the **React Context API**.
+`ParentComponent` provides the color through `colorContext.Provider`, and GrandChildComponent consumes it using `useContext`, removing the need to pass props through intermediate components.
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/get-value-useContext().png" alt="Getting value using useCOntext()" width="700" height="auto">
+
