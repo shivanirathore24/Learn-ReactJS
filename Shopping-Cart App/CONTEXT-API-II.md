@@ -513,3 +513,153 @@ Updated the Navbar to display the number of items in the cart.
 #### 🖥️ What You See in Browser:
 
 <img src="./images/update-cart-items.png" alt="Update Cart Items" width="700" height="auto">
+
+## Multiple Context
+
+React also allows you to create multiple contexts. By providing multiple contexts in
+this way, components that require access to both context values can consume them
+both and be able to interact with their respective states. We should always try to
+separate contexts for different purposes to maintain the code structure and better
+readability. To keep context re-rendering fast, React needs to make each context
+consumer a separate node in the tree.
+
+For Example: The Items component can access the item state from itemContext and the total state from totalContext, allowing it to display both the number of items in the cart and the total cart cost.
+
+### totalContext.js
+
+```jsx
+import { createContext } from "react";
+
+const totalContext = createContext();
+export { totalContext };
+```
+
+The `totalContext` is used to manage and **share the total price of the shopping cart** across components.
+
+- Created using `createContext`.
+- Stores the **total cart value** and its update function.
+- Allows components like **Navbar** and **ItemCard** to access and update the cart total.
+
+### App.js
+
+```diff
+ import "./App.css";
+ import { useState } from "react";
+ import Items from "./components/Items";
+ import Navbar from "./components/Navbar";
+ import { itemContext } from "./itemContext";
++import { totalContext } from "./totalContext";
+
+ function App() {
+   const [total, setTotal] = useState(0);
+   const [item, setItem] = useState(0);
+
+   return (
+-    <itemContext.Provider value={{ item, setItem, total, setTotal }}>
++    <totalContext.Provider value={{ total, setTotal }}>
++      <itemContext.Provider value={{ item, setItem }}>
+       <div className="App">
+         <h2>Shopping Cart</h2>
+         <Navbar />
+         <Items />
+       </div>
+-    </itemContext.Provider>
++      </itemContext.Provider>
++    </totalContext.Provider>
+   );
+ }
+
+ export default App;
+```
+
+Updated the app to use **two separate context providers** instead of passing all values through a single context.
+
+- `totalContext` now manages the **cart total value**.
+- `itemContext` now manages the **number of items in the cart**.
+- Both providers wrap the application so child components can access the required state independently.
+
+## ItemCard.js
+
+```diff
+ import React from "react";
+ import styles from "../styles/ItemCard.module.css";
+ import { useContext } from "react";
+ import { itemContext } from "../itemContext";
++import { totalContext } from "../totalContext";
+
+ function ItemCard({ name, price }) {
+-  const { total, setTotal, item, setItem } = useContext(itemContext);
++  const { total, setTotal } = useContext(totalContext);
++  const { item, setItem } = useContext(itemContext);
+
+   const handleAdd = () => {
+     setTotal(total + price);
+     setItem(item + 1);
+   };
+
+   const handleRemove = () => {
+     if (total <= 0) {
+       return;
+     }
+     setTotal((prevState) => prevState - price);
+     setItem(item - 1);
+   };
+
+   return (
+     <div className={styles.itemCard}>
+       <div className={styles.itemName}>{name}</div>
+       <div className={styles.itemPrice}>&#x20B9; {price}</div>
+       <div className={styles.itemButtonsWrapper}>
+         <button className={styles.itemButton} onClick={() => handleAdd()}>
+           Add
+         </button>
+         <button className={styles.itemButton} onClick={() => handleRemove()}>
+           Remove
+         </button>
+       </div>
+     </div>
+   );
+ }
+
+ export default ItemCard;
+```
+
+The `ItemCard` component was updated to consume **two separate contexts** for managing cart state.
+
+- Imports and uses `totalContext` to access and update the **cart total price**.
+- Uses `itemContext` to access and update the **number of items in the cart**.
+- The **Add button** increases both the cart total and item count.
+- The **Remove button** decreases both values while preventing the total from going below 0
+
+### Navbar.js
+
+```diff
+ import React from "react";
+ import styles from "../styles/Total.module.css";
+ import { useContext } from "react";
+ import { itemContext } from "../itemContext";
++import { totalContext } from "../totalContext";
+
+ function Navbar() {
+-  const value = useContext(itemContext);
++  const { total } = useContext(totalContext);
++  const { item } = useContext(itemContext);
+
+   return (
+     <div className={styles.container}>
+-      <h1>Total : &#x20B9; {value.total}</h1>
+-      <h1>Items: {value.item}</h1>
++      <h1>Total : &#x20B9; {total}</h1>
++      <h1>Items: {item}</h1>
+     </div>
+   );
+ }
+
+ export default Navbar;
+```
+
+The `Navbar` component was updated to read data from **two contexts instead of one**.
+
+- Uses totalContext to retrieve the total price of the cart.
+- Uses itemContext to retrieve the number of items in the cart.
+- Displays both values in the navigation bar as the cart summary.
