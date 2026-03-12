@@ -372,3 +372,74 @@ Displays the cart summary using data from the shared context.
 #### 🖥️ What You See in Browser:
 
 <img src="./images/state-using-context.png" alt="Passing State using Context" width="700" height="auto">
+
+## Updating the Total Value
+
+### ItemCard.js
+
+```diff
+import React from "react";
+import styles from "../styles/ItemCard.module.css";
++import { useContext } from "react";
++import { itemContext } from "../itemContext";
+
+ function ItemCard({ name, price }) {
+-  const handleAdd = () => {};
++  const { total, setTotal } = useContext(itemContext);
++
++  const handleAdd = () => {
++    setTotal(total + price);
++  };
+
+-  const handleRemove = () => {};
++  const handleRemove = () => {
++    if (total <= 0) {
++      return;
++    }
++    setTotal((prevState) => prevState - price);
++  };
+
+   return (
+     <div className={styles.itemCard}>
+       <div className={styles.itemName}>{name}</div>
+       <div className={styles.itemPrice}>&#x20B9; {price}</div>
+       <div className={styles.itemButtonsWrapper}>
+         <button className={styles.itemButton} onClick={() => handleAdd()}>
+           Add
+         </button>
+         <button className={styles.itemButton} onClick={() => handleRemove()}>
+           Remove
+         </button>
+       </div>
+     </div>
+   );
+ }
+
+ export default ItemCard;
+```
+
+Handles adding and removing items from the cart by updating the shared cart total using React Context.
+
+- Imports `useContext` and `itemContext`.
+- Accesses shared values `total` and `setTotal` from the context.
+- Add button: calls `handleAdd()` to increase the cart total using `setTotal(total + price)`.
+- Remove button: calls `handleRemove()` to decrease the cart total using `setTotal((prevState) => prevState - price)`.
+- Includes a condition to prevent the cart total from going below 0.
+
+This allows each item card to **directly update the global cart total when items are added or removed**.
+
+### App.js
+
+```diff
+- const [total, setTotal] = useState(24);
++ const [total, setTotal] = useState(0);
+```
+
+- The initial cart total was changed from 24 to 0.
+- This ensures the shopping cart starts empty when the application loads.
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/increase-cart-total.png" alt="Increase Cart Total" width="700" height="auto">
+
+<img src="./images/decrease-cart-total.png" alt="Decrease Cart Total" width="700" height="auto">
