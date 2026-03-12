@@ -274,3 +274,101 @@ Navbar.jsx (displays updated values)
 #### 🖥️ What You See in Browser:
 
 <img src="./images/shopping-cart-app.png" alt="Shopping-Cart App" width="600" height="auto">
+
+## Passing State using Context
+
+### 1. itemContext.js
+
+```jsx
+import { createContext } from "react";
+
+const itemContext = createContext();
+export { itemContext };
+```
+
+Creates and exports a React Context used for sharing cart data across components.
+
+- Imports createContext from React.
+- Creates a context object named itemContext.
+- Exports the context so other components can use it.
+
+### 2. App.js
+
+```diff
+ import Navbar from "./components/Navbar";
++import { itemContext } from "./createContext";
+
+ function App() {
+   const [total, setTotal] = useState(24);
+   const [item, setItem] = useState(0);
+
+-  return (
+-    <div className="App">
++  return (
++    <itemContext.Provider value={{ total, setTotal }}>
++      <div className="App">
+       <h2>Shopping Cart</h2>
+       <Navbar />
+       <Items />
+-    </div>
++      </div>
++    </itemContext.Provider>
+   );
+ }
+```
+
+Manages the cart state and provides it to other components using React Context.
+
+- Imports `useState`, `Navbar`, `Items`, and `itemContext`.
+- Creates state variables:
+  - `total` → total price of items in the cart.
+  - `item` → number of items in the cart.
+- Wraps the application with `itemContext.Provider`.
+- Passes `{ total, setTotal } `through the provider so child components can access the cart state.
+- Renders the main UI including Shopping Cart title, `Navbar`, and `Items`.
+
+```jsx
+<itemContext.Provider value={{ total, setTotal }}>
+```
+
+### 3. Navbar.js
+
+```diff
+ import styles from "../styles/Total.module.css";
++import { useContext } from "react";
++import { itemContext } from "../createContext";
+
+ function Navbar() {
++  const value = useContext(itemContext);
+
+   return (
+     <div className={styles.container}>
+-      <h1>Total : &#x20B9; 0</h1>
++      <h1>Total : &#x20B9; {value.total}</h1>
+       <h1>Items: 0</h1>
+     </div>
+   );
+ }
+```
+
+Displays the cart summary using data from the shared context.
+
+- Imports `useContext` and `itemContext`.
+- Uses `useContext(itemContext)` to access context values.
+- Retrieves the `total` value stored in `App`.
+- Displays the total cart price in the UI.
+
+  ```jsx
+  const value = useContext(itemContext);
+  ```
+
+- Displayed in UI:
+
+  ```text
+  Total : ₹24
+  Items : 0
+  ```
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/state-using-context.png" alt="Passing State using Context" width="700" height="auto">
