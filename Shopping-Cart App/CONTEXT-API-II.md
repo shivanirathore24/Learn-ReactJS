@@ -443,3 +443,73 @@ This allows each item card to **directly update the global cart total when items
 <img src="./images/increase-cart-total.png" alt="Increase Cart Total" width="700" height="auto">
 
 <img src="./images/decrease-cart-total.png" alt="Decrease Cart Total" width="700" height="auto">
+
+## Updating Items
+
+### App.js
+
+```diff
+ import { itemContext } from "./itemContext";
+
+ function App() {
+   const [total, setTotal] = useState(0);
+   const [item, setItem] = useState(0);
+
+   return (
+-    <itemContext.Provider value={{ total, setTotal }}>
++    <itemContext.Provider value={{ item, setItem, total, setTotal }}>
+       <div className="App">
+         <h2>Shopping Cart</h2>
+         <Navbar />
+         <Items />
+       </div>
+     </itemContext.Provider>
+   );
+ }
+```
+
+Added item count state and shared it through `itemContext`.
+
+- Added `item` and `setItem` using `useState`.
+- Passed `item`, `setItem`, `total`, and `setTotal` through `itemContext.Provider`.
+- This allows child components to access and update both cart total and item count.
+
+### ItemCard.js
+
+```diff
+-const { total, setTotal } = useContext(itemContext);
++const { total, setTotal, item, setItem } = useContext(itemContext);
+
+ const handleAdd = () => {
+   setTotal(total + price);
++  setItem(item + 1);
+ };
+
+ const handleRemove = () => {
+   if (total <= 0) {
+     return;
+   }
+   setTotal((prevState) => prevState - price);
++  setItem(item - 1);
+ };
+```
+
+Updated the component to manage item count along with total price.
+
+- Accessed `item` and `setItem` from `itemContext`.
+- **Add button:** increases both the cart total and item count.
+- **Remove button:** decreases both the cart total and item count.
+
+### Navbar.js
+
+```diff
+ <h1>Total : ₹ {value.total}</h1>
+-<h1>Items: 0</h1>
++<h1>Items: {value.item}</h1>
+```
+
+Updated the Navbar to display the number of items in the cart.
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/update-cart-items.png" alt="Update Cart Items" width="700" height="auto">
