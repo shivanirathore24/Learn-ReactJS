@@ -663,3 +663,169 @@ The `Navbar` component was updated to read data from **two contexts instead of o
 - Uses totalContext to retrieve the total price of the cart.
 - Uses itemContext to retrieve the number of items in the cart.
 - Displays both values in the navigation bar as the cart summary.
+
+## Custom Provider
+
+It is a component which acts as a provider and it makes use of the default provider.
+Custom providers are created using the createContext function from the React
+library, which creates a new context object that can be passed down to child
+components using a provider component. The provider component is responsible for
+passing the context data down to its child components via a special prop called
+value.
+
+By using a custom provider, you can centralize the management of shared data and
+state in a single place, making it easier to maintain and update your application. This
+can be particularly useful when working with complex applications that require a lot
+of shared state management, such as e-commerce sites or large data-driven
+applications.
+
+### itemContext.js (Custom Provider)
+
+```diff
+-import { createContext } from "react";
++import { createContext, useState } from "react";
+
+ const itemContext = createContext();
+
+
++function CustomItemContext({ children }) {
++  const [total, setTotal] = useState(0);
++  const [item, setItem] = useState(0);
++
++  return (
++    <itemContext.Provider value={{ total, setTotal, item, setItem }}>
++      {children}
++    </itemContext.Provider>
++  );
++}
++
+ export { itemContext };
++export default CustomItemContext;
+```
+
+The context was updated to use a **custom provider component** so the cart state can be managed inside the context file instead of inside `App`.
+
+- Created a component called `CustomItemContext` that wraps the application.
+- Moved the `total` and `item` state into this provider.
+- Used `{children}` so all components inside the wrapper can access the shared state.
+- This simplifies `App.js` because it no longer needs to manage or pass the context values manually.
+
+  ```jsx
+  import { createContext, useState } from "react";
+
+  const itemContext = createContext();
+
+  function CustomItemContext({ children }) {
+    const [total, setTotal] = useState(0);
+    const [item, setItem] = useState(0);
+
+    return (
+      <itemContext.Provider value={{ total, setTotal, item, setItem }}>
+        {children}
+      </itemContext.Provider>
+    );
+  }
+
+  export { itemContext };
+  export default CustomItemContext;
+  ```
+
+### App.js
+
+```diff
+-import { useState } from "react";
+ import Items from "./components/Items";
+ import Navbar from "./components/Navbar";
+-import { itemContext } from "./itemContext";
+-import { totalContext } from "./totalContext";
++import CustomItemContext from "./itemContext";
+
+-function App() {
+-  const [total, setTotal] = useState(0);
+-  const [item, setItem] = useState(0);
++function App() {
+
+   return (
+-    <totalContext.Provider value={{ total, setTotal }}>
+-      <itemContext.Provider value={{ item, setItem }}>
++    <CustomItemContext>
+       <div className="App">
+         <h2>Shopping Cart</h2>
+         <Navbar />
+         <Items />
+       </div>
+-      </itemContext.Provider>
+-    </totalContext.Provider>
++    </CustomItemContext>
+   );
+ }
+```
+
+Updated the app to use the Custom Context Provider instead of manually wrapping components with multiple providers.
+
+- Removed `useState` from `App`.
+- Replaced manual context providers with `CustomItemContext`.
+- The provider now handles state internally.
+
+  ```jsx
+  import "./App.css";
+  import Items from "./components/Items";
+  import Navbar from "./components/Navbar";
+  import CustomItemContext from "./itemContext";
+
+  function App() {
+    return (
+      <CustomItemContext>
+        <div className="App">
+          <h2>Shopping Cart</h2>
+          <Navbar />
+          <Items />
+        </div>
+      </CustomItemContext>
+    );
+  }
+  export default App;
+  ```
+
+### ItemCard.js
+
+```diff
+ import { itemContext } from "../itemContext";
+-import { totalContext } from "../totalContext";
+
+ function ItemCard({ name, price }) {
+-  const { total, setTotal } = useContext(totalContext);
+-  const { item, setItem } = useContext(itemContext);
++  const { total, setTotal, item, setItem } = useContext(itemContext);
+
+   ...
+ }
+```
+
+Updated the component to consume only `itemContext`, since both item count and total price are now provided from a single context.
+
+- Removed `totalContext` usage.
+- Accessed `total`, `setTotal`, `item`, and `setItem` from itemContext.
+
+### Navbar.js
+
+```diff
+ import { useContext } from "react";
+ import { itemContext } from "../itemContext";
+-import { totalContext } from "../totalContext";
+
+ function Navbar() {
+-  const { total } = useContext(totalContext);
+-  const { item } = useContext(itemContext);
++  const { total, item } = useContext(itemContext);
+
+   ...
+ }
+```
+
+Simplified the component to read both total price and item count from the same context.
+
+- Removed `totalContext`.
+- Accessed `total` and `item` directly from `itemContext`.
+
+NOTE: `itemContext` acts as the channel for sharing data, while `CustomItemContext` is the provider component that manages the cart state and makes it available to all child components.
