@@ -1209,12 +1209,12 @@ NOTE: Currently, only the CartModal UI structure is implemented; its functionali
  function CustomItemContext({ children }) {
    const [total, setTotal] = useState(0);
    const [item, setItem] = useState(0);
-+  const [showCart, setShowcart] = useState(false);
++  const [showCart, setShowCart] = useState(false);
 
    ...
 
 +  const toggle = () => {
-+    setShowcart(!showCart);
++    setShowCart(!showCart);
 +  };
 
    return (
@@ -1317,3 +1317,208 @@ Click the Cart button, then click the Close button to return to the cart items.
 <img src="./images/close-button.png" alt="Click Close Button" width="700" height="auto">
 
 <img src="./images/items_cart-button.png" alt="Back to Cart Items" width="700" height="auto">
+
+## Update Cart count and Cart display
+
+### itemContext.js
+
+```diff
+ import { createContext, useState, useContext } from "react";
+ import CartModal from "./components/CardModal";
+
+ const itemContext = createContext();
+
+ function useValue() {
+   const value = useContext(itemContext);
+   return value;
+ }
+
+ function CustomItemContext({ children }) {
+   const [total, setTotal] = useState(0);
+   const [item, setItem] = useState(0);
+   const [showCart, setShowCart] = useState(false);
++  const [cart, setCart] = useState([]);
+
+-  const handleAdd = (price) => {
+-    setTotal(total + price);
+-    setItem(item + 1);
+-  };
++  const handleAdd = (prod) => {
++    const index = cart.findIndex((item) => item.id === prod.id);
++
++    if (index === -1) {
++      setCart([...cart, { ...prod, qty: 1 }]);
++      setTotal(total + prod.price);
++    } else {
++      cart[index].qty++;
++      setCart(cart);
++      setTotal(total + cart[index].price);
++    }
++    setItem(item + 1);
++  };
+
+   const handleRemove = (price) => {
+     if (total <= 0) {
+       return;
+     }
+     setTotal((prevState) => prevState - price);
+     setItem(item - 1);
+   };
+
+   const clear = () => {
+     setTotal(0);
+     setItem(0);
++    setCart([]);
+   };
+
+   const toggle = () => {
+    setShowCart(!showCart);
+   };
+
+   return (
+     <itemContext.Provider
+-      value={{ total, item, handleAdd, handleRemove, clear, toggle }}
++      value={{ total, item, handleAdd, handleRemove, clear, toggle, cart }}
+     >
+       {showCart && <CartModal toggle={toggle} />}
+       {children}
+     </itemContext.Provider>
+   );
+ }
+
+ export { useValue };
+ export default CustomItemContext;
+```
+
+The context was updated to **store cart items and manage item quantities when products are added to the cart**.
+
+- Added a new state `cart` to store all products added to the cart.
+- Updated `handleAdd` to accept the full product object (`id`, `name`, `price`) instead of only the price.
+- When a product is added:
+  - The function checks if the product already exists in the cart using `findIndex`.
+  - If the product does not exist, it is added to the cart with an initial quantity `qty`: `1`.
+  - If the product already exists, its quantity (`qty`) is increased by `1`.
+- After updating the cart, the **total price and item count are updated accordingly**.
+- The updated `cart` **array is shared through the context provider** so other components can access it.
+- The `clear` function was also updated to reset `total`, `item`, and the `cart` array.
+
+### CartModal.js
+
+```diff
+ import React from "react";
++import { useValue } from "../itemContext";
+ import styles from "../styles/CartModal.module.css";
+
+-function CartModal({ toggle }) {
++function CartModal() {
++  const { cart, total, clear, toggle } = useValue();
+
+   return (
+     <div className={styles.cartModal}>
+       <div className={styles.closeButton} onClick={toggle}>
+         Close
+       </div>
+-      <div className={styles.clearButton}>Clear</div>
++      <div className={styles.clearButton} onClick={clear}>
++        Clear
++      </div>
+
+       <div className={styles.itemContainer}>
++        {cart.map((item) => {
++          return (
++            <div className={styles.cartCard} key={item.id}>
++              <h1>{item.name}</h1>
++              <h3>X {item.qty}</h3>
++              <h3>X {item.qty * item.price}</h3>
++            </div>
++          );
++        })}
+     </div>
+
+       <div className={styles.total}>
+         <div className={styles.totalText}>Total</div>
+-        <div className={styles.totalPrice}>$Price</div>
++        <div className={styles.totalPrice}>{total}</div>
+       </div>
+     </div>
+   );
+ }
+
+ export default CartModal;
+```
+
+The CartModal was updated to **display cart items dynamically based on the cart data stored in context**.
+
+- Retrieved `cart`, `total`, `clear`, and `toggle` using the custom hook useValue().
+- Used `cart.map()` to loop through all items stored in the cart.
+- Each cart item displays:
+  - Product name
+  - Quantity (qty)
+  - Calculated price (qty \* price)
+- The **Clear button** resets the cart using the clear() function.
+- The **Total section** now displays the actual cart total from context.
+
+### ItemCard.js
+
+```diff
+ import React from "react";
+ import styles from "../styles/ItemCard.module.css";
+ import { useValue } from "../itemContext";
+
+-function ItemCard({ name, price }) {
++function ItemCard({ name, price, id }) {
+   const { handleAdd, handleRemove } = useValue();
+
+   return (
+     <div className={styles.itemCard}>
+       <div className={styles.itemName}>{name}</div>
+       <div className={styles.itemPrice}>&#x20B9; {price}</div>
+
+       <div className={styles.itemButtonsWrapper}>
+-        <button className={styles.itemButton} onClick={() => handleAdd(price)}>
++        <button
++          className={styles.itemButton}
++          onClick={() => handleAdd({ id, name, price })}
++        >
+           Add
+         </button>
+
+         <button
+           className={styles.itemButton}
+           onClick={() => handleRemove(price)}
+         >
+           Remove
+         </button>
+       </div>
+     </div>
+   );
+ }
+
+ export default ItemCard;
+```
+
+The ItemCard component was updated to **send complete product information when adding items to the cart**.
+
+- Added the `id` prop so each product can be uniquely identified in the cart.
+- Updated the **Add button** to pass the full product object (`id`, `name`, `price`) to `handleAdd`.
+- This allows the context to:
+  - **Track individual products**
+  - **Increase quantity instead of adding duplicate items**
+- The **Remove button** continues to decrease the total and item count using `handleRemove`.
+
+#### Result
+
+- Products are now **stored in a structured cart array with quantity tracking**.
+- Adding the same product **increases its quantity instead of duplicating the item**.
+- The **Cart Modal dynamically displays the updated cart contents**.
+- The **cart total and item quantities update automatically when products are added**.
+
+#### 🖥️ What You See in Browser:
+
+Add items to the cart, click the **Cart** button to display the cart items, and click **Clear** to remove all items from the cart.
+
+<img src="./images/add-cart-items.png" alt="\Add Cart Items" width="700" height="auto">
+
+<img src="./images/display-cart-items.png" alt="\Display Cart Items" width="700" height="auto">
+
+<img src="./images/clear-cart-items.png" alt="\Clear Cart Items" width="700" height="auto">
