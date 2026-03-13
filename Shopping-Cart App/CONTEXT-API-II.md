@@ -23,7 +23,7 @@ Shopping-Cart-App
 │   ├── styles
 │   │   ├── Item.module.css
 │   │   ├── ItemCard.module.css
-│   │   └── Total.module.css
+│   │   └── Navbar.module.css
 │   │
 │   ├── App.css
 │   ├── App.js
@@ -72,7 +72,7 @@ export default App;
 
 ```jsx
 import React from "react";
-import styles from "../styles/Total.module.css";
+import styles from "../styles/Navbar.module.css";
 
 function Navbar() {
   return (
@@ -93,7 +93,7 @@ export default Navbar;
   - Shows:
     - Total cart price
     - Total number of items
-  - Uses CSS module Total.module.css for styling.
+  - Uses CSS module Navbar.module.css for styling.
 - Example display:
   ```text
   Total : ₹0
@@ -190,7 +190,7 @@ export default ItemCard;
 - Responsibilities:
   - Item.module.css → styles the items container layout
   - ItemCard.module.css → styles product cards and buttons
-  - Total.module.css → styles the navbar displaying cart summary.
+  - Navbar.module.css → styles the navbar displaying cart summary.
 - CSS Modules ensure:
   - Scoped styles
   - No class name conflicts
@@ -334,7 +334,7 @@ Manages the cart state and provides it to other components using React Context.
 ### 3. Navbar.js
 
 ```diff
- import styles from "../styles/Total.module.css";
+ import styles from "../styles/Navbar.module.css";
 +import { useContext } from "react";
 +import { itemContext } from "../createContext";
 
@@ -635,7 +635,7 @@ The `ItemCard` component was updated to consume **two separate contexts** for ma
 
 ```diff
  import React from "react";
- import styles from "../styles/Total.module.css";
+ import styles from "../styles/Navbar.module.css";
  import { useContext } from "react";
  import { itemContext } from "../itemContext";
 +import { totalContext } from "../totalContext";
@@ -989,7 +989,7 @@ The component was updated to use the custom hook instead of directly using `useC
 
 ```diff
  import React from "react";
- import styles from "../styles/Total.module.css";
+ import styles from "../styles/Navbar.module.css";
 -import { useContext } from "react";
 -import { itemContext } from "../itemContext";
 +import { useValue } from "../itemContext";
@@ -1014,3 +1014,76 @@ The Navbar was also updated to use the **custom hook** to read cart data.
 - Replaced `useContext(itemContext)` with `useValue()`.
 - Retrieved `total` and `item` directly from the custom hook.
 - Displays the current **cart total** and **item count**.
+
+## Reset Button
+
+### itemContext.js
+
+```diff
+ ...
+ function CustomItemContext({ children }) {
+   const [total, setTotal] = useState(0);
+   const [item, setItem] = useState(0);
+
+   ...
+
++  const clear = () => {
++    setTotal(0);
++    setItem(0);
++  };
+
+   return (
+-    <itemContext.Provider value={{ total, item, handleAdd, handleRemove }}>
++    <itemContext.Provider
++      value={{ total, item, handleAdd, handleRemove, clear }}
++    >
+       {children}
+     </itemContext.Provider>
+   );
+ }
+ ...
+```
+
+Added a **reset functionality** to clear the shopping cart state from the context provider.
+
+- Created a new function `clear()` inside `CustomItemContext`.
+- The `clear` function resets both `total` and `item` to `0`.
+- Added `clear` to the context provider value so it can be accessed by other components.
+- This allows any component using the context to reset the cart state.
+
+### Navbar.js
+
+```diff
+ import styles from "../styles/Navbar.module.css";
+ import { useValue } from "../itemContext";
+
+ function Navbar() {
+-  const { total, item } = useValue();
++  const { total, item, clear } = useValue();
+
+   return (
+     <div className={styles.container}>
+       <h1>Total : &#x20B9; {total}</h1>
+       <h1>Items: {item}</h1>
++      <div className={styles.buttonWrapper}>
++        <button className={styles.button} onClick={clear}>
++          Reset
++        </button>
++      </div>
+     </div>
+   );
+ }
+```
+
+Updated the Navbar to include a **Reset button** that clears the cart.
+
+- Accessed the `clear` function from the custom hook `useValue()`.
+- Added a **Reset button** in the Navbar UI.
+- Clicking the button calls `clear()`, which resets the cart total and item count.
+- Also updated `Navbar.module.css` to style the new Reset button.
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/before-reset-cart.png" alt="Resetting the Cart" width="600" height="auto">
+
+<img src="./images/after-reset-cart.png" alt="Resetting the Cart" width="600" height="auto">
