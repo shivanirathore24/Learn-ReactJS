@@ -1202,7 +1202,7 @@ NOTE: Currently, only the CartModal UI structure is implemented; its functionali
 
 ```diff
  import { createContext, useState, useContext } from "react";
-+import CartModal from "./components/CardModal";
++import CartModal from "./components/CartModal";
 
  ...
 
@@ -1324,7 +1324,7 @@ Click the Cart button, then click the Close button to return to the cart items.
 
 ```diff
  import { createContext, useState, useContext } from "react";
- import CartModal from "./components/CardModal";
+ import CartModal from "./components/CartModal";
 
  const itemContext = createContext();
 
@@ -1522,3 +1522,94 @@ Add items to the cart, click the **Cart** button to display the cart items, and 
 <img src="./images/display-cart-items.png" alt="\Display Cart Items" width="700" height="auto">
 
 <img src="./images/clear-cart-items.png" alt="\Clear Cart Items" width="700" height="auto">
+
+## Removing Item from Cart
+
+### itemContext.js
+
+```diff
+...
+-  const handleRemove = (price) => {
+-    if (total <= 0) {
+-      return;
+-    }
+-    setTotal((prevState) => prevState - price);
+-    setItem(item - 1);
+-  };
++  const handleRemove = (id) => {
++    const index = cart.findIndex((item) => item.id === id);
++
++    if (index !== -1) {
++      cart[index].qty--;
++      setItem(item - 1);
++      setTotal(total - cart[index].price);
++
++      if (cart[index].qty === 0) {
++        cart.splice(index, 1);
++      }
++
++      setCart(cart);
++    }
++  };
+...
+```
+
+Updated the cart logic to **remove items from the cart and decrease item quantity** correctly.
+
+- Modified `handleRemove` to accept the product `id` instead of price.
+- Used `findIndex()` to locate the correct product in the **cart array**.
+- Decreased the quantity (`qty`) of the item when Remove is clicked.
+- Updated the **total price and item count** after removing an item.
+- If the item's quantity becomes `0`, it is completely removed from the cart using `splice()`.
+- Updated the cart state using `setCart(cart)` so the UI reflects the changes.
+
+### ItemCard.js
+
+```diff
+...
+<button
+  className={styles.itemButton}
+- onClick={() => handleRemove(price)}
++ onClick={() => handleRemove(id)}
+>
+  Remove
+</button>
+...
+```
+
+Updated the **Remove button** to send the correct product identifier.
+
+- Changed the Remove button to pass the `id` of the product instead of the price.
+- This allows the context to **identify and update the correct item in the cart**.
+- The Remove button now correctly **reduces item quantity or removes the item completely** when the quantity reaches zero.
+-
+
+#### Result
+
+Clicking **Remove** now decreases the **quantity of the specific product** in the cart.
+When the quantity reaches 0, the product is **automatically removed from the cart**.
+The **cart list, total price, and item count update dynamically**.
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/remove-cart-item.png" alt="Remove Cart Item" width="700" height="auto">
+
+<img src="./images/items-in-cart.png" alt="Items in Cart" width="700" height="auto">
+
+## Summarising it
+
+Let’s summarise what we have learned in this Lecture:
+
+- Learned about Prop Drilling.
+- Learned how to create Context.
+- Learned how to provide Context.
+- Learned how to consume the Context.
+- Learned how to use multiple contexts.
+- Learned about custom providers.
+- Learned about custom hooks-
+
+### Some References:
+
+[Context](https://react.dev/learn/passing-data-deeply-with-context)
+
+[React Context for beginners](https://www.freecodecamp.org/news/react-context-for-beginners/#:~:text=Create%20context%20using%20the%20createContext,by%20using%20the%20context%20consumer.)
