@@ -829,3 +829,188 @@ Simplified the component to read both total price and item count from the same c
 - Accessed `total` and `item` directly from `itemContext`.
 
 NOTE: `itemContext` acts as the channel for sharing data, while `CustomItemContext` is the provider component that manages the cart state and makes it available to all child components.
+
+## Custom Hook
+
+Creation of a custom provider component that provides context data to its child
+components, as well as the creation of a custom hook that consumes the context
+data. Using custom hooks with custom providers allows for greater flexibility and
+reusability in sharing data across a React application. All the logic of the context file,
+updating logic and event handling, will be at one place
+For Example, The **useValue** hook is defined to consume the context data provided
+by the **itemContext** using the **useContext** hook. The hook returns the total and item
+variables, functions handleAdd, and handleRemove from the context, making them
+available to any components that use the useValue hook.
+
+### itemContext.js
+
+```diff
+-import { createContext, useState } from "react";
++import { createContext, useState, useContext } from "react";
+
+ const itemContext = createContext();
+
++function useValue() {
++  const value = useContext(itemContext);
++  return value;
++}
+
+ function CustomItemContext({ children }) {
+   const [total, setTotal] = useState(0);
+   const [item, setItem] = useState(0);
+
++  const handleAdd = (price) => {
++    setTotal(total + price);
++    setItem(item + 1);
++  };
++
++  const handleRemove = (price) => {
++    if (total <= 0) return;
++    setTotal((prevState) => prevState - price);
++    setItem(item - 1);
++  };
+
+   return (
+-    <itemContext.Provider value={{ total, setTotal, item, setItem }}>
++    <itemContext.Provider value={{ total, item, handleAdd, handleRemove }}>
+       {children}
+     </itemContext.Provider>
+   );
+ }
+
+-export { itemContext };
++export { useValue };
+ export default CustomItemContext;
+```
+
+The context was enhanced by adding a **custom hook** and moving the cart update logic inside the provider.
+
+- Created a custom hook `useValue()` that internally uses `useContext(itemContext)`.
+- This hook allows components to access the context without directly importing useContext.
+- Moved cart logic (`handleAdd` and `handleRemove`) into the provider to centralize state updates.
+- The provider now shares `total`, `item`, and the two handler functions with all child components.
+
+```jsx
+import { createContext, useState, useContext } from "react";
+
+const itemContext = createContext();
+
+function useValue() {
+  const value = useContext(itemContext);
+  return value;
+}
+
+function CustomItemContext({ children }) {
+  const [total, setTotal] = useState(0);
+  const [item, setItem] = useState(0);
+
+  const handleAdd = (price) => {
+    setTotal(total + price);
+    setItem(item + 1);
+  };
+
+  const handleRemove = (price) => {
+    if (total <= 0) {
+      return;
+    }
+    setTotal((prevState) => prevState - price);
+    setItem(item - 1);
+  };
+
+  return (
+    <itemContext.Provider value={{ total, item, handleAdd, handleRemove }}>
+      {children}
+    </itemContext.Provider>
+  );
+}
+
+export { useValue };
+export default CustomItemContext;
+```
+
+### ItemCard.js
+
+```diff
+ import React from "react";
+ import styles from "../styles/ItemCard.module.css";
+-import { useContext } from "react";
+-import { itemContext } from "../itemContext";
++import { useValue } from "../itemContext";
+
+ function ItemCard({ name, price }) {
+-  const { total, setTotal, item, setItem } = useContext(itemContext);
++  const { handleAdd, handleRemove } = useValue();
+
+-  const handleAdd = () => {
+-    setTotal(total + price);
+-    setItem(item + 1);
+-  };
+-
+-  const handleRemove = () => {
+-    if (total <= 0) {
+-      return;
+-    }
+-    setTotal((prevState) => prevState - price);
+-    setItem(item - 1);
+-  };
+
+   return (
+     <div className={styles.itemCard}>
+       <div className={styles.itemName}>{name}</div>
+       <div className={styles.itemPrice}>&#x20B9; {price}</div>
+       <div className={styles.itemButtonsWrapper}>
+-        <button className={styles.itemButton} onClick={() => handleAdd()}>
++        <button className={styles.itemButton} onClick={() => handleAdd(price)}>
+           Add
+         </button>
+-        <button className={styles.itemButton} onClick={() => handleRemove()}>
++        <button
++          className={styles.itemButton}
++          onClick={() => handleRemove(price)}
++        >
+           Remove
+         </button>
+       </div>
+     </div>
+   );
+ }
+
+ export default ItemCard;
+```
+
+The component was updated to use the custom hook instead of directly using `useContext`.
+
+- Imported and used `useValue()` to access the context data.
+- Removed local state update logic from the component.
+- Used `handleAdd(price)` and `handleRemove(price)` provided by the context.
+- This makes the component cleaner and keeps cart logic centralized in the provider.
+
+### Navbar.js
+
+```diff
+ import React from "react";
+ import styles from "../styles/Total.module.css";
+-import { useContext } from "react";
+-import { itemContext } from "../itemContext";
++import { useValue } from "../itemContext";
+
+ function Navbar() {
+-  const { total, item } = useContext(itemContext);
++  const { total, item } = useValue();
+
+   return (
+     <div className={styles.container}>
+       <h1>Total : &#x20B9; {total}</h1>
+       <h1>Items: {item}</h1>
+     </div>
+   );
+ }
+
+ export default Navbar;
+```
+
+The Navbar was also updated to use the **custom hook** to read cart data.
+
+- Replaced `useContext(itemContext)` with `useValue()`.
+- Retrieved `total` and `item` directly from the custom hook.
+- Displays the current **cart total** and **item count**.
