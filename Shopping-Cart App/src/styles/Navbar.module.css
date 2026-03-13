@@ -10,7 +10,7 @@
   margin-block: 1rem;
   display: flex;
   justify-content: flex-end;
-  align-items: end;
+  align-items: flex-end;
 }
 
 .button {
@@ -23,6 +23,7 @@
   padding: 0.3rem 0.5rem;
   box-shadow: 2px 2px 0px 1px rgba(0, 0, 0, 1);
   transition: all 0.2s ease-in-out;
+  margin-left: 1rem;
 }
 
 .button:hover {

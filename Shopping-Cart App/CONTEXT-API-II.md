@@ -1087,3 +1087,111 @@ Updated the Navbar to include a **Reset button** that clears the cart.
 <img src="./images/before-reset-cart.png" alt="Resetting the Cart" width="600" height="auto">
 
 <img src="./images/after-reset-cart.png" alt="Resetting the Cart" width="600" height="auto">
+
+## Displaying Items & Cart Button
+
+### Items.js
+
+```diff
+ import styles from "../styles/Item.module.css";
+ import ItemCard from "./ItemCard";
++import itemData from "../data/itemData";
+
+ function Items() {
+   return (
+     <div className={styles.wrapper}>
+-      <ItemCard name="Apple" price={199} />
++      {itemData.map((item) => (
++        <ItemCard
++          key={item.id}
++          id={item.id}
++          name={item.name}
++          price={item.price}
++        />
++      ))}
+     </div>
+   );
+ }
+
+ export default Items;
+```
+
+The `Items` component was updated to dynamically render product items using a data source.
+
+- Imported `itemData` which contains the list of products.
+- Used `map()` to loop through the data and render multiple ItemCard components.
+- Passed `id`, `name`, and `price` as props to each ItemCard.
+- Added `key={item.id}` to help React efficiently update the list.
+
+### Navbar.js
+
+```diff
+ function Navbar() {
+-  const { total, item, clear } = useValue();
++  const { item, total, clear } = useValue();
+
+   return (
+     <div className={styles.container}>
+       <h1>Total : &#x20B9; {total}</h1>
+       <h1>Items: {item}</h1>
+
+-      <div className={styles.buttonWrapper}>
+-        <button className={styles.button} onClick={clear}>
+-          Reset
+-        </button>
+-      </div>
++      <div className={styles.buttonsWrapper}>
++        <button className={styles.button}>Cart</button>
++        <button className={styles.button} onClick={clear}>
++          Reset
++        </button>
++      </div>
+     </div>
+   );
+ }
+```
+
+The Navbar was updated to include a **Cart button** along with the existing reset functionality.
+
+- Retrieved `item`, `total`, and `clear` from the custom hook `useValue()`.
+- Added a **Cart button** that will be used to open the cart modal.
+- Grouped buttons inside `buttonsWrapper` for better layout styling.
+- The **Reset button** still clears the cart state using the `clear()` function.
+
+### CartModal.js (New Component)
+
+```jsx
+import React from "react";
+import styles from "../styles/CartModal.module.css";
+
+function CartModal() {
+  return (
+    <div className={styles.cartModal}>
+      <div className={styles.closeButton}>Close</div>
+      <div className={styles.clearButton}>Clear</div>
+      <div className={styles.itemContainer}></div>
+      <div className={styles.total}>
+        <div className={styles.totalText}>Total</div>
+        <div className={styles.totalPrice}>$Price</div>
+      </div>
+    </div>
+  );
+}
+
+export default CartModal;
+```
+
+A new component called `CartModal` was created to display cart details in a modal overlay.
+
+- Displays a **full-screen** modal showing cart information.
+- Includes a **Close button** to hide the modal.
+- Includes a **Clear button** to reset the cart.
+- Contains an `itemContainer` section where cart items will be rendered.
+- Shows the **total cart price** at the bottom of the modal.
+- Alos, added `CartModal.module.css` to provide styling for the Cart Modal interface.
+
+NOTE: Currently, only the CartModal UI structure is implemented; its functionality will be added later.
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/items_cart-button.png" alt="Displaying Items & Cart Button" width="700" height="auto">
