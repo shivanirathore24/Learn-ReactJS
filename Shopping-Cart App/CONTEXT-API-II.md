@@ -1195,3 +1195,125 @@ NOTE: Currently, only the CartModal UI structure is implemented; its functionali
 #### 🖥️ What You See in Browser:
 
 <img src="./images/items_cart-button.png" alt="Displaying Items & Cart Button" width="700" height="auto">
+
+## Toggle Cart Button
+
+### itemContext.js
+
+```diff
+ import { createContext, useState, useContext } from "react";
++import CartModal from "./components/CardModal";
+
+ ...
+
+ function CustomItemContext({ children }) {
+   const [total, setTotal] = useState(0);
+   const [item, setItem] = useState(0);
++  const [showCart, setShowcart] = useState(false);
+
+   ...
+
++  const toggle = () => {
++    setShowcart(!showCart);
++  };
+
+   return (
+     <itemContext.Provider
+-      value={{ total, item, handleAdd, handleRemove, clear }}
++      value={{ total, item, handleAdd, handleRemove, clear, toggle }}
+     >
++      {showCart && <CartModal toggle={toggle} />}
+       {children}
+     </itemContext.Provider>
+   );
+ }
+```
+
+Added functionality to **toggle the Cart Modal visibility** using context state.
+
+- Introduced a new state `showCart` to track whether the cart modal is visible.
+- Created a `toggle()` function to open and close the cart modal.
+- Passed `toggle` through the context provider so other components can control the cart modal.
+- Rendered the `CartModal` component conditionally when showCart is true.
+
+### Navbar.js
+
+```diff
+ import React from "react";
+ import styles from "../styles/Navbar.module.css";
+ import { useValue } from "../itemContext";
+
+ function Navbar() {
+-  const { item, total, clear } = useValue();
++  const { item, total, clear, toggle } = useValue();
+
+   return (
+     <div className={styles.container}>
+       <h1>Total : &#x20B9; {total}</h1>
+       <h1>Items: {item}</h1>
+
+       <div className={styles.buttonsWrapper}>
+-        <button className={styles.button}>Cart</button>
++        <button className={styles.button} onClick={toggle}>
++          Cart
++        </button>
+         <button className={styles.button} onClick={clear}>
+           Reset
+         </button>
+       </div>
+     </div>
+   );
+ }
+
+ export default Navbar;
+```
+
+Updated the Navbar to **open the cart modal using the Cart button**.
+
+- Retrieved `toggle` from the custom hook `useValue()`.
+- Added `onClick={toggle}` to the Cart button.
+- Clicking the Cart button now **opens or closes the Cart Modal**.
+
+### CartModal.js
+
+```diff
+ import React from "react";
+ import styles from "../styles/CartModal.module.css";
+
+-function CartModal() {
++function CartModal({ toggle }) {
+   return (
+     <div className={styles.cartModal}>
+-      <div className={styles.closeButton}>Close</div>
++      <div className={styles.closeButton} onClick={toggle}>
++        Close
++      </div>
+       <div className={styles.clearButton}>Clear</div>
+       <div className={styles.itemContainer}></div>
+
+       <div className={styles.total}>
+         <div className={styles.totalText}>Total</div>
+         <div className={styles.totalPrice}>$Price</div>
+       </div>
+     </div>
+   );
+ }
+
+ export default CartModal;
+```
+
+Updated the CartModal to **close the modal when the Close button is clicked**.
+
+- Received the `toggle` function as a prop.
+- Added `onClick={toggle}` to the Close button.
+- Clicking Close hides the cart modal by updating the context state.
+
+#### 🖥️ What You See in Browser:
+
+Click the Cart button, then click the Close button to return to the cart items.
+
+<img src="./images/toggle-cart-button.png" alt="Click Cart Button" width="700" height="auto">
+
+<img src="./images/close-button.png" alt="Click Close Button" width="700" height="auto">
+
+<img src="./images/items_cart-button.png" alt="Back to Cart Items" width="700" height="auto">
