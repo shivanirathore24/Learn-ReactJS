@@ -8,29 +8,30 @@ body {
   text-align: center;
 }
 
+code {
+  font-family:
+    source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+}
 main {
   font-size: 5rem;
+  text-align: center;
+  margin: auto;
   color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 8rem;
+  width: max-content;
 }
-
 h1 {
   background-color: cadetblue;
   padding: 2rem 4rem;
 }
-
 .nav {
   display: flex;
-  gap: 2rem;
+  align-content: space-around;
   background-color: lightblue;
-  padding-left: 2rem;
 }
 
 h4 {
-  margin: 1.5rem 0;
+  margin: 2rem;
+  width: max-content;
   font-size: 1.5rem;
   cursor: pointer;
 }

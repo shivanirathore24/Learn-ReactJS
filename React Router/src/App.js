@@ -20,7 +20,7 @@ function App() {
 
   const router = createBrowserRouter(routes);
 
-  //WAy-1
+  //Way-1
   // const router = createBrowserRouter([
   //   { path: "/", element: <Home /> },
   //   { path: "about", element: <About /> },

@@ -438,6 +438,8 @@ Navbar is simplified to **only display navigation items**.
 
 ## Route Element
 
+### App.js
+
 ```jsx
 import Home from "./pages/Home";
 import About from "./pages/About";
@@ -491,3 +493,81 @@ Routing configuration is updated to use `createRoutesFromElements` with `<Route 
   - Shows an alternative way to define routes using an object array.
 - `RouterProvider` still used to provide router configuration
   - Makes routing available to the entire application.
+
+## Navigation using Link
+
+### `<Link>` Component
+
+The `<Link>` component is a core component of React Router that is used to navigate
+between different routes in your application. It is a declarative way to create
+hyperlinks that allows you to handle navigation **without reloading the entire page**.
+The to prop specifies the target route. When a user clicks on a `<Link>` component,
+React Router will **automatically update the URL** and render the appropriate
+component for the target route.
+
+### Home.js
+
+```jsx
+import { Link } from "react-router-dom";
+
+function Home() {
+  return (
+    <>
+      <main>
+        <h1>Home Page</h1>
+        <Link to="/about">About</Link>&npsp;
+        <Link to="items">Items</Link>
+      </main>
+    </>
+  );
+}
+
+export default Home;
+```
+
+Navigation links are added using **React Router** `Link `component.
+
+- Imported `Link` from `react-router-dom`
+  - Enables client-side navigation without page reload.
+- Added navigation links
+  - `to="/about"` → navigates to About page.
+  - `to="items"` → navigates to Items page.
+- Home page now acts as a navigation entry point for other pages.
+
+The Link component can be used to create the back link, and the to prop is set to `"/"`
+to specify the target route. When the link is clicked, the user will be taken back to the
+home page.
+
+### About.js
+
+```jsx
+import { Link } from "react-router-dom";
+
+function About() {
+  return (
+    <>
+      <main>
+        <h1>About Page</h1>
+        <Link to="/">Back</Link>
+      </main>
+    </>
+  );
+}
+
+export default About;
+```
+
+Back navigation is added using **React Router** `Link`.
+
+- Imported `Link` from `react-router-dom`
+  - Allows navigation through router instead of traditional anchors.
+- Added Link to **Home**
+  - `to="/"` provides navigation back to the Home page.
+
+NOTE: Added Link navigation in `Items.js` to return to the **Home page**, similar to `About.js`.
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/link-navigation1.png" alt="Link Navigation" width="700" height="auto">
+
+<img src="./images/link-navigation2.png" alt="Link Navigation" width="700" height="auto">
