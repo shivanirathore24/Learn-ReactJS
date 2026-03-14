@@ -266,3 +266,172 @@ custom routers:
   a custom history object. The custom history object can be used to manipulate
   the browser's URL hash and handle navigation between pages without
   causing a full page refresh.
+
+## createBrowserRouter
+
+This is the recommended router for all React Router web projects. It uses the
+DOM History API to update the URL and manage the history stack.
+
+### For Example: WAY-1
+
+```jsx
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Home from "./pages/Home";
+import About from "./pages/About";
+
+function App() {
+  const router = createBrowserRouter([
+    { path: "/", element: <Home /> },
+    { path: "/about", element: <About /> },
+  ]);
+
+  return (
+    <>
+      <RouterProvider router={router} />
+    </>
+  );
+}
+
+export default App;
+```
+
+In this example, the createBrowserRouter function is used to create a custom
+<BrowserRouter> router with two routes: one for the home page, and one for the
+about page. The RouterProvider component is used to wrap the app and provide
+access to the custom router.
+
+1. Import the necessary modules, including createBrowserRouter,
+   RouterProvider, Home, and About.
+2. Use createBrowserRouter to create a custom `<BrowserRouter>` router with
+   the two routes: Home and About.
+3. Wrap the app with RouterProvider and pass in the custom router as a prop.
+   The RouterProvider component ensures that the routing context is available to
+   all child components of your app.
+4. Render the App component.
+
+### For Example: WAY-2
+
+```jsx
+import {
+  createBrowserRouter,
+  createRoutesFromElements,
+  Route,
+  RouterProvider,
+} from "react-router-dom";
+import Home from "./pages/Home";
+import About from "./pages/About";
+import Items from "./pages/Items";
+
+function App() {
+  const routes = createRoutesFromElements(
+    <>
+      <Route path="/" element={<Home />} />
+      <Route path="/about" element={<About />} />
+      <Route path="/items" element={<Items />} />
+    </>,
+  );
+
+  const router = createBrowserRouter(routes);
+
+  return (
+    <>
+      <RouterProvider router={router} />
+    </>
+  );
+}
+
+export default App;
+```
+
+In this example, the **createRoutesFromElements** function is used to create an array
+of route objects from JSX elements and avoid manually creating an array of route
+objects. The **createBrowserRouter** function is then used to create a custom
+`<BrowserRouter>` router with the array of route objects. Finally, the **RouterProvider**
+component is used to wrap the app and provide access to the custom router.
+
+## Creating routes
+
+### App.js
+
+```diff
+ import Home from "./pages/Home";
+ import About from "./pages/About";
+ import Items from "./pages/Items";
+-import Navbar from "./components/Navbar";
+-import { useState } from "react";
++import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
+ function App() {
+-  const [page, setPage] = useState("home");
++  const router = createBrowserRouter([
++    { path: "/", element: <Home /> },
++    { path: "about", element: <About /> },
++    { path: "items", element: <Items /> },
++  ]);
+
+   return (
+     <>
+-      <Navbar setPage={setPage} />
+-      {page === "home" && <Home />}
+-      {page === "about" && <About />}
+-      {page === "items" && <Items />}
++      <RouterProvider router={router} />
+     </>
+   );
+ }
+
+ export default App;
+```
+
+Navigation is implemented using **React Router instead of state management**.
+
+- `createBrowserRouter`
+  - Defines application routes and maps paths to components.
+- `RouterProvider`
+  - Provides routing configuration to the entire application.
+- Route configuration
+  - `/` → `Home`
+  - `/about` → `About`
+  - `/items` → `Items`
+
+- Removed `useState` page control
+  - Navigation is now handled through URL paths instead of conditional rendering.
+
+### Navbar.js
+
+```diff
+-function Navbar({setPage}) {
++function Navbar() {
+   return (
+     <>
+       <div className="nav">
+-        <h4 onClick={() => setPage('home')}>HOME</h4>
+-        <h4 onClick={() => setPage('about')}>ABOUT</h4>
+-        <h4 onClick={() => setPage('items')}>ITEMS</h4>
++        <h4>HOME</h4>
++        <h4>ABOUT</h4>
++        <h4>ITEMS</h4>
+       </div>
+     </>
+   );
+ }
+
+ export default Navbar;
+```
+
+Navbar is simplified to **only display navigation items**.
+
+- Removed `setPage` prop
+  - Component no longer controls page state.
+- Removed `onClick` handlers
+  - Page switching is not handled through state anymore.
+- Acts as a UI navigation component
+  - Routing behavior will be handled by React Router.
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/route-home-page.png" alt="Home Page" width="700" height="auto">
+
+<img src="./images/route-about-page.png" alt="About Page" width="700" height="auto">
+
+<img src="./images/route-items-page.png" alt="Items Page" width="700" height="auto">

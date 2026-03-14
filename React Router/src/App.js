@@ -1,17 +1,17 @@
-import Navbar from "./components/Navbar";
-import About from "./pages/About";
 import Home from "./pages/Home";
+import About from "./pages/About";
 import Items from "./pages/Items";
-import { useState } from "react";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 function App() {
-  const [page, setPage] = useState("home");
+  const router = createBrowserRouter([
+    { path: "/", element: <Home /> },
+    { path: "about", element: <About /> },
+    { path: "items", element: <Items /> },
+  ]);
   return (
     <>
-      <Navbar setPage={setPage} />
-      {page === "home" && <Home />}
-      {page === "about" && <About />}
-      {page === "items" && <Items />}
+      <RouterProvider router={router} />
     </>
   );
 }
