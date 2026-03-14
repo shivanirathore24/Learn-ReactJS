@@ -227,8 +227,42 @@ Acts as the entry point of the React application.
 - Renders the application into the root DOM element using React DOM.
 - Also,`index.css` contains global styling for layout, navigation bar, and page headings.
 
-This setup demonstrates how page navigation can be simulated using React state before learning React Router.
+This setup demonstrates **how page navigation can be simulated using React state before learning React Router**.
 
 #### 🖥️ What You See in Browser:
 
 <img src="./images/react-router-setup.png" alt="React Router Setup" width="700" height="auto">
+
+## Types of React Router
+
+In React Router v6.4, there are different types of routers that can be used depending
+on the needs of the application:
+
+1. `<BrowserRouter>`: This is the most commonly used router and is designed
+   for applications that will be hosted on a server that will serve all requests to
+   the application. It uses HTML5 history API to keep the UI in sync with the
+   URL.
+2. `<HashRouter>`: This router is designed for applications that will be hosted on
+   a server that does not support HTML5 history API, such as GitHub Pages or
+   static file servers. It uses the URL hash to keep the UI in sync with the URL.
+3. `<MemoryRouter>`: This router is designed for testing and non-visual use
+   cases, such as server-side rendering or testing.
+4. `<NativeRouter>`: This router is designed for React Native applications and
+   uses the native routing features of the platform.
+5. `<StaticRouter>`: This router is designed for server-side rendering and
+   generates a set of static routes based on a given location.
+
+In v6.4, new routers were introduced that support the new data APIs and to create
+custom routers:
+
+- **createBrowserRouter**: This function creates a custom `<BrowserRouter>`
+  router with a custom history object. The custom history object can be used to
+  manipulate the browser's URL and handle navigation between pages without
+  causing a full page refresh.
+- **createMemoryRouter**: This function creates a custom `<MemoryRouter>`
+  router with a custom history object. The custom history object can be used to
+  manipulate the router's state and handle navigation between pages.
+- **createHashRouter**: This function creates a custom `<HashRouter>` router with
+  a custom history object. The custom history object can be used to manipulate
+  the browser's URL hash and handle navigation between pages without
+  causing a full page refresh.
