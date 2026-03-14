@@ -435,3 +435,59 @@ Navbar is simplified to **only display navigation items**.
 <img src="./images/route-about-page.png" alt="About Page" width="700" height="auto">
 
 <img src="./images/route-items-page.png" alt="Items Page" width="700" height="auto">
+
+## Route Element
+
+```jsx
+import Home from "./pages/Home";
+import About from "./pages/About";
+import Items from "./pages/Items";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  createRoutesFromElements,
+  Route,
+} from "react-router-dom";
+
+function App() {
+  //Way-2
+  const routes = createRoutesFromElements(
+    <>
+      <Route path="/" element={<Home />} />
+      <Route path="/about" element={<About />} />
+      <Route path="items" element={<Items />} />
+    </>,
+  );
+  const router = createBrowserRouter(routes);
+
+  //Way-1
+  // const router = createBrowserRouter([
+  //   { path: "/", element: <Home /> },
+  //   { path: "about", element: <About /> },
+  //   { path: "items", element: <Items /> },
+  // ]);
+
+  return (
+    <>
+      <RouterProvider router={router} />
+    </>
+  );
+}
+
+export default App;
+```
+
+Routing configuration is updated to use `createRoutesFromElements` with `<Route />` components instead of defining routes directly inside an array.
+
+- Added `createRoutesFromElements` and `Route` imports
+  - Enables defining routes using JSX elements.
+- Created `routes` using `<Route />` components
+  - `/` → `Home`
+  - `/about`→ `About`
+  - `/items` → `Items`
+- Passed `routes` into `createBrowserRouter`
+  - Router instance is created using the generated route elements.
+- Previous array-based routing kept as comment
+  - Shows an alternative way to define routes using an object array.
+- `RouterProvider` still used to provide router configuration
+  - Makes routing available to the entire application.
