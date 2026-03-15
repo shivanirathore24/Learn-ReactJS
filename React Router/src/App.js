@@ -2,16 +2,18 @@ import Home from "./pages/Home";
 import About from "./pages/About";
 import Items from "./pages/Items";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+//import { createRoutesFromElements, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
-// import { createRoutesFromElements, Route } from "react-router-dom";
 
 function App() {
   //Way-2
   // const routes = createRoutesFromElements(
   //   <>
-  //     <Route path="/" element={<Home />} />
-  //     <Route path="/about" element={<About />} />
-  //     <Route path="items" element={<Items />} />
+  //     <Route path="/" element={<Navbar />}>
+  //       <Route index element={<Home />} />
+  //       <Route path="about" element={<About />} />
+  //       <Route path="items" element={<Items />} />
+  //     </Route>
   //   </>,
   // );
 

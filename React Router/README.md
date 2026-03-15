@@ -365,8 +365,8 @@ component is used to wrap the app and provide access to the custom router.
 -  const [page, setPage] = useState("home");
 +  const router = createBrowserRouter([
 +    { path: "/", element: <Home /> },
-+    { path: "about", element: <About /> },
-+    { path: "items", element: <Items /> },
++    { path: "/about", element: <About /> },
++    { path: "/items", element: <Items /> },
 +  ]);
 
    return (
@@ -457,7 +457,7 @@ function App() {
     <>
       <Route path="/" element={<Home />} />
       <Route path="/about" element={<About />} />
-      <Route path="items" element={<Items />} />
+      <Route path="/items" element={<Items />} />
     </>,
   );
   const router = createBrowserRouter(routes);
@@ -465,8 +465,8 @@ function App() {
   //Way-1
   // const router = createBrowserRouter([
   //   { path: "/", element: <Home /> },
-  //   { path: "about", element: <About /> },
-  //   { path: "items", element: <Items /> },
+  //   { path: "/about", element: <About /> },
+  //   { path: "/items", element: <Items /> },
   // ]);
 
   return (
@@ -516,7 +516,7 @@ function Home() {
       <main>
         <h1>Home Page</h1>
         <Link to="/about">About</Link>&npsp;
-        <Link to="items">Items</Link>
+        <Link to="/items">Items</Link>
       </main>
     </>
   );
@@ -531,7 +531,7 @@ Navigation links are added using **React Router** `Link `component.
   - Enables client-side navigation without page reload.
 - Added navigation links
   - `to="/about"` → navigates to About page.
-  - `to="items"` → navigates to Items page.
+  - `to="/items"` → navigates to Items page.
 - Home page now acts as a navigation entry point for other pages.
 
 The Link component can be used to create the back link, and the to prop is set to `"/"`
@@ -628,7 +628,6 @@ function Navbar() {
           <h4>ABOUT</h4>
         </Link>
         <Link to="/items">
-          {" "}
           <h4>ITEMS</h4>
         </Link>
       </div>
@@ -652,28 +651,40 @@ component will render the About component.
  import Home from "./pages/Home";
  import About from "./pages/About";
  import Items from "./pages/Items";
--import {
--  createBrowserRouter,
--  RouterProvider,
--  createRoutesFromElements,
--  Route,
--} from "react-router-dom";
-+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+ import { createBrowserRouter, RouterProvider } from "react-router-dom";
+ // import { createRoutesFromElements, Route } from "react-router-dom";
 +import Navbar from "./components/Navbar";
 
  function App() {
 
--  // Way-2 routing using createRoutesFromElements
+   //Way-2
 -  const routes = createRoutesFromElements(
 -    <>
 -      <Route path="/" element={<Home />} />
 -      <Route path="/about" element={<About />} />
--      <Route path="items" element={<Items />} />
--    </>
+-      <Route path="/items" element={<Items />} />
+-    </>,
 -  );
 -
 -  const router = createBrowserRouter(routes);
-+  // Nested routing with layout
++  // const routes = createRoutesFromElements(
++  //   <>
++  //     <Route path="/" element={<Navbar />}>
++  //       <Route index element={<Home />} />
++  //       <Route path="about" element={<About />} />
++  //       <Route path="items" element={<Items />} />
++  //     </Route>
++  //   </>
++  // );
++
++  // const router = createBrowserRouter(routes);
+
+   //Way-1
+-  // const router = createBrowserRouter([
+-  //   { path: "/", element: <Home /> },
+-  //   { path: "/about", element: <About /> },
+-  //   { path: "/items", element: <Items /> },
+-  // ]);
 +  const router = createBrowserRouter([
 +    {
 +      path: "/",
@@ -753,7 +764,7 @@ Navbar was updated to support navigation and nested routing.
        <main>
          <h1>Home Page</h1>
 -        <Link to="/about">About</Link>&nbsp;
--        <Link to="items">Items</Link>
+-        <Link to="/items">Items</Link>
        </main>
      </>
    );
@@ -868,3 +879,25 @@ export default Navbar;
 #### 🖥️ What You See in Browser:
 
 <img src="./images/navlink-navigation.png" alt="Navigation using NavLink" width="700" height="auto">
+
+## Relative vs Absolute Paths
+
+In web development, a path is a URL endpoint that specifies the location of a specific
+resource or content on a web server. A base URL is the root URL that serves as the
+starting point for all the other URLs in a website. In React Router, paths are used to
+define routes that map to specific components in your application. These routes can
+be either relative or absolute.
+
+A relative path is a path that is relative to the current location. For example, if the
+current location is "`/users`", and you want to link to the "profile" page, the relative
+path would be "`profile`". The resulting link would be "`/users/profile`".
+
+An absolute path is a path that starts with a forward slash ("`/`") and is relative to the
+root of the website. For example, if the current location is "`/users`", and you want to
+link to the "home" page, the absolute path would be "`/home`". The resulting link would
+be "`/home`".
+
+In general, it is recommended to use relative paths whenever possible, as they are
+more flexible and can be used in different contexts. Absolute paths are useful when
+you need to link to a specific page that is not in the current directory or when you
+want to link to a page in a different part of the website.
