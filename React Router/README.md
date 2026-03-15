@@ -571,3 +571,232 @@ NOTE: Added Link navigation in `Items.js` to return to the **Home page**, simila
 <img src="./images/link-navigation1.png" alt="Link Navigation" width="700" height="auto">
 
 <img src="./images/link-navigation2.png" alt="Link Navigation" width="700" height="auto">
+
+## Nested Routes
+
+Nested routes in React Router allow you to define routes that are nested within
+another route. This can be useful for building more complex UIs, such as layouts
+with multiple sections that have their own routes.
+
+For Example:
+
+```jsx
+import Home from "./pages/Home";
+import About from "./pages/About";
+import Items from "./pages/Items";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Navbar from "./components/Navbar";
+
+function App() {
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <Navbar />,
+      children: [
+        { index: true, element: <Home /> },
+        { path: "about", element: <About /> },
+        { path: "items", element: <Items /> },
+      ],
+    },
+  ]);
+
+  return (
+    <>
+      <RouterProvider router={router} />
+    </>
+  );
+}
+
+export default App;
+```
+
+Parent route is defined with the path of `/` and an element of Navbar. The children
+property is an array of child routes, which includes an index route, a route with the
+path of `/about`, and a route with the path of `/items`.
+
+```jsx
+import { Link, Outlet } from "react-router-dom";
+
+function Navbar() {
+  return (
+    <>
+      <div className="nav">
+        <Link to="/">
+          <h4>HOME</h4>
+        </Link>
+        <Link to="/about">
+          <h4>ABOUT</h4>
+        </Link>
+        <Link to="/items">
+          {" "}
+          <h4>ITEMS</h4>
+        </Link>
+      </div>
+      <Outlet />
+    </>
+  );
+}
+
+export default Navbar;
+```
+
+The Navbar component renders links to the child routes using the Link component.
+The **Outlet** component renders the appropriate child component based on the current
+nested route. The Outlet component renders the appropriate child component based
+on the current nested route. For example, if the current URL is `/about`, the Outlet
+component will render the About component.
+
+### App.js
+
+```diff
+ import Home from "./pages/Home";
+ import About from "./pages/About";
+ import Items from "./pages/Items";
+-import {
+-  createBrowserRouter,
+-  RouterProvider,
+-  createRoutesFromElements,
+-  Route,
+-} from "react-router-dom";
++import { createBrowserRouter, RouterProvider } from "react-router-dom";
++import Navbar from "./components/Navbar";
+
+ function App() {
+
+-  // Way-2 routing using createRoutesFromElements
+-  const routes = createRoutesFromElements(
+-    <>
+-      <Route path="/" element={<Home />} />
+-      <Route path="/about" element={<About />} />
+-      <Route path="items" element={<Items />} />
+-    </>
+-  );
+-
+-  const router = createBrowserRouter(routes);
++  // Nested routing with layout
++  const router = createBrowserRouter([
++    {
++      path: "/",
++      element: <Navbar />,
++      children: [
++        { index: true, element: <Home /> },
++        { path: "about", element: <About /> },
++        { path: "items", element: <Items /> },
++      ],
++    },
++  ]);
+
+   return (
+     <>
+       <RouterProvider router={router} />
+     </>
+   );
+ }
+
+ export default App;
+```
+
+Routing structure was changed from simple routes to nested layout routes.
+
+- Previously, routes were defined individually using `createRoutesFromElements`.
+- Now a **parent route** is created with `Navbar` as the main layout component.
+- The children property defines the pages (`Home`, `About`, `Items`) that will render inside this layout.
+- `index: true` is used to make Home the default route when visiting `/`.
+- This approach allows the **Navbar to remain visible while only the page content changes**.
+
+### Navbar.js
+
+```diff
++import { Link, Outlet } from "react-router-dom";
+
+ function Navbar() {
+   return (
+     <>
+       <div className="nav">
+-        <h4>HOME</h4>
+-        <h4>ABOUT</h4>
+-        <h4>ITEMS</h4>
++        <Link to="/">
++          <h4>HOME</h4>
++        </Link>
++        <Link to="/about">
++          <h4>ABOUT</h4>
++        </Link>
++        <Link to="/items">
++          <h4>ITEMS</h4>
++        </Link>
+       </div>
+
++      <Outlet />
+     </>
+   );
+ }
+
+ export default Navbar;
+```
+
+Navbar was updated to support navigation and nested routing.
+
+- `Link` from React Router is used instead of plain text so users **can navigate between pages without reloading the page**.
+- Each navigation item now links to its corresponding route (`/`, `/about`, `/items`).
+- `Outlet` is added below the navbar, which acts as a **placeholder where the child routes will render**.
+- Because of this, the navbar stays constant while the content of the selected page appears below it.
+
+### Home.js
+
+```diff
++import { Link } from "react-router-dom";
+
+ function Home() {
+   return (
+     <>
+       <main>
+         <h1>Home Page</h1>
+-        <Link to="/about">About</Link>&nbsp;
+-        <Link to="items">Items</Link>
+       </main>
+     </>
+   );
+ }
+
+ export default Home;
+```
+
+Navigation links were removed from the Home page.
+
+- Earlier, `Link` components were used to navigate to **About** and **Items** pages.
+- Since navigation is now handled through the **Navbar component**, these links are no longer needed inside `Home`.
+- This keeps the Home component **clean and focused only on displaying page content**.
+
+### About.js
+
+```diff
+-import { Link } from "react-router-dom";
+
+ function About() {
+   return (
+     <>
+       <main>
+         <h1>About Page</h1>
+-        <Link to="/">Back</Link>
+       </main>
+     </>
+   );
+ }
+
+ export default About;
+```
+
+The Back navigation link was removed from the About page.
+
+- Earlier, a `Link` component was used to provide a Back button to the Home page.
+- Since navigation is now handled through the **Navbar links**, this extra navigation element became unnecessary.
+- Removing it simplifies the page component and keeps navigation consistent across the application.
+
+Note: Similar changes were made in the `Items.jsx` file (navigation link removed), just like in the `About.jsx` file.
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/nested-routes1.png" alt="Nested Routes" width="700" height="auto">
+
+<img src="./images/nested-routes2.png" alt="Nested Routes" width="700" height="auto">

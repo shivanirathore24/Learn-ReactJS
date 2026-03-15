@@ -1,11 +1,21 @@
+import { Link, Outlet } from "react-router-dom";
+
 function Navbar() {
   return (
     <>
       <div className="nav">
-        <h4>HOME</h4>
-        <h4>ABOUT</h4>
-        <h4>ITEMS</h4>
+        <Link to="/">
+          <h4>HOME</h4>
+        </Link>
+        <Link to="/about">
+          <h4>ABOUT</h4>
+        </Link>
+        <Link to="/items">
+          {" "}
+          <h4>ITEMS</h4>
+        </Link>
       </div>
+      <Outlet />
     </>
   );
 }
