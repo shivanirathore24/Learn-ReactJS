@@ -901,3 +901,210 @@ In general, it is recommended to use relative paths whenever possible, as they a
 more flexible and can be used in different contexts. Absolute paths are useful when
 you need to link to a specific page that is not in the current directory or when you
 want to link to a page in a different part of the website.
+
+## Dynamic Routes
+
+Dynamic routes are routes that contain parameters, which can be used to
+dynamically generate content based on user input or other data. In React Router,
+dynamic routes are defined using a colon (`:`) followed by the name of the parameter.
+
+For example, a dynamic route for a user profile page might look like `/users/:id`, where
+`:id` is the parameter that will be replaced with the actual user ID.
+
+To access the parameter in your component, you can use the `useParams` hook
+provided by React Router.
+
+#### For Example:
+
+```jsx
+import { useParams } from "react-router-dom";
+
+function UserProfile() {
+  const { id } = useParams();
+
+  return <div>User profile for user {id}</div>;
+}
+
+export default UserProfile;
+```
+
+### App.js
+
+```diff
+ import Home from "./pages/Home";
+ import About from "./pages/About";
+ import Items from "./pages/Items";
+ import { createBrowserRouter, RouterProvider } from "react-router-dom";
+ import Navbar from "./components/Navbar";
++import ItemDetails from "./pages/ItemDetails";
+
+ function App() {
+   const router = createBrowserRouter([
+     {
+       path: "/",
+       element: <Navbar />,
+       children: [
+         { index: true, element: <Home /> },
+         { path: "about", element: <About /> },
+         { path: "items", element: <Items /> },
++        { path: "items/:id", element: <ItemDetails /> },
+       ],
+     },
+   ]);
+
+   return (
+     <>
+       <RouterProvider router={router} />
+     </>
+   );
+ }
+
+ export default App;
+```
+
+Dynamic routing was introduced by adding a route parameter to the router configuration.
+
+- A new component `ItemDetails` was imported to display details of a specific item.
+- A new route `items/:id` was added inside the children routes.
+- The `:id` part is a **dynamic route parameter**, meaning the value in that position can change depending on the URL.
+- For example, the following URLs will all match the same route:
+  ```text
+  /items/item-1
+  /items/item-2
+  /items/item-3
+  ```
+- Instead of creating separate routes for every item, React Router captures the dynamic value (`item-1`, `item-2`, etc.) and passes it to the component.
+- This makes routing **more scalable and flexible**, because one route and one component can handle many items dynamically.
+
+### Items.js
+
+```diff
++import { Link } from "react-router-dom";
+
+ function Items() {
+   return (
+     <>
+       <main>
+         <h1>Items Page</h1>
+       </main>
++
++      <ul>
++        <li>
++          <Link to="/items/item-1">Item-1</Link>
++        </li>
++
++        <li>
++          <Link to="/items/item-2">Item-2</Link>
++        </li>
++
++        <li>
++          <Link to="/items/item-3">Item-3</Link>
++        </li>
++      </ul>
+     </>
+   );
+ }
+
+ export default Items;
+```
+
+Links were added to navigate to dynamic item routes.
+
+- The `Link` component from React Router was imported to enable client-side navigation.
+- Each list item now contains a `Link` that points to a specific item URL.
+- The URLs correspond to the dynamic route defined in the router (`items/:id`).
+- For example:
+  ```text
+  /items/item-1
+  ```
+- When a user clicks a link, React Router updates the URL and loads the `ItemDetails` component without refreshing the page.
+- The dynamic portion of the URL (`item-1`, `item-2`, etc.) will later be accessed using `useParams()`.
+
+### ItemDetails.jsx (New File)
+
+```jsx
+import { useParams } from "react-router-dom";
+
+function ItemDetails() {
+  const params = useParams();
+  console.log(params);
+
+  return (
+    <>
+      <main>
+        <h1>ItemDetails Page</h1>
+      </main>
+      <h2>Item ID: {params.id}</h2>
+    </>
+  );
+}
+
+export default ItemDetails;
+```
+
+The `ItemDetails` component retrieves and displays the dynamic route parameter.
+
+- The `useParams()` hook from React Router is used to access parameters from the URL.
+- When a route like `/items/item-2` is visited, React Router extracts the value of `id`.
+- `useParams()` returns an object containing the parameter values.
+- Example:
+
+  ```text
+  URL → /items/item-2
+  ```
+
+  `useParams()` returns:
+
+  ```jsx
+  {
+    id: "item-2";
+  }
+  ```
+
+- The component then uses `params.id` to display which item was selected.
+- This allows the same component to render different content depending on the URL.
+
+### Key Concept
+
+Dynamic routing allows a single route and component to handle multiple pages by using parameters in the URL.
+
+In this example:
+
+```text
+Route → items/:id
+```
+
+- `items` is the fixed part of the route.
+- `:id` is the dynamic part that changes depending on which item is selected.
+
+This approach avoids creating multiple routes such as:
+
+```text
+/items/item-1
+/items/item-2
+/items/item-3
+```
+
+Instead, a single dynamic route handles all of them and retrieves the specific value using `useParams()`.
+
+### Dynamic Routing Flow
+
+```text
+Items Page
+   │
+Click Item-1
+   │
+URL → /items/item-1
+   │
+Route → items/:id
+   │
+useParams() → { id: "item-1" }
+   │
+ItemDetails Page
+```
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/dynamic-routes1.png" alt="Dynamic Routes" width="700" height="auto">
+
+<img src="./images/dynamic-routes2.png" alt="Dynamic Routes" width="700" height="auto">

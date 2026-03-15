@@ -4,6 +4,7 @@ import Items from "./pages/Items";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 //import { createRoutesFromElements, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
+import ItemDetails from "./pages/ItemDetails";
 
 function App() {
   //Way-2
@@ -28,6 +29,10 @@ function App() {
         { index: true, element: <Home /> },
         { path: "about", element: <About /> },
         { path: "items", element: <Items /> },
+        {
+          path: "items/:id",
+          element: <ItemDetails />,
+        },
       ],
     },
   ]);
