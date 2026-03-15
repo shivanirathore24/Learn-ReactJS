@@ -1020,7 +1020,7 @@ Links were added to navigate to dynamic item routes.
 - When a user clicks a link, React Router updates the URL and loads the `ItemDetails` component without refreshing the page.
 - The dynamic portion of the URL (`item-1`, `item-2`, etc.) will later be accessed using `useParams()`.
 
-### ItemDetails.jsx (New File)
+### pages/ItemDetails.jsx (New File)
 
 ```jsx
 import { useParams } from "react-router-dom";
@@ -1108,3 +1108,183 @@ ItemDetails Page
 <img src="./images/dynamic-routes1.png" alt="Dynamic Routes" width="700" height="auto">
 
 <img src="./images/dynamic-routes2.png" alt="Dynamic Routes" width="700" height="auto">
+
+## Dynamic Pages
+
+### App.js
+
+```diff
+...
+
+ const router = createBrowserRouter([
+   {
+     path: "/",
+     element: <Navbar />,
+     children: [
+       { index: true, element: <Home /> },
+       { path: "about", element: <About /> },
+-      { path: "items", element: <Items /> },
+-      {
+-        path: "items/:id",
+-        element: <ItemDetails />,
+-      },
++      {
++        path: "items",
++        children: [
++          { index: true, element: <Items /> },
++          {
++            path: ":id",
++            element: <ItemDetails />,
++          },
++        ],
++      },
+     ],
+   },
+ ]);
+
+...
+```
+
+The routing structure was updated to use nested routes for items and item details.
+
+- Previously, both routes were defined separately:
+  - `/items`
+  - `/items/:id`
+- These routes were moved into a **nested route structure** where `items` becomes the parent route.
+- Inside it:
+  - `index` renders the **Items page** at `/items`.
+  - `:id` renders **ItemDetails** for dynamic URLs like `/items/item-1`.
+- This structure better represents the relationship between:
+  - the **Items list page**.
+  - and the **individual item detail pages**.
+- Nested routing also improves maintainability and allows child routes to logically belong to the parent route.
+
+### data/itemData.js (New Data Source)
+
+```js
+export const ITEMS = [
+  { id: "item-1", title: "Item1", detail: "Item-1 Description!" },
+  { id: "item-2", title: "Item2", detail: "Item-2 Description!" },
+  { id: "item-3", title: "Item3", detail: "Item-3 Description!" },
+  { id: "item-4", title: "Item4", detail: "Item-4 Description!" },
+  { id: "item-5", title: "Item5", detail: "Item-5 Description!" },
+];
+```
+
+A centralized data file was introduced to store item information.
+
+- Instead of hardcoding items directly in the component, item data is now stored in a separate file.
+- Each item object contains:
+- `id` → unique identifier used in the URL
+- `title` → item name
+- `detail` → item description
+- This approach makes the application more scalable and keeps components cleaner by **separating data from UI logic**.
+
+### Items.js
+
+```diff
+ import { Link } from "react-router-dom";
++import { ITEMS } from "../data/itemData";
+
+ function Items() {
+   return (
+     <>
+       <main>
+         <h1>Items Page</h1>
+       </main>
+
+       <ul>
+-        <li>
+-          <Link to="/items/item-1">Item-1</Link>
+-        </li>
+-
+-        <li>
+-          <Link to="/items/item-2">Item-2</Link>
+-        </li>
+-
+-        <li>
+-          <Link to="/items/item-3">Item-3</Link>
+-        </li>
++        {ITEMS.map((item) => (
++          <Link to={`/items/${item.id}`}>
++            <li>{item.title}</li>
++          </Link>
++        ))}
+       </ul>
+     </>
+   );
+ }
+```
+
+The item list was refactored to render dynamically from the data file.
+
+- The `ITEMS` array is imported from `itemData.js`.
+- Instead of manually writing each item, the component now uses `.map()` to loop through the array.
+- For each item:
+  - A `Link` is created pointing to `/items/{item.id}`.
+  - The item title is displayed inside a list element.
+- This allows the list to automatically update when new items are added to the data file, making the component **more reusable and scalable**.
+
+### ItemsDetails.js
+
+```diff
+ import { useParams } from "react-router-dom";
++import { ITEMS } from "../data/itemData";
+
+ function ItemDetails() {
+-  const params = useParams();
+-  console.log(params);
++  const { id } = useParams();
++  console.log(id);
++
++  const item = ITEMS.find((item) => item.id === id);
+
+   return (
+     <>
+       <main>
+-        <h1>ItemDetails Page</h1>
++        <h1>ItemDetails</h1>
+       </main>
+-      <h2>Item ID: {params.id}</h2>
++      <h2>{item.title}</h2>
++      <h3>{item.detail}</h3>
+     </>
+   );
+ }
+```
+
+The ItemDetails component was enhanced to display actual item information based on the dynamic route parameter.
+
+- `useParams()` is used to extract the `id` value from the URL.
+- The `ITEMS` array is imported to access item data.
+- The `.find()` method searches the array for the item whose `id` matches the URL parameter.
+- Once the item is found:
+  - The item **title** is displayed.
+  - The item **description** is shown below it.
+- This enables the application to display **different content for each item while using a single component**, which is a key concept of dynamic routing.
+
+### Dynamic Item Details Flow
+
+```text
+Items Page
+   │
+User clicks Item
+   │
+URL → /items/item-1
+   │
+Route → items/:id
+   │
+useParams() → id = "item-1"
+   │
+find() searches ITEMS array
+   │
+ItemDetails Page shows item title and description
+```
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/dyanmic-pages1.png" alt="Dynamic Pages" width="700" height="auto">
+
+<img src="./images/dyanmic-pages2.png" alt="Dynamic Pages" width="700" height="auto">
+
+<img src="./images/dyanmic-pages3.png" alt="Dynamic Pages" width="700" height="auto">
