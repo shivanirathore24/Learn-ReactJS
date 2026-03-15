@@ -1,19 +1,35 @@
-import { Link, Outlet } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
 
 function Navbar() {
   return (
     <>
       <div className="nav">
-        <Link to="/">
+        <NavLink
+          style={({ isActive }) =>
+            isActive ? { color: "darkcyan" } : undefined
+          }
+          to="/"
+        >
           <h4>HOME</h4>
-        </Link>
-        <Link to="/about">
+        </NavLink>
+
+        <NavLink
+          style={({ isActive }) =>
+            isActive ? { color: "darkcyan" } : undefined
+          }
+          to="/about"
+        >
           <h4>ABOUT</h4>
-        </Link>
-        <Link to="/items">
-          {" "}
+        </NavLink>
+        
+        <NavLink
+          style={({ isActive }) =>
+            isActive ? { color: "darkcyan" } : undefined
+          }
+          to="/items"
+        >
           <h4>ITEMS</h4>
-        </Link>
+        </NavLink>
       </div>
       <Outlet />
     </>

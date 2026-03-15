@@ -800,3 +800,71 @@ Note: Similar changes were made in the `Items.jsx` file (navigation link removed
 <img src="./images/nested-routes1.png" alt="Nested Routes" width="700" height="auto">
 
 <img src="./images/nested-routes2.png" alt="Nested Routes" width="700" height="auto">
+
+## Navigation using NavLink
+
+### `<NavLink>` Component
+
+The `<NavLink>` component is similar to the `<Link>` component in that it creates a
+hyperlink to a specified location. However, it adds the ability to add styling and active
+classes to the link when it is active. This can be useful for highlighting the current
+page or route in a navigation menu.
+
+### Navbar.js
+
+```jsx
+import { NavLink, Outlet } from "react-router-dom";
+
+function Navbar() {
+  return (
+    <>
+      <div className="nav">
+        <NavLink
+          style={({ isActive }) =>
+            isActive ? { color: "darkcyan" } : undefined
+          }
+          to="/"
+        >
+          <h4>HOME</h4>
+        </NavLink>
+
+        <NavLink
+          style={({ isActive }) =>
+            isActive ? { color: "darkcyan" } : undefined
+          }
+          to="/about"
+        >
+          <h4>ABOUT</h4>
+        </NavLink>
+
+        <NavLink
+          style={({ isActive }) =>
+            isActive ? { color: "darkcyan" } : undefined
+          }
+          to="/items"
+        >
+          <h4>ITEMS</h4>
+        </NavLink>
+      </div>
+      <Outlet />
+    </>
+  );
+}
+
+export default Navbar;
+```
+
+**Navigation links were upgraded from `Link` to `NavLink` to support active route styling**.
+
+- `Link` was replaced with `NavLink` from React Router.
+  - `NavLink` works like `Link` but provides information about whether the link is currently active.
+- A `style` function using `{({ isActive }) => ...}` was added.
+  - When the route matches the current URL, `isActive` becomes true.
+  - The active link is styled with `color: "darkcyan"`.
+- This visually indicates which page is currently selected in the navigation bar.
+- `Outlet` remains unchanged.
+  - It still renders the matched child route (`Home`, `About`, or `Items`) below the navbar.
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/navlink-navigation.png" alt="Navigation using NavLink" width="700" height="auto">
