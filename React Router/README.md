@@ -1288,3 +1288,119 @@ ItemDetails Page shows item title and description
 <img src="./images/dyanmic-pages2.png" alt="Dynamic Pages" width="700" height="auto">
 
 <img src="./images/dyanmic-pages3.png" alt="Dynamic Pages" width="700" height="auto">
+
+## Unhandled Routes
+
+### pages/ErrorPage.js (New File)
+
+```jsx
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
+function ErrorPage() {
+  const navigate = useNavigate();
+
+  // useEffect(() => {
+  //   const timer = setTimeout(() => navigate("/"), 3000);
+  //   return () => clearTimeout(timer);
+  // }, [navigate]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => navigate(-1), 3000);
+    return () => clearTimeout(timer);
+  }, [navigate]);
+
+  return (
+    <>
+      <h1>Oops! Something went wrong. Redirecting you...</h1>
+    </>
+  );
+}
+
+export default ErrorPage;
+```
+
+Added an `ErrorPage` component to handle unhandled routes and navigation errors.
+
+- Displays an error message when a user navigates to an invalid or broken route.
+- Redirects the user **after 3 seconds** using `navigate(-1)` to return to the last visited page.
+- The earlier implementation that redirected to the **home page** (`navigate("/")`) is now commented out, replacing it with history-based navigation for better user experience.
+- Uses `setTimeout` inside `useEffect` and clears the timer with `clearTimeout` during cleanup.
+
+### App.js
+
+```diff
+ import Home from "./pages/Home";
+ import About from "./pages/About";
+ import Items from "./pages/Items";
+ import { createBrowserRouter, RouterProvider } from "react-router-dom";
+ import Navbar from "./components/Navbar";
+ import ItemDetails from "./pages/ItemDetails";
++import ErrorPage from "./pages/ErrorPage";
+
+ function App() {
+   const router = createBrowserRouter([
+     {
+       path: "/",
+       element: <Navbar />,
++      errorElement: <ErrorPage />,
+       children: [
+         { index: true, element: <Home /> },
+         { path: "about", element: <About /> },
+         {
+           path: "items",
+           children: [
+             { index: true, element: <Items /> },
+             {
+               path: ":id",
+               element: <ItemDetails />,
+             },
+           ],
+         },
+       ],
+     },
+   ]);
+
+   return (
+     <>
+       <RouterProvider router={router} />
+     </>
+   );
+ }
+
+ export default App;
+```
+
+Added React Router error handling for unmatched or invalid routes.
+
+- Imported `ErrorPage`.
+- Added `errorElement` inside the root route.
+- Now any **invalid path or routing error** renders `ErrorPage`.
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/unhandled-routes1.png" alt="Unhandled Routes" width="700" height="auto">
+
+<img src="./images/navigation-back1.png" alt="Navigation Back" width="700" height="auto">
+
+<img src="./images/unhandled-routes2.png" alt="Unhandled Routes" width="700" height="auto">
+
+<img src="./images/navigation-back2.png" alt="Navigation Back" width="700" height="auto">
+
+## Summarizing it
+
+Let’s summarize what we have learned in this Lecture:
+
+- Learned about Routing Mechanism in React.
+- Learned about React Router.
+- Learned about types of React Router.
+- Learned about createBrowserRouter.
+- Learned about Nested Routes.
+- Learned about <Link> and <NavLink> Components.
+- Learned about Relative, Absolute and Dynamic Routes.
+
+### Some References:
+
+[React Router Documentation](https://reactrouter.com/start/modes)
+
+[Client Side Routing](https://reactrouter.com/6.28.0/start/overview)

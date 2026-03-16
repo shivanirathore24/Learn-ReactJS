@@ -5,6 +5,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 //import { createRoutesFromElements, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import ItemDetails from "./pages/ItemDetails";
+import ErrorPage from "./pages/ErrorPage";
 
 function App() {
   //Way-2
@@ -25,6 +26,7 @@ function App() {
     {
       path: "/",
       element: <Navbar />,
+      errorElement: <ErrorPage />,
       children: [
         { index: true, element: <Home /> },
         { path: "about", element: <About /> },
