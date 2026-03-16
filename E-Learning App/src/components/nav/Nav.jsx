@@ -1,6 +1,6 @@
 import React from "react";
+import { NavLink, Link, Outlet } from "react-router-dom";
 import style from "./Nav.module.css";
-import { Outlet } from "react-router-dom";
 
 function Nav() {
   return (
@@ -8,15 +8,23 @@ function Nav() {
       <nav>
         <div className={style.nav_container}>
           <div className={style.nav_title_wrapper}>
-            <img
-              className={style.logo}
-              src="https://files.codingninjas.in/pl-ninja-16706.svg"
-              alt="logo"
-            />
+            {/* Second Task */}
+            <Link to="/">
+              <img
+                className={style.logo}
+                src="https://files.codingninjas.in/pl-ninja-16706.svg"
+                alt="logo"
+              />
+            </Link>
             <h4>StackForge</h4>
           </div>
           <div className={style.nav_details}>
-            <button>Courses</button>
+            <button>
+              {/* Second Task */}
+              <NavLink to="/courses">
+                {({ isActive }) => (isActive ? "On Courses" : "Go To Courses")}
+              </NavLink>
+            </button>
           </div>
         </div>
       </nav>

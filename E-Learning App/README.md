@@ -68,3 +68,26 @@ Result: The application now supports **structured navigation with nested routes*
 <img src="./images/creating-routes1.png" alt="Creating Routes" width="700" height="auto">
 
 <img src="./images/creating-routes2.png" alt="Creating Routes" width="700" height="auto">
+
+## Dynamic Routes
+
+Dynamic routing was implemented to show course-specific details based on the selected course.
+
+- Added a **dynamic route** `:courseId` under the `/courses` path to load the Details page for each course.
+- Wrapped each course Card with a `Link` so clicking a course navigates to `/courses/:courseId`.
+- Used the `useParams` hook to retrieve the `courseId` from the URL.
+- Matched the extracted `courseId` with the corresponding course in `courses.json`.
+- Displayed the selected course’s **image, title, and description** dynamically on the Details page.
+
+Result:
+Each course now opens a **unique details page using a dynamic URL**.
+
+#### 🖥️ What You See in Browser:
+
+Click “Go To Courses” → Select the React course → View the course details.
+
+<img src="./images/dynamic-routes1.png" alt="Dynamic Routes" width="700" height="auto">
+
+<img src="./images/dynamic-routes2.png" alt="Dynamic Routes" width="700" height="auto">
+
+<img src="./images/dynamic-routes3.png" alt="Dynamic Routes" width="700" height="auto">

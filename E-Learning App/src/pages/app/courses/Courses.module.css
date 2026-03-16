@@ -1,46 +1,50 @@
 .heading {
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--clr-text-main);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--clr-text-main);
 }
 
 .heading h1 {
-    font-size: 3rem;
-    font-weight: 600;
-   
+  font-size: 3rem;
+  font-weight: 600;
 }
 
 .heading h4 {
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--clr-accent);
-    text-decoration: underline dashed var(--clr-accent);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--clr-accent);
+  text-decoration: underline dashed var(--clr-accent);
 }
 
 .courses_container {
-    width: 90vw;
-    margin: 0 auto;
-    display: flex;
-  
-    flex-direction: column;
-    padding-block: 1rem;
-    background-color: var(--clr-bg);
+  width: 90vw;
+  margin: 0 auto;
+  display: flex;
+
+  flex-direction: column;
+  padding-block: 1rem;
+  background-color: var(--clr-bg);
 }
 
 .card_container {
-    margin-right: 1rem;
-    margin-block: 1rem;
+  margin-right: 1rem;
+  margin-block: 1rem;
 }
 
 .courses {
-    display: flex;
-   
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-   
+  display: flex;
+
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+}
+
+.card_container a {
+  text-decoration: none;
+  color: inherit;
+  display: block;
 }
 
 .courses::-webkit-scrollbar {
-    display: none;
-    /* Safari and Chrome */
+  display: none;
+  /* Safari and Chrome */
 }
