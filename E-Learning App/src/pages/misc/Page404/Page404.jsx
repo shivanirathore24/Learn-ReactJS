@@ -1,20 +1,21 @@
-import React from 'react';
+import React from "react";
+import style from "./Page404.module.css";
 
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from "react-router-dom";
 function Page404() {
   const location = useLocation();
   const navigate = useNavigate();
 
   return (
-    <div>
-      <h1>404</h1>
+    <div className={style.errorPage}>
+      <h1>Oops! Something went Wrong.</h1>
       <h2>Page Not Found</h2>
-      <p>
+      <h4>
         The page <code>{location.pathname}</code> does not exist.
-      </p>
+      </h4>
       <button
         onClick={() => {
-          navigate('/');
+          navigate("/");
         }}
       >
         Go to Home

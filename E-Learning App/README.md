@@ -91,3 +91,37 @@ Click “Go To Courses” → Select the React course → View the course detail
 <img src="./images/dynamic-routes2.png" alt="Dynamic Routes" width="700" height="auto">
 
 <img src="./images/dynamic-routes3.png" alt="Dynamic Routes" width="700" height="auto">
+
+## Nested Routes
+
+The Learn page implements nested routing to display course chapters dynamically while sharing course data between components.
+
+- **Learn Page**: Uses `useParams()` to get `courseId`, fetches the course from `courses.json`, displays the course title and chapter list, and renders chapter content using `<Outlet />`.
+- **Chapter Component**: Uses `useParams()` to get `chapterId` and `useOutletContext()` to access course data passed from the Learn page, then displays the selected chapter details and video.
+- `useOutletContext` **Hook**: Allows the parent route (`Learn`) to pass course data to nested child routes (`Chapter`) without prop drilling.
+- **Navigation**: Uses `Link` to move between pages like Courses → Details → Learn → Chapter.
+- **Error Handling**: A custom `Page404` component is used with `errorElement` to show a friendly error message and redirect users to the home page when an invalid route is accessed.
+
+### useOutletContext Hook
+
+`useOutletContext` is used in **nested routing to share data from a parent route component to its child routes**.
+
+- It allows the parent component rendering `<Outlet />` to pass data to nested components.
+- Helps avoid **prop drilling** when multiple nested routes need the same data.
+- In this project, the **Learn page passes course data** through `<Outlet context={course} />`.
+- The **Chapter component retrieves that data** using `useOutletContext()` to display chapter details.
+
+Result: Child routes can easily access parent route data while using **React Router nested routing**.
+
+#### 🖥️ What You See in Browser:
+
+Click “Start Learning” → Select the Introduction chapter → View the chapter title, description, detailed explanation, and video lesson.
+
+<img src="./images/nested-routes1.png" alt="Nested Routes" width="700" height="auto">
+<img src="./images/nested-routes2.png" alt="Nested Routes" width="700" height="auto">
+
+Enter an invalid chapter URL (e.g., /chapter/15) → You will be redirected to the custom Error Page → Click “Go to Home” to return to the Home page.
+
+<img src="./images/unhandled-routes.png" alt="Unhandled Routes" width="700" height="auto">
+
+---
