@@ -109,12 +109,12 @@ console.log(
 All three functions in the above code are pure functions. Their return value
 depends on the input arguments, they don't mutate any non-local state, and
 they have no side effects (we will discuss side effects further in this article).
-Examples of pure functions in JavaScript include Math.abs(), parseInt(),
-JSON.stringify(), and many others.
+Examples of pure functions in JavaScript include `Math.abs()`, `parseInt()`,
+`JSON.stringify()`, and many others.
 
 Pure functions can be used with functional programming techniques such as
-higher-order functions, currying, and partial application. JavaScript libraries
-and frameworks such as Redux, Ramda, and Lodash emphasize using pure
+**higher-order functions, currying, and partial application**. JavaScript libraries
+and frameworks such as **Redux, Ramda, and Lodash** emphasize using pure
 functions and functional programming principles.
 
 ### Impure Functions
@@ -137,8 +137,8 @@ console.log(myMessage("Shivani"));
 
 In the above code, the result the function returns is dependent on the variable that is
 not declared inside the function. That's why this is an impure function.
-Examples of impure functions in JavaScript include console.log(), Math.random(),
-and Date.now(), Array.sort(), Array.splice(), and many others.
+Examples of impure functions in JavaScript include `console.log()`, `Math.random()`,
+and `Date.now()`, `Array.sort()`, `Array.splice()`, and many others.
 
 Impure functions can be necessary for tasks such as reading and writing to a file or a
 database, generating random numbers, or interacting with the user interface.
@@ -284,4 +284,177 @@ console.log(sum(10)(20)(30)); // 60
   Normal Function  → sum(10, 20, 30)
   Curried Function → sum(10)(20)(30)
 */
+```
+
+## Redux Architecture
+
+In Redux, the state of an application is represented as a single JavaScript object
+called the "store". The store is responsible for managing the application's state and
+updating the view when the state changes. The data flow in Redux is unidirectional,
+meaning that the data flows in one direction, from the view to the store and back to
+the view. This makes it easier to reason about the application's state and simplifies
+debugging.
+
+Redux uses a "one-way data flow" app structure.
+
+- The state describes the condition of the app at a point in time, and UI renders
+  based on that state
+- When something happens in the app:
+  - The UI dispatches an action
+  - The store runs the reducers, and the state is updated based on what
+    occurred
+  - The store notifies the UI that the state has changed
+- The UI re-renders based on the new state
+
+  <img src="./images/redux-architecture.png" alt="Redux Architecture" width="700" height="auto">
+
+### Installation of Redux
+
+Run the following command to install Redux as a dependency for your project:
+
+```bash
+npm install redux
+```
+
+## Components of the Redux Architecture
+
+### Store
+
+The store is the central place where the application's state is stored. It is created
+using a reducer function that determines how the state should be updated based on
+the actions dispatched to the store
+
+#### For Example:
+
+```javascript
+// store
+const redux = require("redux");
+const store = redux.createStore(todoApp);
+```
+
+### Actions
+
+Actions are plain JavaScript objects that describe what should happen in the
+application. They are created by calling action creator functions and are dispatched
+to the store using the `store.dispatch()` method. Payload is the data that needs to be
+transferred.
+
+#### For Example:
+
+```javascript
+// action types
+const ADD_TODO = "ADD_TODO";
+const TOGGLE_TODO = "TOGGLE_TODO";
+
+// action creators
+const addTodo = (text) => ({ type: ADD_TODO, text });
+const toggleTodo = (index) => ({ type: TOGGLE_TODO, index });
+```
+
+### Reducers
+
+Reducers are pure functions that take the current state and an action as arguments
+and return a new state. They are responsible for updating the application's state
+based on the actions dispatched to the store.
+
+#### For Example:
+
+```javascript
+// reducer
+function todoApp(state = initialState, action) {
+  switch (action.type) {
+    case ADD_TODO:
+      return {
+        ...state,
+        todos: [
+          ...state.todos,
+          {
+            text: action.text,
+            completed: false,
+          },
+        ],
+      };
+
+    case TOGGLE_TODO:
+      return {
+        ...state,
+        todos: state.todos.map((todo, i) => {
+          if (i === action.index) {
+            return {
+              ...todo,
+              completed: !todo.completed,
+            };
+          }
+          return todo;
+        }),
+      };
+
+    default:
+      return state;
+  }
+}
+```
+
+### View
+
+The view is responsible for displaying the current state of the application to the user.
+It subscribes to changes in the store and updates the view when the state changes.
+
+### Dispatchers
+
+a dispatcher is a function that receives an action object and dispatches it to the
+Redux store, triggering a state change. The dispatcher then passes the action object
+to the store's reducer function, which applies the update to the application state
+according to the rules defined by the application's business logic.
+
+#### For Example:
+
+```javascript
+// dispatch actions
+store.dispatch(addTodo("Learn Redux"));
+store.dispatch(addTodo("Build an app"));
+store.dispatch(toggleTodo(0));
+
+// get the current state
+console.log(store.getState());
+```
+
+### Selectors
+
+Selectors are functions that extract specific data from the application's state. They
+provide a way to access and transform the data stored in the store
+
+#### For Example:
+
+```javascript
+// selector
+const getCompletedTodos = (state) => {
+  return state.todos.filter((todo) => todo.completed === true);
+};
+```
+
+### Principles of Redux
+
+- Global app state is kept in a single store
+- The store state is read-only to the rest of the app
+- Reducer functions are used to update the state in response to actions
+
+### Redux Flow
+
+```text
+User Interaction
+      ↓
+UI (View)
+      ↓
+dispatch(action)
+      ↓
+Action (type + payload)
+      ↓
+Reducer (pure function)
+      ↓
+Store updates state
+      ↓
+Selector extracts required data
+      ↓
+UI re-renders (via subscription)
 ```
