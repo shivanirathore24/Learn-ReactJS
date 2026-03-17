@@ -458,3 +458,159 @@ Selector extracts required data
       ↓
 UI re-renders (via subscription)
 ```
+
+## Redux with Javascript
+
+### Code Snippet (todo-reducer.js)
+
+```jsx
+// Redux Todo Example
+// Demonstrates basic Redux concepts: actions, reducer, store, and dispatch
+
+const redux = require("redux");
+
+// Action Types → define what kind of operation will happen
+const ADD_TODO = "Add TODO";
+const TOGGLE_TODO = "Toggle TODO";
+
+// Action Creators → functions that return action objects
+const AddToDo = (text) => ({ type: ADD_TODO, text });
+const toggleToDo = (index) => ({ type: TOGGLE_TODO, index });
+
+// Initial State → starting state of the application
+const initialState = {
+  todos: [],
+};
+
+// Reducer → pure function that updates state based on action
+function todoReducer(state = initialState, action) {
+  switch (action.type) {
+    // Add a new todo item
+    case ADD_TODO:
+      return {
+        ...state, // copy existing state
+        todos: [
+          ...state.todos, // copy existing todos
+          {
+            text: action.text,
+            completed: false, // new todo is not completed
+          },
+        ],
+      };
+
+    // Toggle completion status of a todo
+    case TOGGLE_TODO:
+      return {
+        ...state,
+        todos: state.todos.map((todo, i) => {
+          if (i === action.index) {
+            return {
+              ...todo,
+              completed: !todo.completed, // toggle value
+            };
+          }
+          return todo;
+        }),
+      };
+
+    // Return current state if action type doesn't match
+    default:
+      return state;
+  }
+}
+
+// Create Redux store with reducer
+const store = redux.createStore(todoReducer);
+
+// Dispatch actions → trigger state changes
+store.dispatch(AddToDo("Morning workout at 6 AM"));
+store.dispatch(AddToDo("Office work at 9 AM"));
+store.dispatch(toggleToDo(0)); // mark workout as completed
+store.dispatch(AddToDo("Evening study at 5 PM"));
+
+// Get updated state from store
+console.log(store.getState());
+```
+
+This code demonstrates a basic Redux implementation to manage a todo list. It shows how actions are dispatched, how the reducer updates the state immutably, and how the store holds the latest state.
+
+- Action Types
+  - Define the types of operations that can occur in the application.
+    - `ADD_TODO` → adds a new task
+    - `TOGGLE_TODO` → marks a task as completed/incomplete
+- Action Creators
+  - Functions that return action objects.
+    - `AddToDo(text)` → creates an action to add a todo
+    - `toggleToDo(index)` → creates an action to toggle a todo
+- Initial State
+  - Represents the starting state of the application.
+  ```javascript
+  {
+    todos: [];
+  }
+  ```
+- Reducer
+  - A pure function that updates the state based on the action.
+    - **ADD_TODO**
+      - Creates a new todo object
+      - Returns a new state with the todo added
+
+    - **TOGGLE_TODO**
+      - Finds the todo by index
+      - Returns a new state with updated completed value
+
+  - Important: State is **not modified directly** — a new state is always returned.
+
+- Store
+  - The central place where the application state is stored.
+
+    ```javascript
+    const store = redux.createStore(todoReducer);
+    ```
+
+    - Holds current state
+    - Updates state using reducer
+    - Provdes getState() to access data
+
+- Dispatch
+  - Used to send actions to the store.
+
+    ```javascript
+    store.dispatch(AddToDo("Morning workout at 6 AM"));
+    ```
+
+    - Triggers reducer
+    - Updates state
+
+#### 🖥️ What You See in Terminal Output:
+
+After all dispatch calls, the state becomes:
+
+```javascript
+{
+  todos: [
+    { text: "Morning workout at 6 AM", completed: true },
+    { text: "Office work at 9 AM", completed: false },
+    { text: "Evening study at 5 PM", completed: false },
+  ];
+}
+```
+
+This example shows how Redux manages state in a predictable way by using actions, reducers, and a centralized store while ensuring immutability.
+
+## Summarizing it
+
+Let’s summarize what we have learned in this Lecture:
+
+- Learned about Issues with Prop Drilling.
+- Learned about State Management.
+- Learned about Context API.
+- Learned about Redux and Architecture.
+- Learned about components of Redux.
+- Learned about the Principles of Redux.
+
+### Some References:
+
+[Context API](https://react.dev/reference/react/createContext?utm_source=chatgpt.com)
+
+[Redux Documentation](https://redux.js.org/tutorials/fundamentals/part-2-concepts-data-flow)
