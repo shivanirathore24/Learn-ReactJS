@@ -1,0 +1,208 @@
+# REDUX IN REACT
+
+## ToDo App: Project SetUp
+
+A simple and interactive ToDo application built with React that allows users to add tasks and toggle their completion status.
+
+This project was initialized using Create React App with the command:
+
+```bash
+npx create-react-app todo-app
+```
+
+### Folder Structure
+
+```text
+todo-app/
+│
+├── node_modules/        # Installed dependencies
+├── public/              # Static files
+│
+├── src/                 # Main source code
+│   ├── components/      # Reusable components
+│   │   ├── ToDoForm/
+│   │   │   ├── ToDoForm.js
+│   │   │   └── ToDoForm.css
+│   │   │
+│   │   ├── ToDoList/
+│   │   │   ├── ToDoList.js
+│   │   │   └── ToDoList.css
+│   │
+│   ├── App.js           # Root component
+│   ├── App.css          # App styles
+│   ├── index.js         # Entry point
+│   └── index.css        # Global styles
+│
+├── .gitignore           # Git ignored files
+├── package.json         # Project metadata & dependencies
+├── package-lock.json    # Dependency lock file
+└── README.md            # Project documentation
+```
+
+### index.js (Application Entry Point)
+
+```jsx
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+);
+```
+
+This file starts the React application and renders it in the browser.
+
+- Imports React and ReactDOM
+- Imports global styles (`index.css`)
+- Imports the main `App` component
+- Creates a root using `ReactDOM.createRoot()`
+- Renders `<App />` inside the HTML element with id `"root"`
+- Uses `React.StrictMode` to detect potential issues during development
+
+### App.js (Main Controller / State Manager)
+
+```jsx
+import { useState } from "react";
+import TodoForm from "./components/ToDoForm/ToDoForm";
+import TodoList from "./components/ToDoList/ToDoList";
+import "./App.css";
+
+function App() {
+  const [todos, setTodos] = useState([]);
+
+  const createTodo = (text) => {
+    if (!text.trim()) return;
+    setTodos([...todos, { id: Date.now(), text, completed: false }]);
+  };
+
+  const toggleTodo = (index) => {
+    const list = [...todos];
+    list[index].completed = !list[index].completed;
+    setTodos(list);
+  };
+
+  return (
+    <div className="app">
+      <h1>To Do App</h1>
+
+      <TodoForm onCreateTodo={createTodo} />
+      <TodoList todos={todos} onToggle={toggleTodo} />
+    </div>
+  );
+}
+
+export default App;
+```
+
+his is the core component that manages all application data and logic.
+
+- Uses `useState` to store the list of todos
+- `createTodo(text)`:
+  - Adds a new task to the list
+  - Prevents empty inputs using `trim()`
+- `toggleTodo(index)`:
+  - Toggles task status (Completed ↔ Pending)
+- Passes data and functions to child components:
+  - `TodoForm` → receives function to add tasks
+  - `TodoList` → receives tasks and toggle function
+
+### components/ToDoForm/ToDoForm.js (Task Input Component)
+
+```jsx
+import { useState } from "react";
+import "./ToDoForm.css";
+
+function ToDoForm({ onCreateTodo }) {
+  const [todoText, setTodoText] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onCreateTodo(todoText);
+    setTodoText("");
+  };
+
+  return (
+    <div className="form-container">
+      <form onSubmit={handleSubmit} className="form">
+        <input
+          type="text"
+          placeholder="Enter your task..."
+          value={todoText}
+          onChange={(e) => setTodoText(e.target.value)}
+        />
+        <button type="submit">Add Task</button>
+      </form>
+    </div>
+  );
+}
+
+export default ToDoForm;
+```
+
+This component handles user input for adding new tasks.
+
+- Uses `useState` to manage input value (`todoText`)
+- `handleSubmit()`:
+  - Prevents page reload
+  - Sends input data to App using `onCreateTodo`
+  - Clears the input field after submission
+- Input field is controlled via state (`value` and `onChange`)
+
+### components/ToDoList/ToDoList.js (Task Display Component)
+
+```jsx
+import "./ToDoList.css";
+
+function ToDoList({ todos, onToggle }) {
+  return (
+    <div className="list-container">
+      <ul>
+        {todos.map((todo, index) => (
+          <li key={todo.id}>
+            <span className="content">{todo.text}</span>
+
+            <span className={todo.completed ? "completed" : "pending"}>
+              {todo.completed ? "Completed" : "Pending"}
+            </span>
+
+            <button onClick={() => onToggle(index)}>Toggle</button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export default ToDoList;
+```
+
+his component displays all tasks and allows users to update their status.
+
+- Receives `todos` array from `App`
+- Uses `.map()` to render each task
+- Displays:
+  - Task text
+  - Status (Completed or Pending)
+- `Toggle` button:
+  - Calls `onToggle(index)` to update task status
+
+### Styling Files
+
+- `App.css` → Styles the main layout and overall appearance of the application
+
+- `ToDoForm.css` → Styles the input form, including the field and button
+
+- `ToDoList.css` → Styles the task list, including items and status display
+
+- `index.css` → Provides global styles like fonts, spacing, and default resets
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/add-task.png" alt="Adding Task" width="600" height="auto">
+
+<img src="./images/todo-task.png" alt="ToDo Task" width="600" height="auto">
