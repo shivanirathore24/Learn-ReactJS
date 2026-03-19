@@ -223,7 +223,7 @@ export const toggleTodo = (index) => ({ index, type: TOGGLE_TODO });
 
 Defines the actions for managing todos in a Redux-based app, including action types and action creators used to handle adding and updating todo items.
 
-- **Action constants** (`ADD_TODO`, `TOGGLE_TODO`)
+- Action constants(`ADD_TODO`, `TOGGLE_TODO`)
   - These are fixed identifiers for different actions.
   - Using constants ensures consistency and prevents typos across reducers and components.
 
@@ -282,7 +282,7 @@ export function todoReducer(state, action) {
 
 Defines the reducer logic for managing todo state in a Redux-based app, handling actions such as adding new todos and toggling their completion status.
 
-- **Initial state** (`initiaState`)
+- Initial state (`initiaState`)
   - Stores the default state with an empty `todos` array
   - Represents the starting point of the application state
 - `todoReducer(state, action)`
@@ -303,3 +303,34 @@ Defines the reducer logic for managing todo state in a Redux-based app, handling
   - Matches todo by `index` and flips its `completed` value
 - Default case
   - Returns the current state if no matching action is found
+
+## Creating Store
+
+Install Redux as a dependency required for state management in the application:
+
+```bash
+npm install redux
+```
+
+### redux/store.js (Redux Store Configuration)
+
+```jsx
+import redux from "redux";
+import todoReducer from "./reducers/todoReducer";
+export const store = redux.createStore(todoReducer);
+```
+
+Defines and configures the Redux store for the application, connecting it with the todo reducer to manage the global state.
+
+- Importing Redux (`redux`)
+  - Imports the Redux library to access store creation functionality
+  - Uses `createStore` to initialize the central state container
+- Importing reducer (`todoReducer`)
+  - Connects the reducer that handles todo-related state updates
+  - Ensures all dispatched actions are processed through this reducer
+- Creating the store (`createStore`)
+  - Initializes the Redux store using `todoReducer`
+  - The store holds the entire application state (`todos`)
+- Exporting the store (`store`)
+  - Makes the store available across the application
+  - Allows components to access state and dispatch actions
