@@ -203,9 +203,9 @@ his component displays all tasks and allows users to update their status.
 
 #### 🖥️ What You See in Browser:
 
-<img src="./images/add-task.png" alt="Adding Task" width="600" height="auto">
+<img src="./images/add-task.png" alt="Adding Task" width="700" height="auto">
 
-<img src="./images/todo-task.png" alt="ToDo Task" width="600" height="auto">
+<img src="./images/todo-task.png" alt="ToDo Task" width="700" height="auto">
 
 ## Setting up Actions
 
@@ -460,3 +460,161 @@ Updates the App component to integrate Redux by wrapping the application with th
 - Note on current setup
   - Local state (`useState`) is still being used for todos
   - Redux is added but not yet fully utilized for state updates
+
+## Hooks
+
+React Redux provides a pair of custom React hooks that allow your React
+components to interact with the Redux store.
+
+### useSelector
+
+The **useSelector** hook is used to extract data from the Redux store. It takes a
+selector function as input and returns the selected data from the store. So, if store
+gets updated it will not directly impact the components. This also helps in abstraction
+and encapsulation of store by hiding the important object. For example, Here the
+useSelector hook is used to retrieve the todos state from the store. The todos state
+is then mapped over and rendered to the screen as a list of todo items.
+
+```jsx
+import { useSelector } from "react-redux";
+import "./ToDoList.css";
+
+function ToDoList() {
+  const todos = useSelector((state) => state.todos);
+
+  return (
+    <div className="container">
+      <ul>
+        {todos.map((todo, index) => (
+          <li key={todo.id}>
+            <span className="content">{todo.text}</span>
+            <span className={todo.completed ? "completed" : "pending"}>
+              {todo.completed ? "Completed" : "Pending"}
+            </span>
+            <button className="btn btn-warning">Toggle</button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export default ToDoList;
+```
+
+The useSelector hook is useful for optimizing performance by avoiding unnecessary
+re-renders. It allows you to select only the data you need from the store, which can
+help reduce the amount of data that needs to be processed by the component.
+
+## Using Selector
+
+### redux/reducers/todoReducer.js (Reducer Initialization & Default State Setup)
+
+```diff
+ import { ADD_TODO, TOGGLE_TODO } from "../actions/todoActions";
+
+ const initialState = {
+-  todos: [],
++  todos: [
++    {
++      text: "Morning workout at 6 AM",
++      completed: true,
++    },
++    {
++      text: "Study mathematics at 5 PM",
++      completed: false,
++    },
++  ],
+ };
+
+-export function todoReducer(state, action) {
++export function todoReducer(state = initialState, action) {
+   switch (action.type) {
+     case ADD_TODO:
+       return {
+         ...state,
+         todos: [
+           ...state.todos,
+           {
+             text: action.text,
+             completed: false,
+           },
+         ],
+       };
+
+     case TOGGLE_TODO:
+       return {
+         ...state,
+         todos: state.todos.map((todo, i) => {
+           if (i === action.index) {
+             todo.completed = !todo.completed;
+           }
+           return todo;
+         }),
+       };
+
+     default:
+       return state;
+   }
+ }
+```
+
+Updates the reducer to initialize state properly and include predefined todos, ensuring the application has a valid default state and avoids undefined errors.
+
+- Adding `initialState` with sample todos
+  - Introduces default todo items (fitness and mathematics)
+  - Helps in testing and displaying initial UI data
+- Setting default state in reducer (`state = initialState`)
+  - Ensures reducer always has a valid state
+  - Prevents runtime errors like `Cannot read properties of undefined`
+- Improved state handling
+  - Maintains consistent structure of `todos` array
+  - Ensures reducer works predictably with dispatched actions
+
+### components/ToDoList/ToDoList.js (Redux State Integration)
+
+```diff
+ import "./ToDoList.css";
++import { useSelector } from "react-redux";
+
+-function ToDoList({ todos, onToggle }) {
++function ToDoList({ onToggle }) {
++  const todos = useSelector((state) => state.todos);
+
+   return (
+     <div className="list-container">
+       <ul>
+         {todos.map((todo, index) => (
+           <li key={todo.id}>
+             <span className="content">{todo.text}</span>
+
+             <span className={todo.completed ? "completed" : "pending"}>
+               {todo.completed ? "Completed" : "Pending"}
+             </span>
+
+             <button onClick={() => onToggle(index)}>Toggle</button>
+           </li>
+         ))}
+       </ul>
+     </div>
+   );
+ }
+
+ export default ToDoList;
+```
+
+Updates the component to retrieve todo data directly from the Redux store using `useSelector`, instead of receiving it via props.
+
+- Using `useSelector`
+  - Accesses global state directly from Redux store
+  - Eliminates need to pass `todos` as props
+- Simplifying component data flow
+  - Reduces dependency on parent component
+  - Makes component more connected to centralized state
+- Maintaining toggle functionality (temporary)
+  - Still uses `onToggle` prop (hybrid approach)
+  - Can be replaced later with `dispatch` for full Redux usage
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/initial-state-task.png" alt="Initial State Tasks" width="600" height="auto">

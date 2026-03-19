@@ -1,10 +1,19 @@
 import { ADD_TODO, TOGGLE_TODO } from "../actions/todoActions";
 
 const initialState = {
-  todos: [],
+  todos: [
+    {
+      text: "Morning workout at 6 AM",
+      completed: true,
+    },
+    {
+      text: "Study mathematics at 5 PM",
+      completed: false,
+    },
+  ],
 };
 
-export function todoReducer(state, action) {
+export function todoReducer(state= initialState, action) {
   switch (action.type) {
     case ADD_TODO:
       return {
