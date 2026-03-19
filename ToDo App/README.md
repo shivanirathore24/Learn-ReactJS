@@ -237,3 +237,69 @@ Defines the actions for managing todos in a Redux-based app, including action ty
   - It includes:
     - `type: TOGGLE_TODO` → indicates toggle operation
     - `index` → identifies which todo to update
+
+## Implementing Reducers
+
+### redux/reducers/todoReducer.js (Todo State Reducer)
+
+```jsx
+import { ADD_TODO, TOGGLE_TODO } from "../actions/todoActions";
+
+const initiaState = {
+  todos: [],
+};
+
+export function todoReducer(state, action) {
+  switch (action.type) {
+    case ADD_TODO:
+      return {
+        ...state,
+        todos: [
+          ...state.todos,
+          {
+            text: action.text,
+            completed: false,
+          },
+        ],
+      };
+
+    case TOGGLE_TODO:
+      return {
+        ...state,
+        todos: state.todos.map((todo, i) => {
+          if (i == action.index) {
+            todo.completed = !todo.completed;
+          }
+          return todo;
+        }),
+      };
+
+    default:
+      return state;
+  }
+}
+```
+
+Defines the reducer logic for managing todo state in a Redux-based app, handling actions such as adding new todos and toggling their completion status.
+
+- **Initial state** (`initiaState`)
+  - Stores the default state with an empty `todos` array
+  - Represents the starting point of the application state
+- `todoReducer(state, action)`
+  - A reducer function that updates state based on the dispatched action
+  - Uses a `switch` statement to handle different action types
+
+- `ADD_TODO` case
+  - Adds a new todo to the list
+  - Returns a new state object with:
+    - Existing todos spread (`...state.todos`)
+    - New todo object with:
+      - `text` from action
+      - `completed: false`
+
+- `TOGGLE_TODO` case
+  - Toggles the completion status of a specific todo
+  - Uses `map()` to iterate through todos
+  - Matches todo by `index` and flips its `completed` value
+- Default case
+  - Returns the current state if no matching action is found
