@@ -206,3 +206,34 @@ his component displays all tasks and allows users to update their status.
 <img src="./images/add-task.png" alt="Adding Task" width="600" height="auto">
 
 <img src="./images/todo-task.png" alt="ToDo Task" width="600" height="auto">
+
+## Setting up Actions
+
+### redux/actions/todoActions.js (Redux Actions for Todos)
+
+```jsx
+// Action constants
+const ADD_TODO = "Add ToDO";
+const TOGGLE_TODO = "Toggle Todo";
+
+// Action Creators
+export const addTodo = (text) => ({ text, type: ADD_TODO });
+export const toggleTodo = (index) => ({ index, type: TOGGLE_TODO });
+```
+
+Defines the actions for managing todos in a Redux-based app, including action types and action creators used to handle adding and updating todo items.
+
+- **Action constants** (`ADD_TODO`, `TOGGLE_TODO`)
+  - These are fixed identifiers for different actions.
+  - Using constants ensures consistency and prevents typos across reducers and components.
+
+- `addTodo(text)`
+  - An action creator that returns an action object to add a new todo.
+  - It includes:
+    - `type: ADD_TODO` → tells the reducer what to do
+    - `text` → the content of the new todo
+- `toggleTodo(index)`
+  - An action creator that returns an action object to toggle a todo’s status.
+  - It includes:
+    - `type: TOGGLE_TODO` → indicates toggle operation
+    - `index` → identifies which todo to update
