@@ -213,8 +213,8 @@ his component displays all tasks and allows users to update their status.
 
 ```jsx
 // Action constants
-const ADD_TODO = "Add ToDO";
-const TOGGLE_TODO = "Toggle Todo";
+export const ADD_TODO = "Add ToDO";
+export const TOGGLE_TODO = "Toggle Todo";
 
 // Action Creators
 export const addTodo = (text) => ({ text, type: ADD_TODO });
@@ -245,7 +245,7 @@ Defines the actions for managing todos in a Redux-based app, including action ty
 ```jsx
 import { ADD_TODO, TOGGLE_TODO } from "../actions/todoActions";
 
-const initiaState = {
+const initialState = {
   todos: [],
 };
 
@@ -267,7 +267,7 @@ export function todoReducer(state, action) {
       return {
         ...state,
         todos: state.todos.map((todo, i) => {
-          if (i == action.index) {
+          if (i === action.index) {
             todo.completed = !todo.completed;
           }
           return todo;
@@ -315,8 +315,8 @@ npm install redux
 ### redux/store.js (Redux Store Configuration)
 
 ```jsx
-import redux from "redux";
-import todoReducer from "./reducers/todoReducer";
+import * as redux from "redux";
+import { todoReducer } from "./reducers/todoReducer";
 export const store = redux.createStore(todoReducer);
 ```
 
@@ -334,3 +334,129 @@ Defines and configures the Redux store for the application, connecting it with t
 - Exporting the store (`store`)
   - Makes the store available across the application
   - Allows components to access state and dispatch actions
+
+## Providing Store
+
+### React Redux Library
+
+React Redux is a popular library that provides a predictable state container for
+JavaScript applications using the React library. The react-redux library provides a
+centralized store for state management in React applications. It offers several hooks
+that help in optimizing code and improving application performance. Hooks are an
+important concept in React Redux because they allow developers to extract logic
+from components and reuse it across the application.
+
+#### Installation
+
+To use React Redux with your React app, install it as a dependency:
+
+```bash
+npm install react-redux
+```
+
+### Provider Component
+
+The Provider component is a React component that allows you to provide the Redux
+store to all components in your application. It is the top-level component that wraps
+your entire application and makes the store available to all child components.
+The Provider component takes a store prop, which is the Redux store that you want
+to provide to your application.
+
+Here's an example of how to use the Provider component in a ToDo application:
+
+```jsx
+import { useState } from "react";
+import { Provider } from "react-redux";
+import TodoForm from "./components/ToDoForm/ToDoForm";
+import TodoList from "./components/ToDoList/ToDoList";
+import { store } from "./redux/store";
+import "./App.css";
+
+function App() {
+  const [todos, setTodos] = useState([]);
+
+  const createTodo = (text) => {
+    setTodos([...todos, { id: todos.length + 1, text, completed: false }]);
+  };
+
+  const toggleTodo = (index) => {
+    const list = [...todos];
+    list[index].completed = !list[index].completed;
+    setTodos(list);
+  };
+
+  return (
+    <div>
+      <h1>To Do App</h1>
+      <Provider store={store}>
+        <TodoForm onCreateTodo={createTodo} />
+        <TodoList todos={todos} onToggle={toggleTodo} />
+      </Provider>
+    </div>
+  );
+}
+
+export default App;
+```
+
+By default, when the Provider element is used, all child components will have access
+to the entire Redux store. However, it is possible to scope store access to specific
+components using the store prop of the Provider element. To do this, you can create
+a separate Redux store for each component that requires scoped access to the
+store. Then, when rendering the component, pass in the appropriate store as a prop
+to the Provider element.
+
+### App.js (Redux Provider Integration)
+
+```diff
+ import { useState } from "react";
+ import TodoForm from "./components/ToDoForm/ToDoForm";
+ import TodoList from "./components/ToDoList/ToDoList";
++import { Provider } from "react-redux";
++import { store } from "./redux/store";
+ import "./App.css";
+
+ function App() {
+   const [todos, setTodos] = useState([]);
+
+   const createTodo = (text) => {
+     if (!text.trim()) return;
+     setTodos([...todos, { id: Date.now(), text, completed: false }]);
+   };
+
+   const toggleTodo = (index) => {
+     const list = [...todos];
+     list[index].completed = !list[index].completed;
+     setTodos(list);
+   };
+
+   return (
+     <div className="app">
+       <h1>To Do App</h1>
+-      <TodoForm onCreateTodo={createTodo} />
+-      <TodoList todos={todos} onToggle={toggleTodo} />
++      <Provider store={store}>
++        <TodoForm onCreateTodo={createTodo} />
++        <TodoList todos={todos} onToggle={toggleTodo} />
++      </Provider>
+     </div>
+   );
+ }
+
+ export default App;
+```
+
+Updates the App component to integrate Redux by wrapping the application with the Provider, enabling access to the centralized store across components.
+
+- Importing `Provider` from react-redux
+  - Adds Redux support to the React app
+  - Allows components to access global state
+- Importing `store`
+  - Connects the Redux store created in `redux/store.js`
+  - Makes the global state available to the app
+- Wrapping with `<Provider>`
+  - Wraps `TodoForm` and `TodoList` inside `Provider`
+  - Enables these components to interact with Redux state
+- Note on current setup
+  - Local state (`useState`) is still being used for todos
+  - Redux is added but not yet fully utilized for state updates

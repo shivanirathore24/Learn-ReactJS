@@ -1,6 +1,6 @@
 // Action constants
-const ADD_TODO = "Add ToDO";
-const TOGGLE_TODO = "Toggle Todo";
+export const ADD_TODO = "Add ToDO";
+export const TOGGLE_TODO = "Toggle Todo";
 
 // Action Creators
 export const addTodo = (text) => ({ text, type: ADD_TODO });

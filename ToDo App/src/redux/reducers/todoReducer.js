@@ -1,6 +1,6 @@
 import { ADD_TODO, TOGGLE_TODO } from "../actions/todoActions";
 
-const initiaState = {
+const initialState = {
   todos: [],
 };
 
@@ -22,7 +22,7 @@ export function todoReducer(state, action) {
       return {
         ...state,
         todos: state.todos.map((todo, i) => {
-          if (i == action.index) {
+          if (i === action.index) {
             todo.completed = !todo.completed;
           }
           return todo;
