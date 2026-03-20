@@ -1,3 +1,11 @@
 import * as redux from "redux";
-import {todoReducer} from "./reducers/todoReducer";
-export const store = redux.createStore(todoReducer);
+import { combineReducers } from "redux";
+import { todoReducer } from "./reducers/todoReducer";
+import { noteReducer } from "./reducers/noteReducer";
+
+const result = combineReducers({
+  todos: todoReducer,
+  notes: noteReducer,
+});
+
+export const store = redux.createStore(result);

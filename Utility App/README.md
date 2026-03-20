@@ -1198,3 +1198,101 @@ Defines how the notes state is managed and updated in response to actions, handl
   - Updates the notes array after deletion
 - Default case
   - Returns current state if action type does not match
+
+## Multiple Reducers
+
+In a typical React Redux application, the state is managed by reducers, which are
+functions responsible for handling different parts of the state. The decision to use
+multiple reducers or a single reducer depends on the complexity of your application's
+state. If your application's state is simple and straightforward, a single reducer may
+suffice. However, as your application grows in complexity, it can become difficult to
+manage a large state with a single reducer. Using multiple reducers in your React
+Redux application can provide better organization, improved scalability, and better
+performance. For example, let's say you have an e-commerce application that
+manages user accounts, products, and orders. You can create three separate
+reducers for each of these parts of the state.
+
+## Combining Reducers
+
+Combining reducers is a technique used in React Redux to manage a complex state
+in a more organized and manageable way. It involves creating multiple reducers that
+handle different parts of the state and then combining them into a single root reducer
+using the **combineReducers** function. The combineReducers function takes an
+object as its argument, where the keys represent the keys of the root state object,
+and the values represent the individual reducers.
+
+For example in this case, the root state object has two keys, todos and notes, each
+of which maps to the corresponding reducer.
+
+```jsx
+import * as redux from "redux";
+import { combineReducers } from "redux";
+import { noteReducer } from "./reducers/noteReducer";
+import { todoReducer } from "./reducers/todoReducer";
+
+const result = combineReducers({
+  todos: todoReducer,
+  notes: noteReducer,
+});
+
+export const store = redux.createStore(result);
+```
+
+With this setup, you can now dispatch actions to update the state managed by each
+reducer separately. For example, to add a todo item, you can dispatch the following
+action:
+
+```javascript
+{
+  type: "ADD_TODO",
+  id: 1,
+  text: "Study React and Redux for 2 hours"
+}
+```
+
+This action will be handled by the todoReducer, which will update the todos state
+accordingly. Similarly, to add a note, you can dispatch the following action:
+
+```javascript
+{
+  type: "ADD_NOTE",
+  id: 1,
+  text: "Call, Shivani Rathore"
+}
+```
+
+This action will be handled by the noteReducer, which will update the notes state
+accordingly.
+
+### redux/store.js (Combined Redux Store Configuration)
+
+```diff
+import * as redux from "redux";
++import { combineReducers } from "redux";
+import { todoReducer } from "./reducers/todoReducer";
++import { noteReducer } from "./reducers/noteReducer";
+
++const result = combineReducers({
++  todos: todoReducer,
++  notes: noteReducer,
++});
+
+-export const store = redux.createStore(todoReducer);
++export const store = redux.createStore(result);
+```
+
+Updates the Redux store to manage multiple state slices by combining reducers, enabling support for both Todo and Notes features within a single centralized store.
+
+- Introduced `combineReducers`
+  - Combines multiple reducers into one root reducer
+  - Allows handling different parts of state separately
+- Integrated `todoReducer` and `noteReducer`
+  - `todoReducer` → manages todo-related state
+  - `noteReducer` → manages notes-related state
+- Structured global state
+  - State is now divided into:
+    - `todos` → handled by todoReducer
+    - `notes` → handled by noteReducer
+- Updated store creation
+  - Replaced single reducer with combined reducer (`result`)
+  - Enables scalability for adding more features in future
