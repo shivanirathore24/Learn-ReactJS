@@ -203,9 +203,9 @@ his component displays all tasks and allows users to update their status.
 
 #### 🖥️ What You See in Browser:
 
-<img src="./images/add-task.png" alt="Adding Task" width="700" height="auto">
+<img src="./images/add-task1.png" alt="Adding Task" width="700" height="auto">
 
-<img src="./images/todo-task.png" alt="ToDo Task" width="700" height="auto">
+<img src="./images/todo-task1.png" alt="ToDo Task" width="700" height="auto">
 
 ## Setting up Actions
 
@@ -506,6 +506,65 @@ The useSelector hook is useful for optimizing performance by avoiding unnecessar
 re-renders. It allows you to select only the data you need from the store, which can
 help reduce the amount of data that needs to be processed by the component.
 
+### useDispatch
+
+The useDispatch hook is used to dispatch actions to modify the state. It returns a
+reference to the dispatch function provided by the store. This hook can be used to
+dispatch actions from any component in the application, without the need for prop
+drilling. The useDispatch hook can be used to dispatch actions from any component
+in the application.
+
+For example, Each todo item includes a button that, when clicked, dispatches a
+toggleTodo action to the store. The toggleTodo action is imported from the
+todoActions file, which contains action creators for various todo-related actions.
+
+The dispatch function is used to dispatch the toggleTodo action, passing in the index
+of the current todo item as a parameter. This will update the completed property of
+the selected todo item in the store, which will trigger a re-render of the TodoList
+component.
+
+```jsx
+import { useSelector, useDispatch } from "react-redux";
+import { toggleTodo } from "../../redux/actions/todoActions";
+import "./ToDoList.css";
+
+function ToDoList() {
+  const todos = useSelector((state) => state.todos);
+  const disptach = useDispatch();
+
+  return (
+    <div className="container">
+      <ul>
+        {todos.map((todo, index) => (
+          <li key={todo.id}>
+            <span className="content">{todo.text}</span>
+
+            <span className={todo.completed ? "completed" : "pending"}>
+              {todo.completed ? "Completed" : "Pending"}
+            </span>
+
+            <button
+              className="btn btn-warning"
+              onClick={() => {
+                dispatch(toggleTodo(index));
+              }}
+            >
+              Toggle
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export default ToDoList;
+```
+
+The useDispatch hook is useful for optimizing code efficiency by providing a
+simplified way of dispatching actions. It allows you to avoid the need to pass
+dispatch down as a prop to child components.
+
 ## Using Selector
 
 ### redux/reducers/todoReducer.js (Reducer Initialization & Default State Setup)
@@ -618,3 +677,111 @@ Updates the component to retrieve todo data directly from the Redux store using 
 #### 🖥️ What You See in Browser:
 
 <img src="./images/initial-state-task.png" alt="Initial State Tasks" width="600" height="auto">
+
+## Dispatching Actions and Payloads
+
+### components/ToDoForm/ToDoForm.js (Redux Dispatch Integration)
+
+```diff
+ import { useState } from "react";
++import { useDispatch } from "react-redux";
++import { addTodo } from "../../redux/actions/todoActions";
+ import "./ToDoForm.css";
+
+-function ToDoForm({ onCreateTodo }) {
++function ToDoForm() {
+   const [todoText, setTodoText] = useState("");
++  const dispatch = useDispatch();
+
+   const handleSubmit = (e) => {
+     e.preventDefault();
+-    onCreateTodo(todoText);
+     setTodoText("");
++    dispatch(addTodo(todoText));
+   };
+
+   return (
+     <div className="form-container">
+       <form onSubmit={handleSubmit} className="form">
+         <input
+           type="text"
+           placeholder="Enter your task..."
+           value={todoText}
+           onChange={(e) => setTodoText(e.target.value)}
+         />
+         <button type="submit">Add Task</button>
+       </form>
+     </div>
+   );
+ }
+
+ export default ToDoForm;
+```
+
+Updates the form component to dispatch actions directly to the Redux store instead of passing data through props, enabling centralized state management.
+
+- Adding `useDispatch`
+  - Provides access to Redux dispatch function
+  - Allows sending actions directly to the store
+- Using `addTodo` action
+  - Replaces prop-based handler with Redux action
+  - Sends new todo data to the reducer
+- Removing `onCreateTodo` prop
+  - Eliminates dependency on parent component
+  - Simplifies component structure
+
+### components/ToDoList/ToDoList.js (Redux Toggle Action Integration)
+
+```diff
++import { toggleTodo } from "../../redux/actions/todoActions";
+ import "./ToDoList.css";
+-import { useSelector } from "react-redux";
++import { useSelector, useDispatch } from "react-redux";
+
+-function ToDoList({ onToggle }) {
++function ToDoList() {
+   const todos = useSelector((state) => state.todos);
++  const dispatch = useDispatch();
+
+   return (
+     <div className="list-container">
+       <ul>
+         {todos.map((todo, index) => (
+           <li key={todo.id}>
+             <span className="content">{todo.text}</span>
+
+             <span className={todo.completed ? "completed" : "pending"}>
+               {todo.completed ? "Completed" : "Pending"}
+             </span>
+
+-            <button onClick={() => onToggle(index)}>Toggle</button>
++            <button onClick={() => dispatch(toggleTodo(index))}>
++              Toggle
++            </button>
+           </li>
+         ))}
+       </ul>
+     </div>
+   );
+ }
+
+ export default ToDoList;
+```
+
+Updates the todo list component to dispatch toggle actions directly to Redux, removing reliance on parent props and enabling centralized state updates.
+
+- Adding `useDispatch`
+  - Enables dispatching actions from the component
+  - Connects UI interactions to Redux
+- Using `toggleTodo` action
+  - Replaces prop-based toggle handler
+  - Updates todo status via reducer
+- Removing dependency on `onToggle`
+  - Simplifies component communication
+  - Moves logic fully into Redux
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/add-task2.png" alt="Adding Task" width="700" height="auto">
+
+<img src="./images/todo-task2.png" alt="ToDo Task" width="700" height="auto">
