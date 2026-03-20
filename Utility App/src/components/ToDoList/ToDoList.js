@@ -18,7 +18,12 @@ function ToDoList({ onToggle }) {
               {todo.completed ? "Completed" : "Pending"}
             </span>
 
-            <button onClick={() => dispatch(toggleTodo(index))}>Toggle</button>
+            <button
+              className="toggle-btn"
+              onClick={() => dispatch(toggleTodo(index))}
+            >
+              Toggle
+            </button>
           </li>
         ))}
       </ul>

@@ -1,6 +1,6 @@
 .form-container {
   max-width: 600px;
-  margin: 0 auto;
+  margin: 20px auto;
   padding: 0 16px;
 }
 
@@ -11,10 +11,15 @@
 
 .form input {
   flex: 1;
-  padding: 12px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  padding: 14px;
+  font-size: 15px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  outline: none;
+}
+
+.form input:focus {
+  border-color: #aaa;
 }
 
 .form button {
@@ -22,8 +27,9 @@
   border: none;
   background: #28a745;
   color: white;
-  border-radius: 6px;
+  border-radius: 10px;
   cursor: pointer;
+  transition: 0.2s;
 }
 
 .form button:hover {

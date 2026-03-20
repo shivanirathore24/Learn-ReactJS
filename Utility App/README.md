@@ -1,19 +1,19 @@
 # REDUX IN REACT
 
-## ToDo App: Project SetUp
+## Utility-App : Project SetUp
 
-A simple and interactive ToDo application built with React that allows users to add tasks and toggle their completion status.
+A simple and interactive **Utility App** built with React that currently implements a **Todo feature**, allowing users to add tasks and toggle their completion status. The application is designed to support multiple utilities, with additional features like **Notes** planned for future implementation. **Currently, the application functions as a Todo app**.
 
 This project was initialized using Create React App with the command:
 
 ```bash
-npx create-react-app todo-app
+npx create-react-app utility-app
 ```
 
 ### Folder Structure
 
 ```text
-todo-app/
+utility-app/
 │
 ├── node_modules/        # Installed dependencies
 ├── public/              # Static files
@@ -785,3 +785,322 @@ Updates the todo list component to dispatch toggle actions directly to Redux, re
 <img src="./images/add-task2.png" alt="Adding Task" width="700" height="auto">
 
 <img src="./images/todo-task2.png" alt="ToDo Task" width="700" height="auto">
+
+## New 'Notes' Feature in Utility App
+
+The application has been enhanced from a **Todo App** to a **Utility App** with two features: **Todo** and **Notes**. The Todo feature is fully functional using Redux for state management, while the Notes feature currently includes only the UI, with Redux integration to be implemented.
+
+### Project Structure (Updated)
+
+```text
+utility-app/
+│
+├── node_modules/        # Installed dependencies
+├── public/              # Public static files
+│
+├── src/                 # Main source code
+│   │
+│   ├── components/      # Reusable UI components
+│   │   │
+│   │   ├── Home/
+│   │   │   ├── Home.js
+│   │   │   └── Home.css
+│   │   │
+│   │   ├── NavBar/
+│   │   │   ├── NavBar.js
+│   │   │   └── NavBar.css
+│   │   │
+│   │   ├── ToDoForm/
+│   │   │   ├── ToDoForm.js
+│   │   │   └── ToDoForm.css
+│   │   │
+│   │   ├── ToDoList/
+│   │   │   ├── ToDoList.js
+│   │   │   └── ToDoList.css
+│   │   │
+│   │   ├── NoteForm/
+│   │   │   ├── NoteForm.js
+│   │   │   └── NoteForm.css
+│   │   │
+│   │   ├── NoteList/
+│   │   │   ├── NoteList.js
+│   │   │   └── NoteList.css
+│   │
+│   ├── redux/           # Redux state management
+│   │   ├── actions/
+│   │   │   └── todoActions.js
+│   │   │
+│   │   ├── reducers/
+│   │   │   └── todoReducer.js
+│   │   │
+│   │   └── store.js
+│   │
+│   ├── App.js           # Root component (Routing + Layout)
+│   ├── App.css          # App-level styles
+│   ├── index.js         # Entry point (ReactDOM render)
+│   └── index.css        # Global styles
+│
+├── .gitignore           # Ignored files
+├── package.json         # Project config & dependencies
+├── package-lock.json    # Dependency lock
+└── README.md            # Documentation
+```
+
+### App.js (Routing & Multi-Feature Integration)
+
+```jsx
+import { Fragment } from "react";
+import { Provider } from "react-redux";
+import { store } from "./redux/store";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import TodoForm from "./components/ToDoForm/ToDoForm";
+import TodoList from "./components/ToDoList/ToDoList";
+import NoteForm from "./components/NoteForm/NoteForm";
+import NoteList from "./components/NoteList/NoteList";
+import Home from "./components/Home/Home";
+import NavBar from "./components/NavBar/NavBar";
+
+import "./App.css";
+
+function App() {
+  return (
+    <Provider store={store}>
+      <BrowserRouter>
+        <NavBar />
+
+        <Routes>
+          <Route path="/" element={<Home />} />
+
+          <Route
+            path="/todo"
+            element={
+              <>
+                <h1>To Do</h1>
+                <TodoForm />
+                <TodoList />
+              </>
+            }
+          />
+
+          <Route
+            path="/notes"
+            element={
+              <>
+                <h1>Notes</h1>
+                <NoteForm />
+                <NoteList />
+              </>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
+    </Provider>
+  );
+}
+
+export default App;
+```
+
+Transforms the application from a single-feature Todo app using local state into a multi-feature utility app with routing and centralized state management using Redux.
+
+- Removed local state (`useState`)
+  - Eliminates component-level state handling for todos
+  - Moves toward centralized state via Redux
+- Integrated React Router
+  - Adds `BrowserRouter`, `Routes`, and `Route`
+  - Enables navigation between Home, Todo, and Notes pages
+- Added global `NavBar`
+  - Provides consistent navigation across all routes
+  - Improves user experience and accessibility
+- Separated features into routes
+  - `/` → Home page
+  - `/todo` → Todo functionality
+  - `/notes` → Notes functionality
+- Integrated multiple components
+  - Combines Todo and Notes features into one application
+  - Uses modular structure for better scalability
+
+### components/Home/Home.js (Landing Page Component)
+
+```jsx
+import { Link } from "react-router-dom";
+import "./Home.css";
+
+function Home() {
+  return (
+    <div className="home-container">
+      <h1>Utility App</h1>
+      <p>Manage your daily tasks and notes efficiently</p>
+
+      <div className="home-cards">
+        <Link to="/todo" className="card">
+          <h3>To Do</h3>
+          <p>Track your daily tasks</p>
+        </Link>
+
+        <Link to="/notes" className="card">
+          <h3>Notes</h3>
+          <p>Write and manage notes</p>
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+export default Home;
+```
+
+Defines the home page that serves as the entry point of the application, providing navigation to different features using interactive cards.
+
+- Using `Link` for navigation
+  - Enables client-side routing without refresh
+  - Redirects users to Todo and Notes sections
+- Card-based UI layout
+  - Displays features as clickable cards
+  - Improves usability and visual structure
+- Introductory content
+  - Shows app title and description
+  - Helps users understand the purpose of the application
+
+### components/NavBar/NavBar.js (Navigation Component)
+
+```jsx
+import { NavLink } from "react-router-dom";
+import "./NavBar.css";
+
+function NavBar() {
+  return (
+    <nav className="navbar">
+      <h2 className="logo">Utility App</h2>
+
+      <div className="nav-links">
+        <NavLink to="/" end>
+          Home
+        </NavLink>
+        <NavLink to="/todo">To Do</NavLink>
+        <NavLink to="/notes">Notes</NavLink>
+      </div>
+    </nav>
+  );
+}
+
+export default NavBar;
+```
+
+Defines a navigation bar using `NavLink` to enable seamless routing between different sections of the application with active link support.
+
+- Using `NavLink` from react-router-dom
+  - Enables navigation without page reload
+  - Automatically applies active styling to current route
+- Navigation structure
+  - Includes links to Home, Todo, and Notes pages
+  - Provides consistent access across the app
+- Reusable layout component
+  - Placed globally in `App.js`
+  - Visible on all pages for better user experience
+
+### components/NoteForm/NoteForm.js (Note Input Component)
+
+```jsx
+import { useState } from "react";
+import "./NoteForm.css";
+
+function NoteForm() {
+  const [noteText, setNoteText] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setNoteText("");
+  };
+
+  return (
+    <div className="form-container">
+      <form onSubmit={handleSubmit} className="form">
+        <textarea
+          placeholder="Write your note..."
+          value={noteText}
+          onChange={(e) => setNoteText(e.target.value)}
+        />
+        <button type="submit">Add Note</button>
+      </form>
+    </div>
+  );
+}
+
+export default NoteForm;
+```
+
+Handles user input for creating notes using local state and controlled form elements.
+
+- Using `useState`
+  - Manages note input value
+  - Keeps textarea controlled
+- Form submission handling
+  - Prevents default page reload
+  - Clears input after submission
+- User-friendly input UI
+  - Uses textarea for multi-line note entry
+  - Styled similarly to Todo form for consistency
+
+### components/NoteList/NoteList.js (Notes Display Component)
+
+```jsx
+import "./NoteList.css";
+
+function NoteList() {
+  const notes = [
+    {
+      text: "Revise core React concepts including components, props, state management, hooks like useState and useEffect, and understand component lifecycle for better application structure.",
+      createdOn: new Date(),
+    },
+    {
+      text: "Prepare detailed notes for Redux covering store, actions, reducers, dispatch flow, and middleware, along with practical examples for better understanding.",
+      createdOn: new Date(),
+    },
+  ];
+
+  return (
+    <div className="list-container">
+      <ul>
+        {notes.map((note, index) => (
+          <li key={index}>
+            <span className="note-content">{note.text}</span>
+
+            <span className="note-date">
+              {note.createdOn.toLocaleDateString()}
+            </span>
+
+            <button className="delete-btn">Delete</button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export default NoteList;
+```
+
+Displays a list of notes in a structured format with content, date, and delete action.
+
+- Rendering notes list
+  - Uses `map()` to display each note
+  - Dynamically generates UI elements
+- Displaying note details
+  - Shows note text and formatted creation date
+  - Enhances readability
+- Delete button (UI only)
+  - Provides action button for future functionality
+  - Currently used for visual interaction
+- Consistent layout with Todo
+  - Uses similar structure and styling
+  - Maintains uniform UI across features
+
+#### 🖥️ What You See in Browser:
+
+<img src="./images/home-page.png" alt="Home Page" width="700" height="auto">
+
+<img src="./images/todo-page.png" alt="ToDo Page" width="700" height="auto">
+
+<img src="./images/notes-page.png" alt="Notes Page" width="700" height="auto">
