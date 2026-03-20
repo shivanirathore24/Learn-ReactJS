@@ -1104,3 +1104,97 @@ Displays a list of notes in a structured format with content, date, and delete a
 <img src="./images/todo-page.png" alt="ToDo Page" width="700" height="auto">
 
 <img src="./images/notes-page.png" alt="Notes Page" width="700" height="auto">
+
+## Creating Note Actions & Reducer
+
+### redux/actions/noteActions.js (Redux Actions for Notes)
+
+```jsx
+// Actions constants
+export const ADD_NOTE = "Add Note";
+export const DELETE_NOTE = "Delete Note";
+
+// Action Creators
+export const addNote = (text) => ({ text, type: ADD_NOTE });
+export const deleteNote = (index) => ({ index, type: DELETE_NOTE });
+```
+
+Defines the actions for managing notes in the application, including action types and action creators for adding and deleting notes.
+
+- Action constants (`ADD_NOTE`, `DELETE_NOTE`)
+  - Fixed identifiers for note-related actions
+  - Ensure consistency across reducers and components
+- `addNote(text)`
+  - Creates an action to add a new note
+  - Includes:
+    - `type: ADD_NOTE` → specifies add operation
+    - `text` → content of the note
+- `deleteNote(index)`
+- Creates an action to remove a note
+- Includes:
+  - `type: DELETE_NOTE` → specifies delete operation
+  - `index` → identifies which note to remove
+
+### redux/reducers/noteReducer.js (Notes State Reducer)
+
+```jsx
+import { ADD_NOTE, DELETE_NOTE } from "../actions/noteActions";
+
+const initialState = {
+  notes: [
+    {
+      text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam",
+      createdOn: new Date(),
+    },
+    {
+      text: "Aliquam erat volutpat. Ut tincidunt, velit vel aliquam commodo, tellus urna auctor tortor, non ultrices libero ante sed magna.",
+      createdOn: new Date(),
+    },
+  ],
+};
+
+export function noteReducer(state = initialState, action) {
+  switch (action.type) {
+    case ADD_NOTE:
+      return {
+        ...state,
+        notes: [
+          ...state.notes,
+          {
+            text: action.text,
+            createdOn: new Date(),
+          },
+        ],
+      };
+    case DELETE_NOTE:
+      state.notes.splice(action.index, 1);
+      return {
+        ...state,
+        notes: state.notes,
+      };
+    default:
+      return state;
+  }
+}
+```
+
+Defines how the notes state is managed and updated in response to actions, handling the addition and deletion of notes.
+
+- Initial state (`initialState`)
+  - Contains a predefined list of notes
+  - Each note includes:
+    - `text` → note content
+    - `createdOn` → timestamp of creation
+- `noteReducer(state, action)`
+  - Core function that updates state based on action type
+  - Returns a new updated state for every change
+- `ADD_NOTE` case
+  - Adds a new note to the list
+  - Creates a note object with:
+    - `text` from action
+    - `createdOn` with current date
+- `DELETE_NOTE` case
+  - Removes a note from the list using its index
+  - Updates the notes array after deletion
+- Default case
+  - Returns current state if action type does not match
