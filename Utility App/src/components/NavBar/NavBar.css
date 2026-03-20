@@ -23,17 +23,14 @@
   transition: 0.3s;
 }
 
-/* Hover effect */
 .nav-links a:hover {
   color: #fff;
 }
 
-/* ACTIVE LINK */
 .nav-links a.active {
   color: #fff;
 }
 
-/* Underline animation */
 .nav-links a::after {
   content: "";
   position: absolute;

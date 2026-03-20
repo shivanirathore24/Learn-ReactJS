@@ -3,11 +3,11 @@ import { ADD_NOTE, DELETE_NOTE } from "../actions/noteActions";
 const initialState = {
   notes: [
     {
-      text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam",
+      text: "Revise core React concepts including components, props, state management, hooks like useState and useEffect, and understand component lifecycle for better application structure.",
       createdOn: new Date(),
     },
     {
-      text: "Aliquam erat volutpat. Ut tincidunt, velit vel aliquam commodo, tellus urna auctor tortor, non ultrices libero ante sed magna.",
+      text: "Prepare detailed notes for Redux covering store, actions, reducers, dispatch flow, and middleware, along with practical examples for better understanding.",
       createdOn: new Date(),
     },
   ],
@@ -28,9 +28,10 @@ export function noteReducer(state = initialState, action) {
       };
     case DELETE_NOTE:
       state.notes.splice(action.index, 1);
+      //console.log(state.notes);
       return {
         ...state,
-        notes: state.notes,
+        notes: [...state.notes],
       };
     default:
       return state;

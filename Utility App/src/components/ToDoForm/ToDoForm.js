@@ -9,8 +9,9 @@ function ToDoForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setTodoText("");
+    if (!todoText.trim()) return;
     dispatch(addTodo(todoText));
+    setTodoText("");
   };
 
   return (

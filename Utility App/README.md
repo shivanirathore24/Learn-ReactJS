@@ -1143,11 +1143,11 @@ import { ADD_NOTE, DELETE_NOTE } from "../actions/noteActions";
 const initialState = {
   notes: [
     {
-      text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam",
+      text: "Revise core React concepts including components, props, state management, hooks like useState and useEffect, and understand component lifecycle for better application structure.",
       createdOn: new Date(),
     },
     {
-      text: "Aliquam erat volutpat. Ut tincidunt, velit vel aliquam commodo, tellus urna auctor tortor, non ultrices libero ante sed magna.",
+      text: "Prepare detailed notes for Redux covering store, actions, reducers, dispatch flow, and middleware, along with practical examples for better understanding.",
       createdOn: new Date(),
     },
   ],
@@ -1170,7 +1170,7 @@ export function noteReducer(state = initialState, action) {
       state.notes.splice(action.index, 1);
       return {
         ...state,
-        notes: state.notes,
+        notes: [...state.notes],
       };
     default:
       return state;
@@ -1296,3 +1296,216 @@ Updates the Redux store to manage multiple state slices by combining reducers, e
 - Updated store creation
   - Replaced single reducer with combined reducer (`result`)
   - Enables scalability for adding more features in future
+
+## Updating Notes with Redux
+
+### redux/store.js (State Structure Update with combineReducers)
+
+```diff
+import * as redux from "redux";
+import { combineReducers } from "redux";
+import { todoReducer } from "./reducers/todoReducer";
+import { noteReducer } from "./reducers/noteReducer";
+
+const result = combineReducers({
+-  todos: todoReducer,
+-  notes: noteReducer,
++  todoReducer,
++  noteReducer,
+});
+
+export const store = redux.createStore(result);
+```
+
+Refactors the Redux store by changing how reducers are combined, updating the state structure and how data is accessed.
+
+- Updated reducer configuration
+  - Replaced custom keys (`todos`, `notes`) with direct reducer names
+- Changed global state shape
+  - `state.todos` → `state.todoReducer.todos`
+  - `state.notes` → `state.noteReducer.notes`
+- Impact
+  - Requires updates in `useSelector` across components
+
+### components/ToDoList/ToDoList.js (State Access Update)
+
+```diff
+...
+function ToDoList() {
+-  const todos = useSelector((state) => state.todos);
++  const todos = useSelector((state) => state.todoReducer.todos);
++  console.log(todos);
+  const dispatch = useDispatch();
+  return (
+    ...
+  );
+}
+```
+
+Updates the component to align with the new Redux state structure and removes dependency on props by fully utilizing Redux for state management.
+
+- Updated state selection
+  - Changed from `state.todos` to `state.todoReducer.todos`
+  - Matches new structure created by `combineReducers`
+- Improved debugging
+  - Added `console.log(todos)` to verify state updates during development
+
+### components/ToDoForm/ToDoForm.js (Input Validation Enhancement)
+
+```diff
+...
+const handleSubmit = (e) => {
+  e.preventDefault();
++  if (!todoText.trim()) return;
+   dispatch(addTodo(todoText));
+   setTodoText("");
+};
+...
+```
+
+Adds validation to prevent empty tasks from being added and improves submission flow.
+
+- Added validation
+  - Prevents empty or whitespace input
+- Improved dispatch flow
+  - Dispatch only when valid input
+- Maintains controlled input
+  - Clears input after successful submission
+
+### components/NoteForm/NoteForm.js (Redux Integration + Validation)
+
+```diff
+ import { useState } from "react";
++import { addNote } from "../../redux/actions/noteActions";
++import { useDispatch } from "react-redux";
+ import "./NoteForm.css";
+
+ function NoteForm() {
+   const [noteText, setNoteText] = useState("");
++  const dispatch = useDispatch();
+
+   const handleSubmit = (e) => {
+     e.preventDefault();
++    if (!noteText.trim()) return;
++    dispatch(addNote(noteText));
+     setNoteText("");
+   };
+
+   return (
+     <div className="form-container">
+       <form onSubmit={handleSubmit} className="form">
+         <textarea
+           placeholder="Write your note..."
+           value={noteText}
+           onChange={(e) => setNoteText(e.target.value)}
+         />
+         <button type="submit">Add Note</button>
+       </form>
+     </div>
+   );
+ }
+
+ export default NoteForm;
+```
+
+Refactors the NoteForm component from a simple UI-only form into a Redux-connected component that dispatches actions to store notes, along with validation to ensure meaningful input.
+
+- Integrated Redux with `useDispatch`
+  - Introduced `useDispatch` to send actions directly to the Redux store
+  - Replaces local-only handling with centralized state updates
+- Connected `addNote` action
+  - Dispatches note text to Redux using `addNote`
+  - Enables notes to be stored and managed globally
+- Added input validation
+  - Uses `trim()` to prevent empty or whitespace-only notes
+  - Ensures only valid data is added to state
+- Improved submission flow
+  - Dispatch happens only when input is valid
+  - Input field is cleared after successful submission
+
+### components/NoteList/NoteList.js (Redux State & Delete Action Integration)
+
+```diff
+ import "./NoteList.css";
++import { useSelector, useDispatch } from "react-redux";
++import { deleteNote } from "../../redux/actions/noteActions";
+
+ function NoteList() {
+-  const notes = [
+-    ...
+-  ];
++  const notes = useSelector((state) => state.noteReducer.notes);
++  const dispatch = useDispatch();
+
+   return (
+     <div className="list-container">
+       <ul>
+         {notes.map((note, index) => (
+           <li key={index}>
+             <span className="note-content">{note.text}</span>
+
+             <span className="note-date">
+               {note.createdOn.toLocaleDateString()}
+             </span>
+
+-            <button className="delete-btn">Delete</button>
++            <button
++              className="delete-btn"
++              onClick={() => dispatch(deleteNote(index))}
++            >
++              Delete
++            </button>
+           </li>
+         ))}
+       </ul>
+     </div>
+   );
+ }
+```
+
+Converts the NoteList component from static data rendering to a fully dynamic Redux-driven component that reflects real-time state changes and supports note deletion.
+
+- Replaced static notes with Redux state
+  - Removed hardcoded notes array
+  - Uses `useSelector` to fetch notes from Redux store
+  - Ensures UI always reflects latest state
+- Integrated delete functionality
+  - Added `useDispatch` to trigger delete actions
+  - Uses `deleteNote(index)` to remove specific note
+- Dynamic rendering of notes
+  - Notes are rendered using `map()` from Redux state
+  - Automatically updates UI when notes are added or deleted
+- Improved component responsibility
+  - Component now fully depends on Redux for data
+  - No local or temporary data handling
+
+#### 🖥️ What You See in Browser:
+
+#### Add Note
+
+<img src="./images/add-note1.png" alt="Add Note" width="700" height="auto">
+
+<img src="./images/add-note2.png" alt="Add Note" width="700" height="auto">
+
+#### Delete Note
+
+<img src="./images/delete-note1.png" alt="Delete Note" width="700" height="auto">
+
+<img src="./images/delete-note2.png" alt="Delete Note" width="700" height="auto">
+
+## Summarizing it
+
+Let’s summarize what we have learned in this Lecture:
+
+- Learned about React Redux library.
+- Learned about Provider Component.
+- Learned about useSelector Hook.
+- Learned about useDispatch Hook.
+- Learned about Multiple Reducers.
+- Learned about Combining the Reducer-
+
+### Some References:
+
+[Redux API Reference](https://react-redux.js.org/introduction/getting-started)
+
+[React Redux Quick Start](https://react-redux.js.org/tutorials/quick-start)

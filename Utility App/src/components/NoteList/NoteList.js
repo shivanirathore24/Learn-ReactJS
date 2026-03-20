@@ -1,17 +1,10 @@
 import "./NoteList.css";
+import { useSelector, useDispatch } from "react-redux";
+import { deleteNote } from "../../redux/actions/noteActions";
 
 function NoteList() {
-  const notes = [
-    {
-      text: "Revise core React concepts including components, props, state management, hooks like useState and useEffect, and understand component lifecycle for better application structure.",
-      createdOn: new Date(),
-    },
-    {
-      text: "Prepare detailed notes for Redux covering store, actions, reducers, dispatch flow, and middleware, along with practical examples for better understanding.",
-      createdOn: new Date(),
-    },
-  ];
-
+  const notes = useSelector((state) => state.noteReducer.notes);
+  const dispatch = useDispatch();
   return (
     <div className="list-container">
       <ul>
@@ -23,7 +16,12 @@ function NoteList() {
               {note.createdOn.toLocaleDateString()}
             </span>
 
-            <button className="delete-btn">Delete</button>
+            <button
+              className="delete-btn"
+              onClick={() => dispatch(deleteNote(index))}
+            >
+              Delete
+            </button>
           </li>
         ))}
       </ul>
