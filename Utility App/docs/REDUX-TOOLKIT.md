@@ -340,7 +340,7 @@ Refactors the note reducer to use Redux Toolkit, simplifying note management by 
   - Less boilerplate code
   - Easier to extend (edit, search, filter notes later)
 
-#### Overall Summary
+### Overall Summary (Slices Creation)
 
 - Migrated from **manual Redux → Redux Toolkit (createSlice)**
 - Reduced boilerplate by removing:
@@ -350,3 +350,91 @@ Refactors the note reducer to use Redux Toolkit, simplifying note management by 
 - Simplified state updates using **direct mutation (handled internally by Immer)**
 - Improved readability, maintainability, and scalability of reducers
 - Unified **actions + reducers into single slices** for better architecture
+
+## Migrating Store
+
+Migrated the Redux store to **Redux Toolkit’s** `configureStore`, simplifying setup by removing manual configuration and improving state management with a cleaner and modern structure
+
+### redux/store.js (Migration to Redux Toolkit Store)
+
+```jsx
+// import * as redux from "redux";
+// import { combineReducers } from "redux";
+import { todoReducer } from "./reducers/todoReducer";
+import { noteReducer } from "./reducers/noteReducer";
+import { configureStore } from "@reduxjs/toolkit";
+
+// const result = combineReducers({
+//   todoReducer,
+//   noteReducer,
+// });
+// export const store = redux.createStore(result);
+
+export const store = configureStore({
+  reducer: {
+    todoReducer,
+    noteReducer,
+  },
+});
+```
+
+Refactors the Redux store from manual setup using `createStore` and `combineReducers` to Redux Toolkit’s `configureStore`, simplifying configuration and improving default behavior.
+
+- Replaced `createStore` with `configureStore`
+  - Removed manual store creation
+  - Uses Redux Toolkit’s built-in optimized store setup
+- Removed explicit `combineReducers`
+  - No need to manually combine reducers
+  - `configureStore` automatically handles it
+- Cleaner reducer configuration
+  - Reducers are directly passed as an object
+  - Improves readability and structure
+- Better defaults
+  - Includes Redux DevTools support
+  - Adds middleware automatically (like thunk)
+
+### redux/reducers/todoReducer.js (Exporting Slice Reducer)
+
+```diff
+import { configureStore } from "@reduxjs/toolkit";
+ const todoSlice = createSlice({
+   ...
+ });
+
++export const todoReducer = todoSlice.reducer;
+```
+
+Updates the file to export reducer from Redux Toolkit slice so it can be used in the store configuration.
+
+- Exported reducer from slice
+  - `todoSlice.reducer` is now used as main reducer
+- Removed dependency on traditional reducer export
+  - No more `switch-case` export needed
+
+### redux/reducers/noteReducer.js (Exporting Slice Reducer)
+
+```diff
+import { configureStore } from "@reduxjs/toolkit";
+ const noteSlice = createSlice({
+   ...
+ });
+
++export const noteReducer = noteSlice.reducer;
+```
+
+Updates the file to export reducer from Redux Toolkit slice for integration with the new store setup.
+
+- Exported reducer from slice
+  - `noteSlice.reducer` is now used in store
+- Removed traditional reducer dependency
+  - Toolkit slice becomes single source of truth
+
+### Overall Summary (Store Migration)
+
+- Migrated from **manual Redux store → Redux Toolkit** `configureStore`
+- Removed boilerplate:
+  - `createStore`
+  - `combineReducers`
+- Simplified reducer integration
+- Enabled built-in middleware and DevTools support
+- Aligned store setup with modern Redux best practices

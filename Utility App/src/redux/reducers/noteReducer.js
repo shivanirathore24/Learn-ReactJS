@@ -37,6 +37,8 @@ const noteSlice = createSlice({
   },
 });
 
+export const noteReducer = noteSlice.reducer;
+
 // ---------------- Traditional Redux Reducer (Without Toolkit) ----------------
 // export function noteReducer(state = initialState, action) {
 //   switch (action.type) {
