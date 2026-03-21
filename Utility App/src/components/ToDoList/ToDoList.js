@@ -1,6 +1,7 @@
-import { toggleTodo } from "../../redux/actions/todoActions";
-import "./ToDoList.css";
 import { useSelector, useDispatch } from "react-redux";
+import { actions } from "../../redux/reducers/todoReducer";
+//import { toggleTodo } from "../../redux/actions/todoActions";
+import "./ToDoList.css";
 
 function ToDoList() {
   const todos = useSelector((state) => state.todoReducer.todos);
@@ -21,10 +22,17 @@ function ToDoList() {
 
             <button
               className="toggle-btn"
-              onClick={() => dispatch(toggleTodo(index))}
+              onClick={() => dispatch(actions.toggle(index))}
             >
               Toggle
             </button>
+
+            {/* <button
+              className="toggle-btn"
+              onClick={() => dispatch(toggleTodo(index))}
+            >
+              Toggle
+            </button> */}
           </li>
         ))}
       </ul>

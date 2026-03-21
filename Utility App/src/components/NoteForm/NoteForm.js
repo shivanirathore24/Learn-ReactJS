@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { addNote } from "../../redux/actions/noteActions";
 import { useDispatch } from "react-redux";
+import { actions } from "../../redux/reducers/noteReducer";
+// import { addNote } from "../../redux/actions/noteActions";
 import "./NoteForm.css";
 
 function NoteForm() {
@@ -9,8 +10,9 @@ function NoteForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!noteText.trim()) return; 
-    dispatch(addNote(noteText));
+    if (!noteText.trim()) return;
+    dispatch(actions.add(noteText));
+    // dispatch(addNote(noteText));
     setNoteText("");
   };
 

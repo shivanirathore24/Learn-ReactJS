@@ -1,3 +1,4 @@
+// Traditional Redux Actions (Without Toolkit)
 // Action constants
 export const ADD_TODO = "Add ToDO";
 export const TOGGLE_TODO = "Toggle Todo";

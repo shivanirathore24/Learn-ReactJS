@@ -16,7 +16,7 @@ const initialState = {
   ],
 };
 
-// ================= Redux Toolkit Slice (Reducer + Actions) =================
+// Redux Toolkit Slice (Reducer + Actions)
 const todoSlice = createSlice({
   name: "todo", // Slice name (used as action prefix)
   initialState,
@@ -49,8 +49,9 @@ const todoSlice = createSlice({
 });
 
 export const todoReducer = todoSlice.reducer;
+export const actions = todoSlice.actions;
 
-// ---------------- Traditional Redux Reducer (Without Toolkit) ----------------
+// Traditional Redux Reducer (Without Toolkit)
 // export function todoReducer(state = initialState, action) {
 //   switch (action.type) {
 

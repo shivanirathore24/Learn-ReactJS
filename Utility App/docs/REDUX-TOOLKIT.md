@@ -438,3 +438,357 @@ Updates the file to export reducer from Redux Toolkit slice for integration with
 - Simplified reducer integration
 - Enabled built-in middleware and DevTools support
 - Aligned store setup with modern Redux best practices
+
+## Dispatching Actions
+
+Updated the way actions are dispatched by using **Redux Toolkit slice actions** instead of manual action creators, making the code simpler and more direc
+
+### redux/reducers/todoReducer.js (Exporting Slice Actions)
+
+```diff
+const { createSlice } = require("@reduxjs/toolkit");
+
+const initialState = {
+  todos: [
+    {
+      text: "Study mathematics at 6 AM",
+      completed: true,
+    },
+    {
+      text: "Evening workout at 5 PM",
+      completed: false,
+    },
+  ],
+};
+
+const todoSlice = createSlice({
+  name: "todo",
+  initialState,
+
+  reducers: {
+    add: (state, action) => {
+      state.todos.push({
+        text: action.payload,
+        completed: false,
+      });
+    },
+    toggle: (state, action) => {
+      const todo = state.todos[action.payload];
+      if (todo) {
+        todo.completed = !todo.completed;
+      }
+    },
+  },
+});
+
+export const todoReducer = todoSlice.reducer;
++export const actions = todoSlice.actions;
+```
+
+Updates the reducer file to export actions directly from createSlice, eliminating the need for separate action creators and simplifying dispatching.
+
+- Exported actions from slice
+  - Added `todoSlice.actions` export
+  - Provides auto-generated action creators (`add`, `toggle`)
+- Removed dependency on manual actions
+  - No need for `addTodo`, `toggleTodo` from actions file
+  - Slice now handles both reducer + actions
+- Improved structure
+  - Centralized logic in one file
+  - Cleaner and easier to maintain
+
+### components/ToDoForm/ToDoForm.js (Dispatching Slice Actions)
+
+```diff
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+-import { addTodo } from "../../redux/actions/todoActions";
++import { actions } from "../../redux/reducers/todoReducer";
+import "./ToDoForm.css";
+
+function ToDoForm() {
+  const [todoText, setTodoText] = useState("");
+  const dispatch = useDispatch();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!todoText.trim()) return;
+-    dispatch(addTodo(todoText));
++    dispatch(actions.add(todoText));
+    setTodoText("");
+  };
+
+  return (
+    <div className="form-container">
+      <form onSubmit={handleSubmit} className="form">
+        <input
+          type="text"
+          placeholder="Enter your task..."
+          value={todoText}
+          onChange={(e) => setTodoText(e.target.value)}
+        />
+        <button type="submit">Add Task</button>
+      </form>
+    </div>
+  );
+}
+
+export default ToDoForm;
+```
+
+Refactors the component to dispatch actions directly from Redux Toolkit slice instead of using external action creators.
+
+- Replaced manual action import
+  - Removed `addTodo` import
+  - Imported actions from slice
+- Updated dispatch method
+  - `dispatch(addTodo(text))` → `dispatch(actions.add(text))`
+  - Uses auto-generated action
+- Simplified integration
+- No need to manage separate action files
+- Direct connection with slice
+
+### components/ToDoList/ToDoList.js (Dispatching Toggle via Slice)
+
+```diff
+import { useSelector, useDispatch } from "react-redux";
+-import { toggleTodo } from "../../redux/actions/todoActions";
++import { actions } from "../../redux/reducers/todoReducer";
+import "./ToDoList.css";
+
+function ToDoList() {
+  const todos = useSelector((state) => state.todoReducer.todos);
+  const dispatch = useDispatch();
+
+  return (
+    <div className="list-container">
+      <ul>
+        {todos.map((todo, index) => (
+          <li key={todo.id}>
+            <span className="content">{todo.text}</span>
+
+            <span className={todo.completed ? "completed" : "pending"}>
+              {todo.completed ? "Completed" : "Pending"}
+            </span>
+
+            <button
+              className="toggle-btn"
+-              onClick={() => dispatch(toggleTodo(index))}
++              onClick={() => dispatch(actions.toggle(index))}
+            >
+              Toggle
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export default ToDoList;
+```
+
+Updates the component to dispatch toggle actions using Redux Toolkit slice instead of traditional action creators.
+
+- Replaced manual action import
+  - Removed toggleTodo import
+  - Imported slice actions
+- Updated dispatch logic
+  - `dispatch(toggleTodo(index))` → `dispatch(actions.toggle(index))`
+  - Uses slice-generated action
+- Cleaner and consistent usage
+  - Matches TodoForm pattern
+  - Fully removes dependency on old Redux actions
+
+### redux/reducers/noteReducer.js (Exporting Slice Actions)
+
+```diff
+const { createSlice } = require("@reduxjs/toolkit");
+
+const initialState = {
+  notes: [
+    {
+      text: "Revise core React concepts including components, props, state management, hooks like useState and useEffect, and understand component lifecycle for better application structure.",
+      createdOn: new Date(),
+    },
+    {
+      text: "Prepare detailed notes for Redux covering store, actions, reducers, dispatch flow, and middleware, along with practical examples for better understanding.",
+      createdOn: new Date(),
+    },
+  ],
+};
+
+const noteSlice = createSlice({
+  name: "note",
+  initialState,
+
+  reducers: {
+    add: (state, action) => {
+      state.notes.push({
+        text: action.payload,
+        createdOn: new Date(),
+      });
+    },
+
+    delete: (state, action) => {
+      state.notes.splice(action.payload, 1);
+    },
+  },
+});
+
+export const noteReducer = noteSlice.reducer;
++export const actions = noteSlice.actions;
+```
+
+Updates the reducer to export actions from `createSlice`, allowing components to dispatch actions directly without using separate action creator files.
+
+- Exported slice actions
+  - Added `noteSlice.actions` export
+  - Provides auto-generated actions (`add`, `delete`)
+- Removed dependency on manual actions
+  - No need for `addNote`, `deleteNote` from actions file
+  - Slice now handles both reducer + actions
+- Cleaner architecture
+  - Logic is centralized in one file
+  - Reduces boilerplate and improves maintainability
+
+### components/NoteForm/NoteForm.js (Dispatching Add Action)
+
+```diff
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+-import { addNote } from "../../redux/actions/noteActions";
++import { actions } from "../../redux/reducers/noteReducer";
+import "./NoteForm.css";
+
+function NoteForm() {
+  const [noteText, setNoteText] = useState("");
+  const dispatch = useDispatch();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!noteText.trim()) return;
+-    dispatch(addNote(noteText));
++    dispatch(actions.add(noteText));
+    setNoteText("");
+  };
+
+  return (
+    <div className="form-container">
+      <form onSubmit={handleSubmit} className="form">
+        <textarea
+          placeholder="Write your note..."
+          value={noteText}
+          onChange={(e) => setNoteText(e.target.value)}
+        />
+        <button type="submit">Add Note</button>
+      </form>
+    </div>
+  );
+}
+
+export default NoteForm;
+```
+
+Refactors the form component to dispatch actions directly from the slice instead of using external action creators.
+
+- Replaced manual action import
+  - Removed `addNote` import
+  - Imported `actions` from slice
+- Updated dispatch logic
+  - `dispatch(addNote(text))` → `dispatch(actions.add(text))`
+- Improved structure
+  - Direct connection between component and slice
+  - Reduces dependency on separate files
+
+## components/NoteList/NoteList.js (Dispatching Delete Action)
+
+```diff
+import "./NoteList.css";
+import { useSelector, useDispatch } from "react-redux";
+-import { deleteNote } from "../../redux/actions/noteActions";
++import { actions } from "../../redux/reducers/noteReducer";
+
+function NoteList() {
+  const notes = useSelector((state) => state.noteReducer.notes);
+  const dispatch = useDispatch();
+
+  return (
+    <div className="list-container">
+      <ul>
+        {notes.map((note, index) => (
+          <li key={index}>
+            <span className="note-content">{note.text}</span>
+
+            <span className="note-date">
+              {note.createdOn.toLocaleDateString()}
+            </span>
+
+            <button
+              className="delete-btn"
+-              onClick={() => dispatch(deleteNote(index))}
++              onClick={() => dispatch(actions.delete(index))}
+            >
+              Delete
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export default NoteList;
+```
+
+Updates the list component to use slice-based actions for deleting notes instead of traditional Redux action creators.
+
+- Replaced manual action import
+  - Removed `deleteNote` import
+  - Imported slice actions
+- Updated dispatch logic
+  - `dispatch(deleteNote(index))` → `dispatch(actions.delete(index))`
+- Consistent pattern
+  - Matches NoteForm and Todo components
+  - Fully adopts Redux Toolkit approach
+
+### Overall Summary (Dispatching Actions)
+
+- Replaced manual dispatching with slice-generated actions
+- Removed dependency on separate `actions` files
+- Updated dispatch usage:
+  - `dispatch(addTodo())` → `dispatch(actions.add())`
+  - `dispatch(toggleTodo())` → `dispatch(actions.toggle())`
+- Simplified component logic by directly importing actions from slices
+- Ensured consistent and cleaner dispatch pattern across the application
+
+NOTE: Currently, all core functionalities are working properly
+
+#### 🖥️ What You See in Browser:
+
+#### Home Page
+
+<img src="../images/home-page.png" alt="Home Page" width="700" height="auto">
+
+#### Todo: Add Task
+
+<img src="../images/add-todo1.png" alt="Add Todo" width="700" height="auto">
+
+<img src="../images/add-todo2.png" alt="Add Todo" width="700" height="auto">
+
+#### Todo: Toggle Task
+
+<img src="../images/toggle-todo1.png" alt="Toggle Todo" width="700" height="auto">
+<img src="../images/toggle-todo2.png" alt="Toggle Todo" width="700" height="auto">
+
+#### Notes: Add Note
+
+<img src="../images/add-note1.png" alt="Add Note" width="700" height="auto">
+
+<img src="../images/add-note2.png" alt="Add Note" width="700" height="auto">
+
+#### Notes: Delete Note
+
+<img src="../images/delete-note1.png" alt="Delete Note" width="700" height="auto">
+
+<img src="../images/delete-note2.png" alt="Delete Note" width="700" height="auto">

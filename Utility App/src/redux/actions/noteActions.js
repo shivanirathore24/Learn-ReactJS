@@ -1,3 +1,4 @@
+// Traditional Redux Actions (Without Toolkit)
 // Actions constants
 export const ADD_NOTE = "Add Note";
 export const DELETE_NOTE = "Delete Note";

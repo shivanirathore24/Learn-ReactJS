@@ -203,9 +203,9 @@ his component displays all tasks and allows users to update their status.
 
 #### 🖥️ What You See in Browser:
 
-<img src="./images/add-task1.png" alt="Adding Task" width="700" height="auto">
+<img src="../images/add-task1.png" alt="Adding Task" width="700" height="auto">
 
-<img src="./images/todo-task1.png" alt="ToDo Task" width="700" height="auto">
+<img src="../images/todo-task1.png" alt="ToDo Task" width="700" height="auto">
 
 ## Setting up Actions
 
@@ -676,7 +676,7 @@ Updates the component to retrieve todo data directly from the Redux store using 
 
 #### 🖥️ What You See in Browser:
 
-<img src="./images/initial-state-task.png" alt="Initial State Tasks" width="600" height="auto">
+<img src="../images/initial-state-task.png" alt="Initial State Tasks" width="600" height="auto">
 
 ## Dispatching Actions and Payloads
 
@@ -782,9 +782,9 @@ Updates the todo list component to dispatch toggle actions directly to Redux, re
 
 #### 🖥️ What You See in Browser:
 
-<img src="./images/add-task2.png" alt="Adding Task" width="700" height="auto">
+<img src="../images/add-task2.png" alt="Adding Task" width="700" height="auto">
 
-<img src="./images/todo-task2.png" alt="ToDo Task" width="700" height="auto">
+<img src="../images/todo-task2.png" alt="ToDo Task" width="700" height="auto">
 
 ## New 'Notes' Feature in Utility App
 
@@ -1099,11 +1099,11 @@ Displays a list of notes in a structured format with content, date, and delete a
 
 #### 🖥️ What You See in Browser:
 
-<img src="./images/home-page.png" alt="Home Page" width="700" height="auto">
+<img src="../images/home-page.png" alt="Home Page" width="700" height="auto">
 
-<img src="./images/todo-page.png" alt="ToDo Page" width="700" height="auto">
+<img src="../images/todo-page.png" alt="ToDo Page" width="700" height="auto">
 
-<img src="./images/notes-page.png" alt="Notes Page" width="700" height="auto">
+<img src="../images/notes-page.png" alt="Notes Page" width="700" height="auto">
 
 ## Creating Note Actions & Reducer
 
@@ -1483,15 +1483,15 @@ Converts the NoteList component from static data rendering to a fully dynamic Re
 
 #### Add Note
 
-<img src="./images/add-note1.png" alt="Add Note" width="700" height="auto">
+<img src="../images/add-note1.png" alt="Add Note" width="700" height="auto">
 
-<img src="./images/add-note2.png" alt="Add Note" width="700" height="auto">
+<img src="../images/add-note2.png" alt="Add Note" width="700" height="auto">
 
 #### Delete Note
 
-<img src="./images/delete-note1.png" alt="Delete Note" width="700" height="auto">
+<img src="../images/delete-note1.png" alt="Delete Note" width="700" height="auto">
 
-<img src="./images/delete-note2.png" alt="Delete Note" width="700" height="auto">
+<img src="../images/delete-note2.png" alt="Delete Note" width="700" height="auto">
 
 ## Summarizing it
 

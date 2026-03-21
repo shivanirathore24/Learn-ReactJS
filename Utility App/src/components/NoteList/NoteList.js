@@ -1,6 +1,7 @@
-import "./NoteList.css";
 import { useSelector, useDispatch } from "react-redux";
-import { deleteNote } from "../../redux/actions/noteActions";
+import { actions } from "../../redux/reducers/noteReducer";
+// import { deleteNote } from "../../redux/actions/noteActions";
+import "./NoteList.css";
 
 function NoteList() {
   const notes = useSelector((state) => state.noteReducer.notes);
@@ -18,10 +19,16 @@ function NoteList() {
 
             <button
               className="delete-btn"
-              onClick={() => dispatch(deleteNote(index))}
+              onClick={() => dispatch(actions.delete(index))}
             >
               Delete
             </button>
+            {/* <button
+              className="delete-btn"
+              onClick={() => dispatch(deleteNote(index))}
+            >
+              Delete
+            </button> */}
           </li>
         ))}
       </ul>

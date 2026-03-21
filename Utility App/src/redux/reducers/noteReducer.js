@@ -16,7 +16,7 @@ const initialState = {
   ],
 };
 
-// ================= Redux Toolkit Slice (Reducer + Actions) =================
+// Redux Toolkit Slice (Reducer + Actions)
 const noteSlice = createSlice({
   name: "note", // Slice name (used as action prefix)
   initialState,
@@ -38,8 +38,9 @@ const noteSlice = createSlice({
 });
 
 export const noteReducer = noteSlice.reducer;
+export const actions = noteSlice.actions;
 
-// ---------------- Traditional Redux Reducer (Without Toolkit) ----------------
+// Traditional Redux Reducer (Without Toolkit)
 // export function noteReducer(state = initialState, action) {
 //   switch (action.type) {
 
