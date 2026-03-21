@@ -764,6 +764,290 @@ Updates the list component to use slice-based actions for deleting notes instead
 
 NOTE: Currently, all core functionalities are working properly
 
+## Setting up Selectors
+
+Introduced selectors to simplify accessing state from the Redux store, allowing components to retrieve data in a cleaner and reusable way.
+
+### redux/reducers/todoReducer.js (Adding Selector)
+
+```diff
+...
+export const todoReducer = todoSlice.reducer;
+export const actions = todoSlice.actions;
+
++// Selector to access todos from Redux store
++export const todoSelector = (state) => state.todoReducer.todos;
+```
+
+Introduces a selector function to retrieve todos from the Redux store, avoiding direct state access inside components.
+
+- Added selector function
+  - Created `todoSelector` to return todos from state
+  - Encapsulates state structure in one place
+- Improved maintainability
+  - If state structure changes, only selector needs update
+  - Components remain unaffected
+- Cleaner state access
+  - Removes repeated `(state) => state.todoReducer.todos`
+  - Makes code easier to read and understand
+
+```jsx
+// Import createSlice from Redux Toolkit
+const { createSlice } = require("@reduxjs/toolkit");
+
+// Initial state containing default todos
+const initialState = {
+  todos: [
+    {
+      text: "Study mathematics at 6 AM",
+      completed: true,
+    },
+    {
+      text: "Evening workout at 5 PM",
+      completed: false,
+    },
+  ],
+};
+
+// Redux Toolkit Slice (Reducer + Actions)
+const todoSlice = createSlice({
+  name: "todo", // Slice name (used as action prefix)
+  initialState,
+
+  reducers: {
+    // Add a new todo item
+    add: (state, action) => {
+      state.todos.push({
+        text: action.payload, // Todo text
+        completed: false, // Default status
+      });
+    },
+
+    // Toggle completion status of a todo by index
+    toggle: (state, action) => {
+      const todo = state.todos[action.payload]; // Get todo by index
+      if (todo) {
+        todo.completed = !todo.completed; // Flip completed status
+      }
+    },
+  },
+});
+
+// Export reducer and actions from slice
+export const todoReducer = todoSlice.reducer;
+export const actions = todoSlice.actions;
+
+// Selector to access todos from Redux store
+export const todoSelector = (state) => state.todoReducer.todos;
+```
+
+### components/ToDoList/ToDoList.js (Using Selector)
+
+```diff
+import { useSelector, useDispatch } from "react-redux";
+import { actions } from "../../redux/reducers/todoReducer";
++import { todoSelector } from "../../redux/reducers/todoReducer";
+
+function ToDoList() {
+-  const todos = useSelector((state) => state.todoReducer.todos);
++  const todos = useSelector(todoSelector);
+  const dispatch = useDispatch();
+
+  return (
+    ...
+  );
+}
+
+export default ToDoList;
+```
+
+Updates the component to use the selector instead of directly accessing the Redux state structure.
+
+- Replaced inline selector
+  - `(state) => state.todoReducer.todos → todoSelector`
+- Improved readability
+  - Component code becomes simpler and more focused on UI
+- Better abstraction
+  - Component no longer depends on exact state structure
+
+```jsx
+import { useSelector, useDispatch } from "react-redux";
+import { actions } from "../../redux/reducers/todoReducer";
+import { todoSelector } from "../../redux/reducers/todoReducer";
+import "./ToDoList.css";
+
+function ToDoList() {
+  const todos = useSelector(todoSelector);
+  console.log(todos);
+  const dispatch = useDispatch();
+
+  return (
+    <div className="list-container">
+      <ul>
+        {todos.map((todo, index) => (
+          <li key={todo.id}>
+            <span className="content">{todo.text}</span>
+
+            <span className={todo.completed ? "completed" : "pending"}>
+              {todo.completed ? "Completed" : "Pending"}
+            </span>
+
+            <button
+              className="toggle-btn"
+              onClick={() => dispatch(actions.toggle(index))}
+            >
+              Toggle
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export default ToDoList;
+```
+
+### redux/reducers/noteReducer.js (Adding Selector)
+
+```diff
+...
+export const noteReducer = noteSlice.reducer;
+export const actions = noteSlice.actions;
+
++// Selector to access notes from Redux store
++export const noteSelector = (state) => state.noteReducer.notes;
+```
+
+Adds a selector function for notes to standardize how note data is accessed from the store.
+
+- Added note selector
+  - Created `noteSelector` to access notes
+- Centralized state access
+  - Keeps all state-related logic inside reducer file
+- Consistency
+  - Matches todoSelector pattern
+
+```jsx
+// Import createSlice from Redux Toolkit
+const { createSlice } = require("@reduxjs/toolkit");
+
+// Initial state containing default notes
+const initialState = {
+  notes: [
+    {
+      text: "Revise core React concepts including components, props, state management, hooks like useState and useEffect, and understand component lifecycle for better application structure.",
+      createdOn: new Date(),
+    },
+    {
+      text: "Prepare detailed notes for Redux covering store, actions, reducers, dispatch flow, and middleware, along with practical examples for better understanding.",
+      createdOn: new Date(),
+    },
+  ],
+};
+
+// Redux Toolkit Slice (Reducer + Actions)
+const noteSlice = createSlice({
+  name: "note", // Slice name (used as action prefix)
+  initialState,
+
+  reducers: {
+    // Add a new note with current timestamp
+    add: (state, action) => {
+      state.notes.push({
+        text: action.payload, // Note content
+        createdOn: new Date(), // Auto-generate creation time
+      });
+    },
+
+    // Delete a note by index
+    delete: (state, action) => {
+      state.notes.splice(action.payload, 1);
+    },
+  },
+});
+
+// Export reducer and actions from slice
+export const noteReducer = noteSlice.reducer;
+export const actions = noteSlice.actions;
+
+// Export reducer and actions from slice
+export const noteSelector = (state) => state.noteReducer.notes;
+```
+
+### components/NoteList/NoteList.js (Using Selector)
+
+```diff
+import { useSelector, useDispatch } from "react-redux";
+import { actions } from "../../redux/reducers/noteReducer";
++import { noteSelector } from "../../redux/reducers/noteReducer";
+
+function NoteList() {
+-  const notes = useSelector((state) => state.noteReducer.notes);
++  const notes = useSelector(noteSelector);
+  const dispatch = useDispatch();
+
+  return (
+    ...
+  );
+}
+
+export default NoteList;
+```
+
+Refactors the component to use the selector instead of directly accessing state.
+
+- Replaced inline state access
+  - `(state) => state.noteReducer.notes` → `noteSelector`
+- Cleaner component logic
+  - Focus remains on rendering UI
+- Reusable pattern
+  - Same approach used across all components
+
+```jsx
+import { useSelector, useDispatch } from "react-redux";
+import { actions } from "../../redux/reducers/noteReducer";
+import { noteSelector } from "../../redux/reducers/noteReducer";
+import "./NoteList.css";
+
+function NoteList() {
+  const notes = useSelector(noteSelector);
+  const dispatch = useDispatch();
+  return (
+    <div className="list-container">
+      <ul>
+        {notes.map((note, index) => (
+          <li key={index}>
+            <span className="note-content">{note.text}</span>
+
+            <span className="note-date">
+              {note.createdOn.toLocaleDateString()}
+            </span>
+
+            <button
+              className="delete-btn"
+              onClick={() => dispatch(actions.delete(index))}
+            >
+              Delete
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export default NoteList;
+```
+
+### Overall Summary (Selectors Setup)
+
+- Introduced reusable selector functions for todos and notes
+- Replaced direct state access with selectors in components
+- Centralized state access logic inside reducer files
+- Improved readability by simplifying useSelector usage
+- Made code more maintainable and scalable for future changes
+
 #### 🖥️ What You See in Browser:
 
 #### Home Page
@@ -792,3 +1076,19 @@ NOTE: Currently, all core functionalities are working properly
 <img src="../images/delete-note1.png" alt="Delete Note" width="700" height="auto">
 
 <img src="../images/delete-note2.png" alt="Delete Note" width="700" height="auto">
+
+## Redux Quick Notes
+
+- **Reducer → used in store**
+  - Defines how the application state changes based on different actions
+  - Contains the logic for updating data like adding, deleting, or toggling items
+  - Registered inside `configureStore` to manage the global state of the app
+- **Actions → used in component (dispatch)**
+  - Represent events that trigger changes in the state
+  - In Redux Toolkit, actions are automatically created inside slices
+  - Called using `dispatch(action)` from components to update the store
+- **Selector → used in component (read data)**
+  - Used to retrieve specific data from the Redux store
+  - Helps avoid repeating state access logic across components
+  - Used with `useSelector()` to keep component code clean and readable
+  ***

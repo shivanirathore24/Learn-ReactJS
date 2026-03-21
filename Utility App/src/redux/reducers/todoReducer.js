@@ -48,8 +48,12 @@ const todoSlice = createSlice({
   },
 });
 
+// Export reducer and actions from slice
 export const todoReducer = todoSlice.reducer;
 export const actions = todoSlice.actions;
+
+// Selector to access todos from Redux store
+export const todoSelector = (state) => state.todoReducer.todos;
 
 // Traditional Redux Reducer (Without Toolkit)
 // export function todoReducer(state = initialState, action) {

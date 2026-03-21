@@ -37,8 +37,12 @@ const noteSlice = createSlice({
   },
 });
 
+// Export reducer and actions from slice
 export const noteReducer = noteSlice.reducer;
 export const actions = noteSlice.actions;
+
+// Export reducer and actions from slice
+export const noteSelector = (state) => state.noteReducer.notes;
 
 // Traditional Redux Reducer (Without Toolkit)
 // export function noteReducer(state = initialState, action) {
