@@ -1,5 +1,8 @@
-import { ADD_TODO, TOGGLE_TODO } from "../actions/todoActions";
+// Import createSlice from Redux Toolkit
+const { createSlice } = require("@reduxjs/toolkit");
+// import { ADD_TODO, TOGGLE_TODO } from "../actions/todoActions";
 
+// Initial state containing default todos
 const initialState = {
   todos: [
     {
@@ -13,32 +16,68 @@ const initialState = {
   ],
 };
 
-export function todoReducer(state = initialState, action) {
-  switch (action.type) {
-    case ADD_TODO:
-      return {
-        ...state,
-        todos: [
-          ...state.todos,
-          {
-            text: action.text,
-            completed: false,
-          },
-        ],
-      };
+// ================= Redux Toolkit Slice (Reducer + Actions) =================
+const todoSlice = createSlice({
+  name: "todo", // Slice name (used as action prefix)
+  initialState,
 
-    case TOGGLE_TODO:
-      return {
-        ...state,
-        todos: state.todos.map((todo, i) => {
-          if (i === action.index) {
-            todo.completed = !todo.completed;
-          }
-          return todo;
-        }),
-      };
+  reducers: {
+    // Add a new todo item
+    add: (state, action) => {
+      state.todos.push({
+        text: action.payload, // Todo text
+        completed: false, // Default status
+      });
+    },
 
-    default:
-      return state;
-  }
-}
+    // Toggle completion status of a todo by index
+    toggle: (state, action) => {
+      const todo = state.todos[action.payload]; // Get todo by index
+      if (todo) {
+        todo.completed = !todo.completed; // Flip completed status
+      }
+
+      // Alternative approach using map (not recommended here)
+      // state.todos.map((todo, i) => {
+      //   if (i === action.payload) {
+      //     todo.completed = !todo.completed;
+      //   }
+      //   return todo;
+      // });
+    },
+  },
+});
+
+// ---------------- Traditional Redux Reducer (Without Toolkit) ----------------
+// export function todoReducer(state = initialState, action) {
+//   switch (action.type) {
+
+//     // Add a new todo
+//     case ADD_TODO:
+//       return {
+//         ...state,
+//         todos: [
+//           ...state.todos,
+//           {
+//             text: action.text,
+//             completed: false,
+//           },
+//         ],
+//       };
+
+//     // Toggle todo status by index
+//     case TOGGLE_TODO:
+//       return {
+//         ...state,
+//         todos: state.todos.map((todo, i) => {
+//           if (i === action.index) {
+//             todo.completed = !todo.completed;
+//           }
+//           return todo;
+//         }),
+//       };
+
+//     default:
+//       return state;
+//   }
+// }

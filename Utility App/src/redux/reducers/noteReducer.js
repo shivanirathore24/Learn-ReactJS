@@ -1,5 +1,8 @@
-import { ADD_NOTE, DELETE_NOTE } from "../actions/noteActions";
+// Import createSlice from Redux Toolkit
+const { createSlice } = require("@reduxjs/toolkit");
+//import { ADD_NOTE, DELETE_NOTE } from "../actions/noteActions";
 
+// Initial state containing default notes
 const initialState = {
   notes: [
     {
@@ -13,27 +16,53 @@ const initialState = {
   ],
 };
 
-export function noteReducer(state = initialState, action) {
-  switch (action.type) {
-    case ADD_NOTE:
-      return {
-        ...state,
-        notes: [
-          ...state.notes,
-          {
-            text: action.text,
-            createdOn: new Date(),
-          },
-        ],
-      };
-    case DELETE_NOTE:
-      state.notes.splice(action.index, 1);
-      //console.log(state.notes);
-      return {
-        ...state,
-        notes: [...state.notes],
-      };
-    default:
-      return state;
-  }
-}
+// ================= Redux Toolkit Slice (Reducer + Actions) =================
+const noteSlice = createSlice({
+  name: "note", // Slice name (used as action prefix)
+  initialState,
+
+  reducers: {
+    // Add a new note with current timestamp
+    add: (state, action) => {
+      state.notes.push({
+        text: action.payload, // Note content
+        createdOn: new Date(), // Auto-generate creation time
+      });
+    },
+
+    // Delete a note by index
+    delete: (state, action) => {
+      state.notes.splice(action.payload, 1);
+    },
+  },
+});
+
+// ---------------- Traditional Redux Reducer (Without Toolkit) ----------------
+// export function noteReducer(state = initialState, action) {
+//   switch (action.type) {
+
+//     // Add a new note
+//     case ADD_NOTE:
+//       return {
+//         ...state,
+//         notes: [
+//           ...state.notes,
+//           {
+//             text: action.text,
+//             createdOn: new Date(),
+//           },
+//         ],
+//       };
+
+//     // Delete a note by index
+//     case DELETE_NOTE:
+//       state.notes.splice(action.index, 1); // Mutating original state (not recommended)
+//       return {
+//         ...state,
+//         notes: [...state.notes], // Return updated copy
+//       };
+
+//     default:
+//       return state;
+//   }
+// }
