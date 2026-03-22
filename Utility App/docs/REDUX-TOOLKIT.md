@@ -1340,3 +1340,250 @@ function NoteList() {
 
 export default NoteList;
 ```
+
+## Create React App with Redux Template
+
+Redux Toolkit provides a template for creating a React app with Redux
+preconfigured, which you can use to start quickly with building a new
+Redux-powered React application. Run the following command to create a new
+React app with the Redux Toolkit template:
+
+```bash
+npx create-react-app my-app --template redux
+```
+
+This will create a new React app with the Redux Toolkit template and install all the
+necessary dependencies.
+
+## Extra Reducers
+
+Extra Reducer allows you to execute an action which is the action of some other
+reducer. It allows you to share an action, invoke an action or dispatch an action that
+belongs to some other reducer. Using extra reducers like this can help simplify your
+code and make it easier to share actions between different reducers in your Redux
+store.
+
+### Creating Extra Reducers using Builder and addCase
+
+Creating extra reducers using the Builder and Case API in Redux Toolkit allows you
+to handle actions dispatched from other slices of your Redux store without
+hardcoding their names into your reducer.
+
+```jsx
+const notificationSlice = createSlice({
+  name: "notification",
+  initialState,
+  reducers: {
+    reset: (state, action) => {
+      state.message = "";
+    },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(actions.add, (state, action) => {
+      state.message = "Todo is created!";
+    });
+  },
+});
+```
+
+The `builder` argument is an instance of the `ActionReducerMapBuilder` class, which
+provides methods for adding new case reducers to your slice. The addCase method
+takes two arguments: the action creator function and a callback function that handles
+the action. In this case, we pass the `actions.add` action creator function, which is
+defined elsewhere in our application, and a callback function that sets the message
+property of our state to "Todo is created1". This approach allows us to handle actions
+from other parts of our application without tightly coupling our reducers to the actions
+that they handle.
+
+### Creating Extra Reducers using Maps
+
+The extraReducers field uses a map object to define an action handler for the add
+action. The key of the map object is the action type, and the value is the function that
+will handle the action. In this case, when the add action is dispatched, the message
+is set to "Todo is created!".
+
+```jsx
+const notificationSlice = createSlice({
+  name: "notification",
+  initialState,
+  reducers: {
+    reset: (state, action) => {
+      state.message = "";
+    },
+  },
+  extraReducers: {
+    [actions.add]: (state, action) => {
+      state.message = "Todo is created!";
+    },
+  },
+});
+```
+
+## ExtraReducer using Builder and addCase
+
+Introduced a notification system using Redux Toolkit’s `extraReducers`, allowing one slice (notification) to respond to actions from another slice (todo). This helps in showing UI messages like “Todo is created!” without mixing notification logic inside the todo reducer.
+
+### redux/reducers/notificationReducer.js
+
+```jsx
+import { createSlice } from "@reduxjs/toolkit";
+import { actions } from "./todoReducer";
+
+const initialState = {
+  message: "",
+};
+
+const notificationSlice = createSlice({
+  name: "notification",
+  initialState,
+  reducers: {},
+  extraReducers: (builder) => {
+    builder.addCase(actions.add, (state, action) => {
+      state.message = "Todo is created!";
+    });
+  },
+});
+
+export const notificationReducer = notificationSlice.reducer;
+export const notificationSelector = (state) =>
+  state.notificationReducer.message;
+```
+
+Defines a new slice to manage notification messages and listens to todo actions using extraReducers.
+
+- Creating a separate slice (`notificationSlice`)
+  - Maintains a simple state with a `message` field
+  - Keeps notification logic independent from todo logic
+- Using `extraReducers`
+  - Listens to `actions.add` from `todoSlice`
+  - Automatically updates message when a todo is added
+  - Demonstrates cross-slice communication
+- Exporting reducer and selector
+  - `notificationReducer` → added to store
+  - `notificationSelector` → used in components to read message
+
+### components/ToDoForm/ToDoForm.js
+
+```diff
+  import { useState } from "react";
+- import { useDispatch } from "react-redux";
++ import { useDispatch, useSelector } from "react-redux";
+  import { actions } from "../../redux/reducers/todoReducer";
++ import { notificationSelector } from "../../redux/reducers/notificationReducer";
+  import styles from "./ToDoForm.module.css";
+
+  function ToDoForm() {
+    const [todoText, setTodoText] = useState("");
+    const dispatch = useDispatch();
++   const message = useSelector(notificationSelector);
+
+    const handleSubmit = (e) => {
+      e.preventDefault();
+      if (!todoText.trim()) return;
+      dispatch(actions.add(todoText));
+      setTodoText("");
+    };
+
+    return (
+      <div className={styles["form-container"]}>
++       {message && (
++         <div class="alert alert-success" role="alert">
++           {message}
++         </div>
++       )}
+        <form onSubmit={handleSubmit} className={styles.form}>
+          <input
+            type="text"
+            placeholder="Enter your task..."
+            value={todoText}
+            onChange={(e) => setTodoText(e.target.value)}
+          />
+          <button type="submit">Add Task</button>
+        </form>
+      </div>
+    );
+  }
+
+  export default ToDoForm;
+```
+
+Updated component to display notification message from Redux store.
+
+- Adding `useSelector`
+  - Reads message using `notificationSelector`
+  - Keeps component clean (no manual state for notification)
+- Displaying notification in UI
+  - Shows alert only when message exists
+  - Improves user feedback after adding todo
+- Keeping dispatch logic unchanged
+  - Still uses `dispatch(actions.add(todoText))`
+  - Notification is triggered automatically (via extraReducers)
+
+### redux/store.js
+
+```diff
+  import { todoReducer } from "./reducers/todoReducer";
+  import { noteReducer } from "./reducers/noteReducer";
++ import { notificationReducer } from "./reducers/notificationReducer";
+  import { configureStore } from "@reduxjs/toolkit";
+
+  export const store = configureStore({
+    reducer: {
+      todoReducer,
+      noteReducer,
++     notificationReducer,
+    },
+  });
+```
+
+Integrated notification reducer into global store.
+
+- Importing new reducer
+  - `notificationReducer` added alongside todo and notes
+- Updating store configuration
+  - Now store manages three slices:
+    - todos
+    - notes
+    - notifications
+- Enables global access
+  - Notification state can now be accessed from any component
+
+### index.js
+
+```diff
+  import React from "react";
+  import ReactDOM from "react-dom/client";
++ import "bootstrap/dist/css/bootstrap.min.css";
+  import "./index.css";
+  ...
+```
+
+Added Bootstrap styling for better UI presentation.
+
+- Importing Bootstrap
+  - Enables prebuilt styles like alerts
+  - Used for notification display
+- No change in logic
+  - Only UI enhancement
+
+### Complete Flow (Real Understanding)
+
+```text
+User adds todo
+      ↓
+dispatch(actions.add)
+      ↓
+todoReducer updates todos
+      ↓
+notificationSlice (extraReducers) listens
+      ↓
+message = "Todo is created!"
+      ↓
+useSelector reads message
+      ↓
+UI shows alert automatically
+```
+
+#### 🖥️ What You See in Browser:
+
+<img src="../images/set-notification.png" alt="Set Notification" width="700" height="auto">

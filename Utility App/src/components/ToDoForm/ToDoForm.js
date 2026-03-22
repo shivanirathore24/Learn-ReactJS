@@ -1,12 +1,15 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { actions } from "../../redux/reducers/todoReducer";
 // import { addTodo } from "../../redux/actions/todoActions";
 import styles from "./ToDoForm.module.css";
+import { notificationSelector } from "../../redux/reducers/notificationReducer";
 
 function ToDoForm() {
   const [todoText, setTodoText] = useState("");
   const dispatch = useDispatch();
+  const message = useSelector(notificationSelector);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!todoText.trim()) return;
@@ -17,6 +20,11 @@ function ToDoForm() {
 
   return (
     <div className={styles["form-container"]}>
+      {message && (
+        <div class="alert alert-success" role="alert">
+          {message}
+        </div>
+      )}
       <form onSubmit={handleSubmit} className={styles.form}>
         <input
           type="text"
