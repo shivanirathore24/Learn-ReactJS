@@ -1395,35 +1395,9 @@ property of our state to "Todo is created1". This approach allows us to handle a
 from other parts of our application without tightly coupling our reducers to the actions
 that they handle.
 
-### Creating Extra Reducers using Maps
-
-The extraReducers field uses a map object to define an action handler for the add
-action. The key of the map object is the action type, and the value is the function that
-will handle the action. In this case, when the add action is dispatched, the message
-is set to "Todo is created!".
-
-```jsx
-const notificationSlice = createSlice({
-  name: "notification",
-  initialState,
-  reducers: {
-    reset: (state, action) => {
-      state.message = "";
-    },
-  },
-  extraReducers: {
-    [actions.add]: (state, action) => {
-      state.message = "Todo is created!";
-    },
-  },
-});
-```
-
-## ExtraReducer using Builder and addCase
+### redux/reducers/notificationReducer.js
 
 Introduced a notification system using Redux Toolkit’s `extraReducers`, allowing one slice (notification) to respond to actions from another slice (todo). This helps in showing UI messages like “Todo is created!” without mixing notification logic inside the todo reducer.
-
-### redux/reducers/notificationReducer.js
 
 ```jsx
 import { createSlice } from "@reduxjs/toolkit";
@@ -1587,3 +1561,117 @@ UI shows alert automatically
 #### 🖥️ What You See in Browser:
 
 <img src="../images/set-notification.png" alt="Set Notification" width="700" height="auto">
+
+## Reset Notification
+
+Enhanced the notification system by adding a reset mechanism so that messages automatically disappear after a short time. This improves user experience by preventing stale messages from staying on the screen.
+
+### redux/reducers/notificationReducer.js
+
+```diff
+  import { createSlice } from "@reduxjs/toolkit";
+  import { actions } from "./todoReducer";
+
+  const initialState = {
+    message: "",
+  };
+
+  const notificationSlice = createSlice({
+    name: "notification",
+    initialState,
+-   reducers: {},
++   reducers: {
++     reset: (state, action) => {
++       state.message = "";
++     },
++   },
+    extraReducers: (builder) => {
+      builder.addCase(actions.add, (state, action) => {
+        state.message = "Todo is created!";
+      });
+    },
+  });
+
+  export const notificationReducer = notificationSlice.reducer;
++ export const resetNotification = notificationSlice.actions.reset;
+
+  export const notificationSelector = (state) =>
+    state.notificationReducer.message;
+```
+
+Added a new reducer (`reset`) to clear the notification message.
+
+- Adding `reset` action
+  - Sets `message` back to empty string
+  - Used to remove notification after display
+- Exporting action
+  - `resetNotification` is exported for use in components
+  - Allows components to manually or automatically clear message
+- No change in `extraReducers`
+  - Still listens to `actions.add` for showing message
+
+### components/ToDoForm/ToDoForm.js
+
+```diff
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { actions } from "../../redux/reducers/todoReducer";
+import styles from "./ToDoForm.module.css";
+-import { notificationSelector } from "../../redux/reducers/notificationReducer";
++import {
++  notificationSelector,
++  resetNotification,
++} from "../../redux/reducers/notificationReducer";
+
+function ToDoForm() {
+  const [todoText, setTodoText] = useState("");
+  const dispatch = useDispatch();
+  const message = useSelector(notificationSelector);
+
++  if (message) {
++    setTimeout(() => {
++      dispatch(resetNotification());
++    }, 1000);
++  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!todoText.trim()) return;
+    dispatch(actions.add(todoText));
+    setTodoText("");
+  };
+
+  return (
+    <div className={styles["form-container"]}>
+      {message && (
+        <div class="alert alert-success" role="alert">
+          {message}
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} className={styles.form}>
+        <input
+          type="text"
+          placeholder="Enter your task..."
+          value={todoText}
+          onChange={(e) => setTodoText(e.target.value)}
+        />
+        <button type="submit">Add Task</button>
+      </form>
+    </div>
+  );
+}
+
+export default ToDoForm;
+```
+
+Updated component to automatically clear notification after a delay.
+
+- Importing reset action
+  - `resetNotification` used to clear message
+- Adding auto-reset logic
+  - When message exists → trigger `setTimeout`
+  - After 1 second → dispatch reset action
+- Improves UX
+  - Notification disappears automatically
+  - No manual clearing required

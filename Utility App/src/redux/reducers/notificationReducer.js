@@ -8,7 +8,11 @@ const initialState = {
 const notificationSlice = createSlice({
   name: "notification",
   initialState,
-  reducers: {},
+  reducers: {
+    reset: (state, action) => {
+      state.message = "";
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(actions.add, (state, action) => {
       state.message = "Todo is created!";
@@ -17,5 +21,6 @@ const notificationSlice = createSlice({
 });
 
 export const notificationReducer = notificationSlice.reducer;
+export const resetNotification = notificationSlice.actions.reset;
 export const notificationSelector = (state) =>
   state.notificationReducer.message;
