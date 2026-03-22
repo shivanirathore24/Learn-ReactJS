@@ -2,12 +2,11 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { actions } from "../../redux/reducers/todoReducer";
 // import { addTodo } from "../../redux/actions/todoActions";
-import "./ToDoForm.css";
+import styles from "./ToDoForm.module.css";
 
 function ToDoForm() {
   const [todoText, setTodoText] = useState("");
   const dispatch = useDispatch();
-
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!todoText.trim()) return;
@@ -17,8 +16,8 @@ function ToDoForm() {
   };
 
   return (
-    <div className="form-container">
-      <form onSubmit={handleSubmit} className="form">
+    <div className={styles["form-container"]}>
+      <form onSubmit={handleSubmit} className={styles.form}>
         <input
           type="text"
           placeholder="Enter your task..."

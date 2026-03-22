@@ -2,24 +2,24 @@ import { useSelector, useDispatch } from "react-redux";
 import { actions } from "../../redux/reducers/noteReducer";
 import { noteSelector } from "../../redux/reducers/noteReducer";
 // import { deleteNote } from "../../redux/actions/noteActions";
-import "./NoteList.css";
+import styles from "./NoteList.module.css";
 
 function NoteList() {
   const notes = useSelector(noteSelector);
   const dispatch = useDispatch();
   return (
-    <div className="list-container">
+    <div className={styles["list-container"]}>
       <ul>
         {notes.map((note, index) => (
           <li key={index}>
-            <span className="note-content">{note.text}</span>
+            <span className={styles["note-content"]}>{note.text}</span>
 
-            <span className="note-date">
+            <span className={styles["note-date"]}>
               {note.createdOn.toLocaleDateString()}
             </span>
 
             <button
-              className="delete-btn"
+              className={styles["delete-btn"]}
               onClick={() => dispatch(actions.delete(index))}
             >
               Delete

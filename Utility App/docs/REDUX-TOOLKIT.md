@@ -1091,4 +1091,252 @@ export default NoteList;
   - Used to retrieve specific data from the Redux store
   - Helps avoid repeating state access logic across components
   - Used with `useSelector()` to keep component code clean and readable
-  ***
+
+## CSS Modules Migration
+
+- **Why converted `.css` → `.module.css`**
+  - To avoid global CSS conflicts (especially with Bootstrap)
+  - To scope styles to individual components
+  - To prevent unintended style overrides across the app
+- **CSS Changes**
+  - Renamed files from `.css` → `.module.css`
+  - Ensured styles are locally scoped per component
+- **JS/JSX Changes**
+  - Updated imports:
+    - from `import "./file.css"`
+    - to `import styles from "./file.module.css"`
+  - Updated class usage:
+    - from `className="class-name"`
+    - to `className={styles.className} or className={styles["class-name"]}`
+- **Files updated (CSS → renamed, JS → updated imports + class usage)**
+  - `ToDoForm.css` → `ToDoForm.module.css` + `ToDoForm.js`
+  - `ToDoList.css` → `ToDoList.module.css` + `ToDoList.js`
+  - `NoteForm.css` → `NoteForm.module.css` + `NoteForm.js`
+  - `NoteList.css` → `NoteList.module.css` + `NoteList.js`
+  - `Home.css` → `Home.module.css` + `Home.js`
+  - `NavBar.css` → `NavBar.module.css` + `NavBar.js`
+
+### NavBar.js
+
+```jsx
+import { NavLink } from "react-router-dom";
+import styles from "./NavBar.module.css";
+
+function NavBar() {
+  return (
+    <nav className={styles.navbar}>
+      <h2 className={styles.logo}>Utility App</h2>
+
+      <div className={styles["nav-links"]}>
+        <NavLink
+          to="/"
+          end
+          className={({ isActive }) => (isActive ? `${styles.active}` : "")}
+        >
+          Home
+        </NavLink>
+
+        <NavLink
+          to="/todo"
+          className={({ isActive }) => (isActive ? `${styles.active}` : "")}
+        >
+          To Do
+        </NavLink>
+
+        <NavLink
+          to="/notes"
+          className={({ isActive }) => (isActive ? `${styles.active}` : "")}
+        >
+          Notes
+        </NavLink>
+      </div>
+    </nav>
+  );
+}
+
+export default NavBar;
+```
+
+### Home.js
+
+```jsx
+import { Link } from "react-router-dom";
+import styles from "./Home.module.css";
+
+function Home() {
+  return (
+    <div className={styles["home-container"]}>
+      <h1>Utility App</h1>
+      <p>Manage your daily tasks and notes efficiently</p>
+
+      <div className={styles["home-cards"]}>
+        <Link to="/todo" className={styles.card}>
+          <h3>To Do</h3>
+          <p>Track your daily tasks</p>
+        </Link>
+
+        <Link to="/notes" className={styles.card}>
+          <h3>Notes</h3>
+          <p>Write and manage notes</p>
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+export default Home;
+```
+
+### ToDoForm.js
+
+```jsx
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { actions } from "../../redux/reducers/todoReducer";
+// import { addTodo } from "../../redux/actions/todoActions";
+import styles from "./ToDoForm.module.css";
+
+function ToDoForm() {
+  const [todoText, setTodoText] = useState("");
+  const dispatch = useDispatch();
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!todoText.trim()) return;
+    dispatch(actions.add(todoText));
+    // dispatch(addTodo(todoText));
+    setTodoText("");
+  };
+
+  return (
+    <div className={styles["form-container"]}>
+      <form onSubmit={handleSubmit} className={styles.form}>
+        <input
+          type="text"
+          placeholder="Enter your task..."
+          value={todoText}
+          onChange={(e) => setTodoText(e.target.value)}
+        />
+        <button type="submit">Add Task</button>
+      </form>
+    </div>
+  );
+}
+
+export default ToDoForm;
+```
+
+### ToDoList.js
+
+```jsx
+import { useSelector, useDispatch } from "react-redux";
+import { actions } from "../../redux/reducers/todoReducer";
+import { todoSelector } from "../../redux/reducers/todoReducer";
+import styles from "./ToDoList.module.css";
+
+function ToDoList() {
+  const todos = useSelector(todoSelector);
+  console.log(todos);
+  const dispatch = useDispatch();
+
+  return (
+    <div className={styles["list-container"]}>
+      <ul>
+        {todos.map((todo, index) => (
+          <li key={todo.id}>
+            <span className={styles.content}>{todo.text}</span>
+
+            <span
+              className={todo.completed ? styles.completed : styles.pending}
+            >
+              {todo.completed ? "Completed" : "Pending"}
+            </span>
+
+            <button
+              className={styles["toggle-btn"]}
+              onClick={() => dispatch(actions.toggle(index))}
+            >
+              Toggle
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export default ToDoList;
+```
+
+### NoteForm.js
+
+```jsx
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { actions } from "../../redux/reducers/noteReducer";
+import styles from "./NoteForm.module.css";
+
+function NoteForm() {
+  const [noteText, setNoteText] = useState("");
+  const dispatch = useDispatch();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!noteText.trim()) return;
+    dispatch(actions.add(noteText));
+    setNoteText("");
+  };
+
+  return (
+    <div className={styles["form-container"]}>
+      <form onSubmit={handleSubmit} className={styles.form}>
+        <textarea
+          placeholder="Write your note..."
+          value={noteText}
+          onChange={(e) => setNoteText(e.target.value)}
+        />
+        <button type="submit">Add Note</button>
+      </form>
+    </div>
+  );
+}
+
+export default NoteForm;
+```
+
+### NoteList.js
+
+```jsx
+import { useSelector, useDispatch } from "react-redux";
+import { actions } from "../../redux/reducers/noteReducer";
+import { noteSelector } from "../../redux/reducers/noteReducer";
+import styles from "./NoteList.module.css";
+
+function NoteList() {
+  const notes = useSelector(noteSelector);
+  const dispatch = useDispatch();
+  return (
+    <div className={styles["list-container"]}>
+      <ul>
+        {notes.map((note, index) => (
+          <li key={index}>
+            <span className={styles["note-content"]}>{note.text}</span>
+
+            <span className={styles["note-date"]}>
+              {note.createdOn.toLocaleDateString()}
+            </span>
+
+            <button
+              className={styles["delete-btn"]}
+              onClick={() => dispatch(actions.delete(index))}
+            >
+              Delete
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export default NoteList;
+```

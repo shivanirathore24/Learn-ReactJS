@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { actions } from "../../redux/reducers/noteReducer";
 // import { addNote } from "../../redux/actions/noteActions";
-import "./NoteForm.css";
+import styles from "./NoteForm.module.css";
 
 function NoteForm() {
   const [noteText, setNoteText] = useState("");
@@ -17,8 +17,8 @@ function NoteForm() {
   };
 
   return (
-    <div className="form-container">
-      <form onSubmit={handleSubmit} className="form">
+    <div className={styles["form-container"]}>
+      <form onSubmit={handleSubmit} className={styles.form}>
         <textarea
           placeholder="Write your note..."
           value={noteText}
