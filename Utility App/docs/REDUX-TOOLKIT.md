@@ -1560,7 +1560,7 @@ UI shows alert automatically
 
 #### 🖥️ What You See in Browser:
 
-<img src="../images/set-notification.png" alt="Set Notification" width="700" height="auto">
+<img src="../images/todo-notification.png" alt="Add Todo Notification" width="700" height="auto">
 
 ## Reset Notification
 
@@ -1675,3 +1675,218 @@ Updated component to automatically clear notification after a delay.
 - Improves UX
   - Notification disappears automatically
   - No manual clearing required
+
+## Notification Support for Notes
+
+Extended the existing notification system to support Notes alongside Todos, enabling notifications for both add and delete actions.
+Added dynamic styling (success/danger) and reused centralized Redux logic to keep behavior consistent and scalable across the application.
+
+### redux/reducers/notificationReducer.js
+
+```jsx
+import { createSlice } from "@reduxjs/toolkit";
+import { actions as todoActions } from "./todoReducer";
+import { actions as noteActions } from "./noteReducer";
+
+const initialState = {
+  message: "",
+  type: "",
+};
+
+const notificationSlice = createSlice({
+  name: "notification",
+  initialState,
+  reducers: {
+    reset: (state) => {
+      state.message = "";
+      state.type = "";
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      // TODO ADD
+      .addCase(todoActions.add, (state) => {
+        state.message = "Todo is created!";
+        state.type = "success";
+      })
+
+      // NOTE ADD
+      .addCase(noteActions.add, (state) => {
+        state.message = "Note is created!";
+        state.type = "success";
+      })
+
+      // NOTE DELETE
+      .addCase(noteActions.delete, (state) => {
+        state.message = "Note is deleted!";
+        state.type = "danger";
+      });
+  },
+});
+
+export const notificationReducer = notificationSlice.reducer;
+export const resetNotification = notificationSlice.actions.reset;
+
+export const notificationSelector = (state) => state.notificationReducer;
+```
+
+Extended notification system to support notes and dynamic styling.
+
+- Adding `type` field
+  - Stores notification type (`success` / `danger`)
+  - Used for dynamic UI color
+- Updating `reset` reducer
+  - Clears both `message` and `type`
+  - Ensures clean state after notification disappears
+- Handling multiple slice actions
+  - `todoActions.add` → success message
+  - `noteActions.add` → success message
+  - `noteActions.delete` → danger message (red)
+- Updating selector
+  - Returns full object instead of just message
+  - Enables access to both `message` and `type`
+
+### components/NoteForm/NoteForm.js
+
+```jsx
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { actions } from "../../redux/reducers/noteReducer";
+import styles from "./NoteForm.module.css";
+import {
+  notificationSelector,
+  resetNotification,
+} from "../../redux/reducers/notificationReducer";
+
+function NoteForm() {
+  const [noteText, setNoteText] = useState("");
+  const dispatch = useDispatch();
+  const notification = useSelector(notificationSelector);
+  const { message, type } = notification;
+
+  useEffect(() => {
+    if (message) {
+      const timer = setTimeout(() => {
+        dispatch(resetNotification());
+      }, 1000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [message, dispatch]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!noteText.trim()) return;
+    dispatch(actions.add(noteText));
+    setNoteText("");
+  };
+
+  return (
+    <div className={styles["form-container"]}>
+      {message && (
+        <div className={`alert alert-${type}`} role="alert">
+          {message}
+        </div>
+      )}
+      <form onSubmit={handleSubmit} className={styles.form}>
+        <textarea
+          placeholder="Write your note..."
+          value={noteText}
+          onChange={(e) => setNoteText(e.target.value)}
+        />
+        <button type="submit">Add Note</button>
+      </form>
+    </div>
+  );
+}
+
+export default NoteForm;
+```
+
+Integrated notification UI and auto-reset logic in NoteForm.
+
+- Using `useSelector`
+  - Reads notification state from Redux
+  - Accesses `message` and `type`
+- Adding useEffect
+  - Runs when message appears
+  - Automatically clears notification after 1 second
+- Dynamic alert styling
+  - Uses `alert-${type}` for color
+  - Shows green for success and red for delete
+
+## components/ToDoForm/ToDoForm.js
+
+```jsx
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { actions } from "../../redux/reducers/todoReducer";
+import styles from "./ToDoForm.module.css";
+import {
+  notificationSelector,
+  resetNotification,
+} from "../../redux/reducers/notificationReducer";
+
+function ToDoForm() {
+  const [todoText, setTodoText] = useState("");
+  const dispatch = useDispatch();
+  const notification = useSelector(notificationSelector);
+  const { message, type } = notification;
+
+  useEffect(() => {
+    if (message) {
+      const timer = setTimeout(() => {
+        dispatch(resetNotification());
+      }, 1000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [message, dispatch]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!todoText.trim()) return;
+    dispatch(actions.add(todoText));
+    setTodoText("");
+  };
+
+  return (
+    <div className={styles["form-container"]}>
+      {message && (
+        <div className={`alert alert-${type}`} role="alert">
+          {message}
+        </div>
+      )}
+      <form onSubmit={handleSubmit} className={styles.form}>
+        <input
+          type="text"
+          placeholder="Enter your task..."
+          value={todoText}
+          onChange={(e) => setTodoText(e.target.value)}
+        />
+        <button type="submit">Add Task</button>
+      </form>
+    </div>
+  );
+}
+
+export default ToDoForm;
+```
+
+Refactored TodoForm to support new notification structure and improve behavior.
+
+- Updating selector usage
+  - Now reads full notification object
+  - Extracts `message` and `type`
+- Replacing direct setTimeout
+  - Moved into `useEffect`
+  - Prevents multiple timers on re-render
+- Dynamic alert styling
+  - Replaces fixed success class
+  - Supports both success and danger states
+
+#### 🖥️ What You See in Browser:
+
+<img src="../images/note-notification1.png" alt="Add Note Notification" width="700" height="auto">
+
+<img src="../images/note-notification2.png" alt="Delete Note Notification" width="700" height="auto">
