@@ -25,7 +25,10 @@ function ToDoList() {
 
             <button
               className={styles["toggle-btn"]}
-              onClick={() => dispatch(actions.toggle(index))}
+              onClick={() => {
+                console.log("[LOG]: Todo - Toggle Action dispatched!");
+                dispatch(actions.toggle(index));
+              }}
             >
               Toggle
             </button>
