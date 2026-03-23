@@ -382,3 +382,82 @@ You can test the APIs using the following URLs in Postman. Some sample todos and
 <img src="../images/todos-collection.png" alt="Todos Collection" width="700" height="auto">
 
 <img src="../images/notes-collection.png" alt="Notes Collection" width="700" height="auto">
+
+## Using Fetch API 
+
+`fetch` is a built-in browser API used to make HTTP requests (like GET, POST) to a server.
+Added a `fetch` call to retrieve todos from the backend and log the response, verifying frontend-backend connectivity.
+
+### components/ToDoList/ToDoList.js
+
+```diff
+import { useSelector, useDispatch } from "react-redux";
+import { actions } from "../../redux/reducers/todoReducer";
+import { todoSelector } from "../../redux/reducers/todoReducer";
++import { useEffect } from "react";
+import styles from "./ToDoList.module.css";
+
+function ToDoList() {
+  const todos = useSelector(todoSelector);
+  const dispatch = useDispatch();
+
++  useEffect(() => {
++    fetch("http://localhost:5000/api/todos")
++      .then((res) => res.json())
++      .then((parsedJson) => {
++        console.log("[LOG]: Todos from backend →", parsedJson);
++      })
++      .catch((err) => {
++        console.error("[ERROR]: Fetch failed →", err);
++      });
++  }, []);
+
+  return (
+    <div className={styles["list-container"]}>
+      <ul>
+        {todos.map((todo, index) => (
+          <li key={todo.id}>
+            <span className={styles.content}>{todo.text}</span>
+
+            <span
+              className={todo.completed ? styles.completed : styles.pending}
+            >
+              {todo.completed ? "Completed" : "Pending"}
+            </span>
+
+            <button
+              className={styles["toggle-btn"]}
+              onClick={() => {
+                dispatch(actions.toggle(index));
+              }}
+            >
+              Toggle
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export default ToDoList;
+```
+
+Introduced `useEffect` to fetch data from backend and log it in console.
+
+- Adding `useEffect`
+  - Executes API call when component mounts
+  - Ensures fetch runs only once
+- Using `fetch` API
+  - Calls backend endpoint `/api/todos`
+  - Converts response to JSON
+- Logging response
+  - Displays backend todos in console
+  - Helps verify API integration
+- Error handling
+  - Logs error if request fails
+  - Useful for debugging connection issues
+
+#### 🖥️ What You See in Console:
+
+<img src="../images/fetch-api.png" alt="Fetch API" width="700" height="auto">

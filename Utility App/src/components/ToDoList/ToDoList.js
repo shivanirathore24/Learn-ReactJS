@@ -2,6 +2,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { actions } from "../../redux/reducers/todoReducer";
 import { todoSelector } from "../../redux/reducers/todoReducer";
 //import { toggleTodo } from "../../redux/actions/todoActions";
+import { useEffect } from "react";
 import styles from "./ToDoList.module.css";
 
 function ToDoList() {
@@ -9,6 +10,17 @@ function ToDoList() {
   //console.log(todos);
   const dispatch = useDispatch();
   //const todos = store.getState().todos;
+
+  useEffect(() => {
+    fetch("http://localhost:5000/api/todos")
+      .then((res) => res.json())
+      .then((parsedJson) => {
+        console.log("[LOG]: Todos from backend:", parsedJson);
+      })
+      .catch((err) => {
+        console.error("[ERROR]: Fetch failed:", err);
+      });
+  }, []);
 
   return (
     <div className={styles["list-container"]}>
