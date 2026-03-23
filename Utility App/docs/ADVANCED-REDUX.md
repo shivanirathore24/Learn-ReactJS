@@ -229,3 +229,156 @@ NOTE: Commented out all manual `console.log` statements from Todo components aft
 <img src="../images/logger-middleware1.png" alt="Logger Middleware" width="700" height="auto">
 
 <img src="../images/logger-middleware2.png" alt="Logger Middleware" width="700" height="auto">
+
+## Backend Structure
+
+The backend is structured using a modular architecture to separate configuration, models, controllers, and routes.
+
+```bash
+backend/
+│
+├── config/
+│   └── db.js              # MongoDB connection setup
+│
+├── models/
+│   ├── Todo.js            # Todo schema
+│   └── Note.js            # Note schema
+│
+├── controllers/
+│   ├── todoController.js  # Todo logic (get, add, toggle)
+│   └── noteController.js  # Note logic (get, add, delete)
+│
+├── routes/
+│   ├── todoRoutes.js      # Todo API routes
+│   └── noteRoutes.js      # Note API routes
+│
+├── .env                   # Environment variables
+├── .gitignore             # Ignored files
+├── package.json           # Dependencies
+├── package-lock.json
+└── server.js              # Entry point (Express server)
+```
+
+- Express server setup
+  - `server.js` as entry point
+  - Middleware: `express.json`, `cors`
+  - Routes connected for todos and notes
+
+- Database configuration
+  - MongoDB connection using Mongoose (`config/db.js`)
+  - Connection string managed via `.env`
+
+- Models
+  - `Todo` → text, completed
+  - `Note` → text, createdOn
+
+- Controllers
+  - Handle business logic for API requests
+  - Todos → get, add, toggle
+  - Notes → get, add, delete
+
+- Routes
+  - Map HTTP methods to controller functions
+  - Follow REST API design
+
+- Architecture
+  - Follows MVC-like structure for scalability and maintainability
+
+### API Documentation
+
+#### Todo APIs
+
+| Method | URL              | Description        | Request Body         | Response            |
+| ------ | ---------------- | ------------------ | -------------------- | ------------------- |
+| GET    | `/api/todos`     | Get all todos      | ❌ None              | Array of todos      |
+| POST   | `/api/todos`     | Add new todo       | `{ "text": "Task" }` | Created todo object |
+| PUT    | `/api/todos/:id` | Toggle todo status | ❌ None              | Updated todo object |
+
+#### Note APIs
+
+| Method | URL              | Description   | Request Body         | Response            |
+| ------ | ---------------- | ------------- | -------------------- | ------------------- |
+| GET    | `/api/notes`     | Get all notes | ❌ None              | Array of notes      |
+| POST   | `/api/notes`     | Add new note  | `{ "text": "Note" }` | Created note object |
+| DELETE | `/api/notes/:id` | Delete note   | ❌ None              | Success message     |
+
+All APIs follow RESTful conventions where the HTTP method defines the action and the URL represents the resource.
+
+### Setup & Run Instructions
+
+#### Backend
+
+```bash
+cd backend
+npm install
+node server.js
+```
+
+Server runs at: `http://localhost:5000`
+
+#### Frontend
+
+```bash
+npm install
+npm start
+```
+
+App runs at: `http://localhost:3000`
+
+#### 🔄 Application Flow
+
+```text
+Frontend (React) → API Call → Backend (Express) → Database (MongoDB) → Response → UI
+```
+
+#### ⚠️ Notes
+
+- Start backend before frontend
+- Ensure MongoDB is running
+- `.env` and `node_modules` are ignored via `.gitignore`
+
+### API Testing (Postman)
+
+You can test the APIs using the following URLs in Postman. Some sample todos and notes are already added and can be viewed in the database screenshots below.
+
+#### Todos
+
+- GET all todos:
+  `http://localhost:5000/api/todos`
+
+- Add todo:
+  `http://localhost:5000/api/todos`
+
+  Body:
+
+  ```json
+  { "text": "Practice coding at 5 PM" }
+  ```
+
+- Toggle todo:
+  `http://localhost:5000/api/todos/:id`
+
+#### Notes
+
+- GET all notes:
+  `http://localhost:5000/api/notes`
+
+- Add note:
+  `http://localhost:5000/api/notes`
+
+  Body:
+
+  ```json
+  {
+    "text": "Understand Redux Toolkit middleware flow including logger and async actions handling"
+  }
+  ```
+
+- Delete note:
+  `http://localhost:5000/api/notes/:id`
+
+#### 🖥️ What You See in Database:
+
+<img src="../images/todos-collection.png" alt="Todos Collection" width="700" height="auto">
+
+<img src="../images/notes-collection.png" alt="Notes Collection" width="700" height="auto">
