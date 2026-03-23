@@ -383,9 +383,53 @@ You can test the APIs using the following URLs in Postman. Some sample todos and
 
 <img src="../images/notes-collection.png" alt="Notes Collection" width="700" height="auto">
 
-## Using Fetch API 
+## Calling an API
 
-`fetch` is a built-in browser API used to make HTTP requests (like GET, POST) to a server.
+### Fetch function
+
+To make an asynchronous call to an API in React using the fetch function, you can
+wrap the fetch function in a `useEffect` hook. Since the fetch function is asynchronous
+and returns a promise, you can use either then and catch or async/await to handle
+the promise.
+
+For Example, we make an API call to fetch todos from the server running on
+`http://localhost:5000/api/todos`. We then convert the response to JSON using the
+`json()` function, which also returns a promise. Finally, we log the parsed JSON data
+to the console.
+
+```jsx
+useEffect(() => {
+  fetch("http://localhost:5000/api/todos")
+    .then((res) => res.json())
+    .then((parsedJson) => {
+      console.log(parsedJson);
+    });
+}, []);
+```
+
+### Axios Function
+
+Axios is a commonly used library for making HTTP requests to an API. Axios
+provides an easy-to-use interface for making asynchronous requests, and it can be
+used in combination with Redux to manage state and handle API responses.
+You can run `npm install axios` to install Axios.
+
+For example, the useEffect hook is used to make an HTTP GET request to an API
+using Axios. The axios.get method takes the API URL as its argument and returns a
+promise that resolves with the response data. Once the response is received, the
+data is logged into the console. The `[]` as the second argument to useEffect ensures
+that the effect runs only once when the component mounts.
+
+```jsx
+useEffect(() => {
+  axios.get("http://localhost:5000/api/todos").then((res) => {
+    console.log(res.data);
+  });
+}, []);
+```
+
+## Using 'fetch' API
+
 Added a `fetch` call to retrieve todos from the backend and log the response, verifying frontend-backend connectivity.
 
 ### components/ToDoList/ToDoList.js
@@ -405,10 +449,10 @@ function ToDoList() {
 +    fetch("http://localhost:5000/api/todos")
 +      .then((res) => res.json())
 +      .then((parsedJson) => {
-+        console.log("[LOG]: Todos from backend →", parsedJson);
++        console.log("Todos from backend →", parsedJson);
 +      })
 +      .catch((err) => {
-+        console.error("[ERROR]: Fetch failed →", err);
++        console.error("Fetch failed →", err);
 +      });
 +  }, []);
 
@@ -461,3 +505,57 @@ Introduced `useEffect` to fetch data from backend and log it in console.
 #### 🖥️ What You See in Console:
 
 <img src="../images/fetch-api.png" alt="Fetch API" width="700" height="auto">
+
+## Using 'axios' Library
+
+Replaced the `fetch` API with `axios` to simplify HTTP requests and response handling while keeping the same functionality.
+
+### components/ToDoList/ToDoList.js
+
+```diff
+...
+import { useEffect } from "react";
++import axios from "axios";
+
+function ToDoList() {
+...
+-  useEffect(() => {
+-    fetch("http://localhost:5000/api/todos")
+-      .then((res) => res.json())
+-      .then((parsedJson) => {
+-        console.log("Todos from backend:", parsedJson);
+-      })
+-      .catch((err) => {
+-        console.error("Fetch failed:", err);
+-      });
+-  }, []);
+
++  useEffect(() => {
++    axios.get("http://localhost:5000/api/todos")
++      .then((res) => {
++        console.log("Todos from backend:", res.data);
++      })
++      .catch((err) => {
++        console.error("Fetch failed:", err);
++      });
++  }, []);
+...
+}
+
+```
+
+Replaced fetch with axios for cleaner API calls and simpler response handling.
+
+- Added axios
+  - Imported `axios` library
+  - Used for making HTTP requests
+- Replaced fetch with axios
+  - `axios.get()` directly returns parsed data
+  - No need for `.json()` conversion
+- Simplified response handling
+  - Access data using `res.data`
+  - Cleaner and shorter syntax
+- Added error handling
+  - `.catch()` handles API errors
+
+NOTE: Fetch is a built-in browser API, while Axios is an external library.

@@ -3,23 +3,31 @@ import { actions } from "../../redux/reducers/todoReducer";
 import { todoSelector } from "../../redux/reducers/todoReducer";
 //import { toggleTodo } from "../../redux/actions/todoActions";
 import { useEffect } from "react";
+import axios from "axios";
 import styles from "./ToDoList.module.css";
 
 function ToDoList() {
   const todos = useSelector(todoSelector);
-  //console.log(todos);
   const dispatch = useDispatch();
   //const todos = store.getState().todos;
 
+  //Way-1
+  // useEffect(() => {
+  //   fetch("http://localhost:5000/api/todos")
+  //     .then((res) => res.json())
+  //     .then((parsedJson) => {
+  //       console.log("Todos from backend:", parsedJson);
+  //     })
+  //     .catch((err) => {
+  //       console.error("Fetch failed:", err);
+  //     });
+  // }, []);
+
+  //Way-2
   useEffect(() => {
-    fetch("http://localhost:5000/api/todos")
-      .then((res) => res.json())
-      .then((parsedJson) => {
-        console.log("[LOG]: Todos from backend:", parsedJson);
-      })
-      .catch((err) => {
-        console.error("[ERROR]: Fetch failed:", err);
-      });
+    axios.get("http://localhost:5000/api/todos").then((res) => {
+      console.log("Todos from backend:", res.data);
+    });
   }, []);
 
   return (
