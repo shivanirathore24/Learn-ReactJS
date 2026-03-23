@@ -6,7 +6,7 @@ import styles from "./ToDoList.module.css";
 
 function ToDoList() {
   const todos = useSelector(todoSelector);
-  console.log(todos);
+  //console.log(todos);
   const dispatch = useDispatch();
   //const todos = store.getState().todos;
 
@@ -26,7 +26,7 @@ function ToDoList() {
             <button
               className={styles["toggle-btn"]}
               onClick={() => {
-                console.log("[LOG]: Todo - Toggle Action dispatched!");
+                //console.log("[LOG]: Todo - Toggle Action dispatched!");
                 dispatch(actions.toggle(index));
               }}
             >
