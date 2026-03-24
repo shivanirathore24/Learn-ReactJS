@@ -559,3 +559,155 @@ Replaced fetch with axios for cleaner API calls and simpler response handling.
   - `.catch()` handles API errors
 
 NOTE: Fetch is a built-in browser API, while Axios is an external library.
+
+## How to manage API Data?
+
+To manage API data in React Redux, there are two ways: either in the components
+or in the Redux itself.
+
+### Using Components
+
+If you choose to manage API calls in the components, you can use the useEffect
+hook to fetch the initial data from the API, and then once you have received the data,
+dispatch an action to update the Redux store.
+
+For Example,
+You can specify an action to update the Redux Store.
+
+```jsx
+const todoSlice = createSlice({
+  name: "todo",
+  initialState: initialState,
+  reducers: {
+    setInitialState: (state, action) => {
+      state.todos = action.payload;
+    },
+    // ...
+  },
+});
+```
+
+Then you can dispatch the action, once you receive data from the API
+
+```jsx
+useEffect(() => {
+  axios.get("http://localhost:5000/api/todos").then((res) => {
+    console.log(res.data);
+    dispatch(actions.setInitialState(res.data));
+  });
+}, []);
+```
+
+### Using Redux
+
+When managing API data in Redux, it's important to note that we cannot make
+asynchronous calls from our reducer actions. This is because reducers are designed
+to be pure functions, meaning they should not have any side effects. They should
+only handle state updates based on the actions they receive. Instead, we can use
+the `createAsyncThunk` function provided by Redux Toolkit to handle async calls and
+update the Redux store accordingly. This allows you to manage API calls and state
+updates in a centralized location in the Redux store, making it easier to manage your
+application's state and data flow
+
+## HTTP Calls with Redux
+
+Moved from static (hardcoded) todos to dynamic data fetched from backend and stored in Redux, so UI reflects real data.
+
+### redux/reducers/todoReducer.js
+
+```diff
+ // Import createSlice from Redux Toolkit
+ const { createSlice } = require("@reduxjs/toolkit");
+
+ // Initial state containing default todos
+ const initialState = {
+-  todos: [
+-    {
+-      text: "Study mathematics at 6 AM",
+-      completed: true,
+-    },
+-    {
+-      text: "Evening workout at 5 PM",
+-      completed: false,
+-    },
+-  ],
++  todos: [],
+ };
+
+ // Redux Toolkit Slice (Reducer + Actions)
+ const todoSlice = createSlice({
+   name: "todo",
+   initialState,
+
+   reducers: {
++    // Set todos from backend API
++    setInitialState: (state, action) => {
++      state.todos = [...action.payload];
++    },
+
+     // Add a new todo item
+     add: (state, action) => {
+       state.todos.push({
+         text: action.payload,
+         completed: false,
+       });
+     },
+
+     // Toggle completion status of a todo by index
+     toggle: (state, action) => {
+       const todo = state.todos[action.payload];
+       if (todo) {
+         todo.completed = !todo.completed;
+       }
+     },
+   },
+ });
+
+ // Export reducer and actions from slice
+ export const todoReducer = todoSlice.reducer;
+ export const actions = todoSlice.actions;
+
+ // Selector to access todos from Redux store
+ export const todoSelector = (state) => state.todoReducer.todos;
+```
+
+Replaced static todos with API-driven state by initializing an empty store and adding a reducer to populate it from backend data.
+
+- Initial state updated
+  - Removed predefined todos
+  - `todos` now starts as an empty array
+- Added `setInitialState`
+  - Accepts API response (`action.payload`)
+  - Directly updates Redux store with fetched todos
+- Purpose
+  - Enables backend-controlled data instead of hardcoded values
+  - Keeps UI in sync with server data
+
+### components/ToDoList/ToDoList.js
+
+```diff
+...
+ useEffect(() => {
+   axios.get("http://localhost:5000/api/todos").then((res) => {
+     console.log("Todos from backend:", res.data);
++    dispatch(actions.setInitialState(res.data));
+   });
+-}, []);
++}, [dispatch]);
+...
+```
+
+Connected frontend to backend and Redux by fetching and storing data.
+
+- API call using `axios`
+  - Fetches todos from `/api/todos`
+  - Runs once when component mounts (`useEffect`)
+- Dispatching to Redux
+  - Instead of just logging, data is now stored
+  - `dispatch(actions.setInitialState(res.data))` updates global state
+- Dependency array improvement
+  - Added `dispatch` → follows React best practices
+
+#### 🖥️ What You See in Browser:
+
+<img src="../images/todos-from-database.png" alt="Todos from Database" width="700" height="auto">

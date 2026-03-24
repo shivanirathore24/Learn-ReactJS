@@ -27,8 +27,9 @@ function ToDoList() {
   useEffect(() => {
     axios.get("http://localhost:5000/api/todos").then((res) => {
       console.log("Todos from backend:", res.data);
+      dispatch(actions.setInitialState(res.data));
     });
-  }, []);
+  }, [dispatch]);
 
   return (
     <div className={styles["list-container"]}>

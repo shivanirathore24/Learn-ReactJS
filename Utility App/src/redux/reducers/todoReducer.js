@@ -4,16 +4,7 @@ const { createSlice } = require("@reduxjs/toolkit");
 
 // Initial state containing default todos
 const initialState = {
-  todos: [
-    {
-      text: "Study mathematics at 6 AM",
-      completed: true,
-    },
-    {
-      text: "Evening workout at 5 PM",
-      completed: false,
-    },
-  ],
+  todos: [],
 };
 
 // Redux Toolkit Slice (Reducer + Actions)
@@ -22,6 +13,9 @@ const todoSlice = createSlice({
   initialState,
 
   reducers: {
+    setInitialState: (state, action) => {
+      state.todos = [...action.payload];
+    },
     // Add a new todo item
     add: (state, action) => {
       state.todos.push({
