@@ -10,13 +10,16 @@ const initialState = {
 
 export const getInitialState = createAsyncThunk(
   "todo/getInitialState",
-  async (_, thunkAPI) => {
-    try {
-      const res = await axios.get("http://localhost:5000/api/todos");
-      thunkAPI.dispatch(actions.setInitialState(res.data));
-    } catch (error) {
-      console.error(error);
-    }
+  // async (_, thunkAPI) => {
+  //   try {
+  //     const res = await axios.get("http://localhost:5000/api/todos");
+  //     thunkAPI.dispatch(actions.setInitialState(res.data));
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // },
+  () => {
+    return axios.get("http://localhost:5000/api/todos");
   },
 );
 
@@ -43,15 +46,14 @@ const todoSlice = createSlice({
       if (todo) {
         todo.completed = !todo.completed; // Flip completed status
       }
-
-      // Alternative approach using map (not recommended here)
-      // state.todos.map((todo, i) => {
-      //   if (i === action.payload) {
-      //     todo.completed = !todo.completed;
-      //   }
-      //   return todo;
-      // });
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(getInitialState.fulfilled, (state, action) => {
+      console.log("getInitialState is fulfilled!");
+      console.log(action.payload);
+      state.todos = [...action.payload.data];
+    });
   },
 });
 

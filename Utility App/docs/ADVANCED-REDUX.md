@@ -927,3 +927,82 @@ Component → dispatch(thunk) → pending → API call → dispatch(reducer) →
 #### 🖥️ What You See in Browser:
 
 <img src="../images/todos-from-backend2.png" alt="Todos from Backend" width="700" height="auto">
+
+## Handling Results
+
+Replaced manual dispatch inside thunk with automatic result handling using `extraReducers`, making Redux manage async results more cleanly.
+
+### redux/reducers/todoReducer.js
+
+```diff
+ export const getInitialState = createAsyncThunk(
+   "todo/getInitialState",
+-  async (_, thunkAPI) => {
+-    try {
+-      const res = await axios.get("http://localhost:5000/api/todos");
+-      thunkAPI.dispatch(actions.setInitialState(res.data));
+-    } catch (error) {
+-      console.error(error);
+-    }
+-  },
++  () => {
++    return axios.get("http://localhost:5000/api/todos");
++  }
+ );
+
+ const todoSlice = createSlice({
+   name: "todo",
+   initialState,
+
+   reducers: {
+     setInitialState: (state, action) => {
+       state.todos = [...action.payload];
+     },
+     add: (state, action) => {
+       state.todos.push({
+         text: action.payload,
+         completed: false,
+       });
+     },
+     toggle: (state, action) => {
+       const todo = state.todos[action.payload];
+       if (todo) {
+         todo.completed = !todo.completed;
+       }
+     },
+   },
+
++  extraReducers: (builder) => {
++    builder.addCase(getInitialState.fulfilled, (state, action) => {
++      console.log("getInitialState is fulfilled!");
++      console.log(action.payload);
++      state.todos = [...action.payload.data];
++    });
++  },
+ });
+
+ export const todoReducer = todoSlice.reducer;
+ export const actions = todoSlice.actions;
+ export const todoSelector = (state) => state.todoReducer.todos;
+```
+
+Refactored thunk to return API response and handled result inside `extraReducers`.
+
+- Removed manual dispatch from thunk
+  - Earlier, thunk directly updated Redux using `dispatch`
+  - Now, thunk only focuses on fetching data
+- Thunk now returns API response
+  - Whatever is returned becomes `action.payload`
+  - Redux Toolkit automatically passes it to reducers
+- Added `extraReducers`
+  - Listens to thunk lifecycle (fulfilled)
+  - Handles state update when API call succeeds
+- Used `action.payload.data`
+  - Axios response structure → `{ data: [...] }`
+  - Extracting actual todos from response
+
+Thunk fetches data, and `extraReducers` updates the store automatically when the request is fulfilled.
+
+#### 🖥️ What You See in Browser:
+
+<img src="../images/todos-from-backend3.png" alt="Todos from Backend" width="700" height="auto">
