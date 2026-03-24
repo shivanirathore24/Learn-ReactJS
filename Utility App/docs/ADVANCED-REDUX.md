@@ -710,4 +710,220 @@ Connected frontend to backend and Redux by fetching and storing data.
 
 #### 🖥️ What You See in Browser:
 
-<img src="../images/todos-from-database.png" alt="Todos from Database" width="700" height="auto">
+<img src="../images/todos-from-backend1.png" alt="Todos from Backend" width="700" height="auto">
+
+## Create AsyncThunk
+
+`createAsyncThunk` is a utility function provided by the Redux Toolkit that generates a
+Redux thunk. A thunk is a function that can be dispatched like a regular Redux
+action, but **it can also contain asynchronous logic**, such as fetching data from an API.
+The generated thunk function can be dispatched to trigger the async operation.
+When the async operation completes, it will automatically dispatch the appropriate
+action type based on the result.
+
+For Example, When calling `createAsyncThunk`, you provide it with two parameters: a
+string that represents the **base action type** and a **callback function** that performs the
+asynchronous operation. The callback function passed to `createAsyncThunk` should
+be an async function. It should return the result of the operation as its resolved value
+or throw an error if the operation fails.
+
+```jsx
+export const getInitialState = createAsyncThunk(
+  "todo/getInitialState",
+  async (_, thunkAPI) => {
+    // async calls
+    try {
+      const res = await axios.get("http://localhost:5000/api/todos");
+
+      thunkAPI.dispatch(actions.setInitialState(res.data));
+    } catch (err) {
+      console.log(err);
+    }
+  },
+);
+```
+
+When using `createAsyncThunk`, you may encounter an issue with the middleware in
+the Redux store. By default, the Redux Toolkit adds some middleware to the store,
+including the thunk middleware that enables using thunks like `createAsyncThunk`.
+However, if you have other middleware in your store that modifies the action or
+dispatch behavior, it may interfere with the behavior of createAsyncThunk. By using
+`getDefaultMiddleware` and spreading it into your middleware array, you ensure that
+the necessary middleware for createAsyncThunk is included while also allowing you
+to add any other middleware that you need to the store.
+
+```jsx
+middleware: (getDefaultMiddleware) =>
+  getDefaultMiddleware().concat(loggerMiddleware);
+```
+
+### Advantages
+
+- **Separation of Async Code**: By using `createAsyncThunk`, you can separate
+  the async logic from the component code and move it to the Redux actions.
+  This keeps the components lightweight and easier to manage and also
+  simplifies testing.
+- **Consistent pattern**: By using `createAsyncThunk`, you establish a consistent
+  pattern for representing async operation states in your Redux store. This
+  makes it easier to reason about your code and to debug it when issues arise.
+- **Flexibility**: `createAsyncThunk` is flexible enough to allow you to customize its
+  behavior if needed. For example, you can provide your own middleware to
+  modify the behavior of the async operation or to add additional logic to the
+  action dispatching process.
+
+## Fetching Data in Redux
+
+Moved API logic from component to Redux using `createAsyncThunk`, and triggered the async operation from the component using dispatch.
+
+### redux/reducers/todoReducer.js
+
+```diff
+- const { createSlice } = require("@reduxjs/toolkit");
++ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
++ import axios from "axios";
+
+ const initialState = {
+   todos: [],
+ };
+
++export const getInitialState = createAsyncThunk(
++  "todo/getInitialState",
++  async (_, thunkAPI) => {
++    try {
++      const res = await axios.get("http://localhost:5000/api/todos");
++      thunkAPI.dispatch(actions.setInitialState(res.data));
++    } catch (error) {
++      console.error(error);
++    }
++  }
++);
+
+ const todoSlice = createSlice({
+   name: "todo",
+   initialState,
+   reducers: {
+     setInitialState: (state, action) => {
+       state.todos = [...action.payload];
+     },
+     add: (state, action) => {
+       state.todos.push({
+         text: action.payload,
+         completed: false,
+       });
+     },
+     toggle: (state, action) => {
+       const todo = state.todos[action.payload];
+       if (todo) {
+         todo.completed = !todo.completed;
+       }
+     },
+   },
+ });
+
+ export const todoReducer = todoSlice.reducer;
+ export const actions = todoSlice.actions;
+ export const todoSelector = (state) => state.todoReducer.todos;
+```
+
+Introduced async thunk using `async/await` with proper error handling to manage API calls inside Redux.
+
+- Added `createAsyncThunk`
+  - Handles asynchronous API calls inside Redux instead of components
+  - Automatically dispatches lifecycle actions like `pending` and `fulfilled`
+- Updated `getInitialState`
+  - Uses `async/await` for cleaner and more readable API handling
+  - Fetches todos from backend (`/api/todos`)
+  - Dispatches existing reducer to update Redux store
+- Added error handling
+  - Wrapped API call inside `try...catch`
+  - Logs error safely to prevent application crash
+- Shifted responsibility
+  - API logic moved from component → Redux
+  - Improves separation of concerns and reusability
+
+### components/ToDoList/ToDoList.js
+
+```diff
+ import { useSelector, useDispatch } from "react-redux";
+-import { actions } from "../../redux/reducers/todoReducer";
++import { actions, getInitialState } from "../../redux/reducers/todoReducer";
+ import { todoSelector } from "../../redux/reducers/todoReducer";
+ import { useEffect } from "react";
+-import axios from "axios";
+ import styles from "./ToDoList.module.css";
+
+ function ToDoList() {
+   const todos = useSelector(todoSelector);
+   const dispatch = useDispatch();
+   //const todos = store.getState().todos;
+
++  // Fetch todos using Redux thunk
++  useEffect(() => {
++    dispatch(getInitialState());
++  }, [dispatch]);
+
+-  useEffect(() => {
+-    axios.get("http://localhost:5000/api/todos").then((res) => {
+-      console.log("Todos from backend:", res.data);
+-      dispatch(actions.setInitialState(res.data));
+-    });
+-  }, [dispatch]);
+
+   return (
+     <div className={styles["list-container"]}>
+       <ul>
+         {todos.map((todo, index) => (
+           <li key={todo.id}>
+             <span className={styles.content}>{todo.text}</span>
+
+             <span
+               className={todo.completed ? styles.completed : styles.pending}
+             >
+               {todo.completed ? "Completed" : "Pending"}
+             </span>
+
+             <button
+               className={styles["toggle-btn"]}
+               onClick={() => {
+                 dispatch(actions.toggle(index));
+               }}
+             >
+               Toggle
+             </button>
+           </li>
+         ))}
+       </ul>
+     </div>
+   );
+ }
+
+ export default ToDoList;
+```
+
+Replaced direct API call with thunk dispatch, making component simpler and focused only on UI.
+
+- Removed axios API call from component
+  - Component no longer directly interacts with backend
+- Added thunk dispatch inside `useEffect`
+  - When component mounts, it triggers async thunk
+  - Thunk handles API and updates Redux
+- Cleaner component design
+  - Component now focuses only on rendering UI and dispatching actions
+  - Improves separation of concerns
+
+### 3. redux/store.js
+
+No changes required, as Redux Toolkit already supports async thunks by default.
+
+- `configureStore` includes thunk middleware internally
+- No extra setup needed to handle async logic
+
+### 🔄 Final Flow
+
+```text
+Component → dispatch(thunk) → pending → API call → dispatch(reducer) → store update → fulfilled → UI update
+```
+
+#### 🖥️ What You See in Browser:
+
+<img src="../images/todos-from-backend2.png" alt="Todos from Backend" width="700" height="auto">

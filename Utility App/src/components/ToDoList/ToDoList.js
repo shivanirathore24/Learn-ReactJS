@@ -1,15 +1,19 @@
 import { useSelector, useDispatch } from "react-redux";
-import { actions } from "../../redux/reducers/todoReducer";
+import { actions, getInitialState } from "../../redux/reducers/todoReducer";
 import { todoSelector } from "../../redux/reducers/todoReducer";
 //import { toggleTodo } from "../../redux/actions/todoActions";
 import { useEffect } from "react";
-import axios from "axios";
+//import axios from "axios";
 import styles from "./ToDoList.module.css";
 
 function ToDoList() {
   const todos = useSelector(todoSelector);
   const dispatch = useDispatch();
   //const todos = store.getState().todos;
+
+  useEffect(() => {
+    dispatch(getInitialState());
+  }, [dispatch]);
 
   //Way-1
   // useEffect(() => {
@@ -24,12 +28,12 @@ function ToDoList() {
   // }, []);
 
   //Way-2
-  useEffect(() => {
-    axios.get("http://localhost:5000/api/todos").then((res) => {
-      console.log("Todos from backend:", res.data);
-      dispatch(actions.setInitialState(res.data));
-    });
-  }, [dispatch]);
+  // useEffect(() => {
+  //   axios.get("http://localhost:5000/api/todos").then((res) => {
+  //     console.log("Todos from backend:", res.data);
+  //     dispatch(actions.setInitialState(res.data));
+  //   });
+  // }, [dispatch]);
 
   return (
     <div className={styles["list-container"]}>
