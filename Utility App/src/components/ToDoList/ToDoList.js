@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from "react-redux";
-import { actions, getInitialState } from "../../redux/reducers/todoReducer";
+import { getInitialState, toggleTodo } from "../../redux/reducers/todoReducer";
 import { todoSelector } from "../../redux/reducers/todoReducer";
 //import { toggleTodo } from "../../redux/actions/todoActions";
 import { useEffect } from "react";
@@ -38,8 +38,8 @@ function ToDoList() {
   return (
     <div className={styles["list-container"]}>
       <ul>
-        {todos.map((todo, index) => (
-          <li key={todo.id}>
+        {todos.map((todo) => (
+          <li key={todo._id}>
             <span className={styles.content}>{todo.text}</span>
 
             <span
@@ -52,7 +52,7 @@ function ToDoList() {
               className={styles["toggle-btn"]}
               onClick={() => {
                 //console.log("[LOG]: Todo - Toggle Action dispatched!");
-                dispatch(actions.toggle(index));
+                dispatch(toggleTodo(todo._id));
               }}
             >
               Toggle

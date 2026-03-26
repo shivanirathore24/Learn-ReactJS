@@ -928,7 +928,7 @@ Component → dispatch(thunk) → pending → API call → dispatch(reducer) →
 
 <img src="../images/todos-from-backend2.png" alt="Todos from Backend" width="700" height="auto">
 
-## Handling Results
+## Handle API results using extraReducers
 
 Replaced manual dispatch inside thunk with automatic result handling using `extraReducers`, making Redux manage async results more cleanly.
 
@@ -1006,3 +1006,332 @@ Thunk fetches data, and `extraReducers` updates the store automatically when the
 #### 🖥️ What You See in Browser:
 
 <img src="../images/todos-from-backend3.png" alt="Todos from Backend" width="700" height="auto">
+
+## Todo Create & Toggle API Integration
+
+Shifted from **local Redux updates → backend-driven updates using async thunks**, ensuring data persistence and proper API synchronization.
+
+### redux/reducers/todoReducer.js
+
+```jsx
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
+
+const initialState = {
+  todos: [],
+};
+
+// Get todos from backend
+export const getInitialState = createAsyncThunk("todo/getInitialState", () =>
+  axios.get("http://localhost:5000/api/todos"),
+);
+
+// Alternative using fetch
+/// export const addTodo = createAsyncThunk("todo/addTodo", async (payload) => {
+//   const res = await fetch("http://localhost:5000/api/todos", {
+//     method: "POST",
+//     headers: { "content-type": "application/json" },
+//     body: JSON.stringify({ text: payload }),
+//   });
+//   return res.json();
+// });
+
+// Add todo to backend
+export const addTodo = createAsyncThunk("todo/addTodo", async (payload) => {
+  console.log("Sending todo:", payload);
+  const res = await axios.post("http://localhost:5000/api/todos", {
+    text: payload,
+  });
+  console.log("Response from backend:", res.data);
+  return res.data;
+});
+
+// Toggle todo status in backend
+export const toggleTodo = createAsyncThunk("todo/toggleTodo", async (id) => {
+  console.log("Toggling todo with id:", id);
+  const res = await axios.put(`http://localhost:5000/api/todos/${id}`);
+  console.log("Toggle response:", res.data);
+  return res.data;
+});
+
+const todoSlice = createSlice({
+  name: "todo",
+  initialState,
+
+  // Local reducers (kept for learning, not used with backend)
+  reducers: {
+    setInitialState: (state, action) => {
+      state.todos = [...action.payload];
+    },
+    add: (state, action) => {
+      state.todos.push({
+        text: action.payload,
+        completed: false,
+      });
+    },
+    toggle: (state, action) => {
+      const todo = state.todos[action.payload];
+      if (todo) {
+        todo.completed = !todo.completed;
+      }
+    },
+  },
+
+  // Handle API results and update state
+  extraReducers: (builder) => {
+    builder
+      .addCase(getInitialState.fulfilled, (state, action) => {
+        console.log("getInitialState is fulfilled!");
+        console.log(action.payload);
+        state.todos = action.payload.data;
+      })
+      .addCase(addTodo.fulfilled, (state, action) => {
+        console.log("Added todo in reducer:", action.payload);
+        state.todos.push(action.payload);
+      })
+      .addCase(toggleTodo.fulfilled, (state, action) => {
+        console.log("Toggle updated in reducer:", action.payload);
+        const updatedTodo = action.payload;
+        const index = state.todos.findIndex(
+          (todo) => todo._id === updatedTodo._id,
+        );
+        if (index !== -1) {
+          state.todos[index] = updatedTodo;
+        }
+      });
+  },
+});
+
+export const todoReducer = todoSlice.reducer;
+export const actions = todoSlice.actions; // not used in backend flow
+export const todoSelector = (state) => state.todoReducer.todos;
+```
+
+Integrated backend API calls into Redux using async thunks, replacing local state updates with server-driven updates.
+
+- Added `addTodo` thunk to handle todo creation
+  - Sends a POST request with `{ text }` to backend
+  - Backend creates and returns the new todo object (with `_id`, `completed`)
+  - Returned data becomes `action.payload`
+- Added `toggleTodo` thunk to handle status updates
+  - Sends a PUT request using todo `_id`
+  - Backend toggles `completed` and returns updated todo
+  - Ensures consistency between UI and database
+- Extended `extraReducers` to handle async results
+  - `addTodo.fulfilled` → pushes new todo into state
+  - `toggleTodo.fulfilled` → finds todo by `_id` and replaces it
+  - Ensures state updates only after successful API response
+- Switched from index-based logic to `_id`
+  - Index is unreliable when data comes from backend
+  - `_id` guarantees correct mapping with database records
+- Kept existing reducers (`add`, `toggle`) untouched
+  - Useful for understanding earlier local implementation
+  - But no longer used in UI for real updates
+
+### redux/reducers/notificationReducer.js
+
+```diff
+import { createSlice } from "@reduxjs/toolkit";
+-import { actions as todoActions } from "./todoReducer";
++import { addTodo } from "./todoReducer";
+import { actions as noteActions } from "./noteReducer";
+
+const initialState = {
+  message: "",
+  type: "",
+};
+
+const notificationSlice = createSlice({
+  name: "notification",
+  initialState,
+  reducers: {
+    reset: (state) => {
+      state.message = "";
+      state.type = "";
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+-      .addCase(todoActions.add, (state) => {
++      .addCase(addTodo.fulfilled, (state) => {
+        state.message = "Todo is created!";
+        state.type = "success";
+      })
+      .addCase(noteActions.add, (state) => {
+        state.message = "Note is created!";
+        state.type = "success";
+      })
+      .addCase(noteActions.delete, (state) => {
+        state.message = "Note is deleted!";
+        state.type = "danger";
+      });
+  },
+});
+
+export const notificationReducer = notificationSlice.reducer;
+export const resetNotification = notificationSlice.actions.reset;
+export const notificationSelector = (state) => state.notificationReducer;
+```
+
+Updated notification handling to align with async backend flow.
+
+- Replaced sync action with async lifecycle
+  - Earlier triggered on `actions.add`
+  - Now triggered on `addTodo.fulfilled`
+- Ensures accuracy
+  - Notification only appears after backend success
+  - Prevents false success messages
+
+Notifications now reflect real API outcomes instead of optimistic updates.
+
+### components/ToDoForm.js
+
+```diff
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+-import { actions } from "../../redux/reducers/todoReducer";
++import { addTodo } from "../../redux/reducers/todoReducer";
+import styles from "./ToDoForm.module.css";
+import {
+  notificationSelector,
+  resetNotification,
+} from "../../redux/reducers/notificationReducer";
+
+function ToDoForm() {
+  const [todoText, setTodoText] = useState("");
+  const dispatch = useDispatch();
+  const notification = useSelector(notificationSelector);
+  const { message, type } = notification;
+
+  useEffect(() => {
+    if (message) {
+      const timer = setTimeout(() => {
+        dispatch(resetNotification());
+      }, 1000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [message, dispatch]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!todoText.trim()) return;
+
+-    dispatch(actions.add(todoText));
++    dispatch(addTodo(todoText));
+
+    setTodoText("");
+  };
+
+  return (
+    <div className={styles["form-container"]}>
+      {message && (
+        <div className={`alert alert-${type}`} role="alert">
+          {message}
+        </div>
+      )}
+      <form onSubmit={handleSubmit} className={styles.form}>
+        <input
+          type="text"
+          placeholder="Enter your task..."
+          value={todoText}
+          onChange={(e) => setTodoText(e.target.value)}
+        />
+        <button type="submit">Add Task</button>
+      </form>
+    </div>
+  );
+}
+
+export default ToDoForm;
+```
+
+Replaced local todo creation with backend API call.
+
+- Removed local reducer usage
+  - No longer using `actions.add`
+- Integrated async thunk
+  - `addTodo` sends POST request to backend
+  - Store updates via `extraReducers`
+- Maintains clean separation
+  - UI → dispatch action
+  - Thunk → API call
+  - Reducer → state update
+
+Todo creation is now persistent and synced with backend.
+
+### components/ToDoList.js
+
+```diff
+import { useSelector, useDispatch } from "react-redux";
+-import { actions, getInitialState } from "../../redux/reducers/todoReducer";
++import { getInitialState, toggleTodo } from "../../redux/reducers/todoReducer";
+import { todoSelector } from "../../redux/reducers/todoReducer";
+import { useEffect } from "react";
+import styles from "./ToDoList.module.css";
+
+function ToDoList() {
+  const todos = useSelector(todoSelector);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getInitialState());
+  }, [dispatch]);
+
+  return (
+    <div className={styles["list-container"]}>
+      <ul>
+-        {todos.map((todo, index) => (
+-          <li key={todo.id}>
++        {todos.map((todo) => (
++          <li key={todo._id}>
+            <span className={styles.content}>{todo.text}</span>
+
+            <span
+              className={todo.completed ? styles.completed : styles.pending}
+            >
+              {todo.completed ? "Completed" : "Pending"}
+            </span>
+
+            <button
+              className={styles["toggle-btn"]}
+-              onClick={() => dispatch(actions.toggle(index))}
++              onClick={() => dispatch(toggleTodo(todo._id))}
+            >
+              Toggle
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export default ToDoList;
+```
+
+Connected UI with backend instead of local state.
+
+- Fetch handled via thunk
+  - Replaced manual axios call with `dispatch(getInitialState())`
+- Toggle moved to backend
+  - Replaced index-based toggle with `_id`
+  - Ensures correct DB update
+- Updated key handling
+  - Uses `_id` from backend instead of index
+
+UI now reflects persisted backend data instead of temporary state.
+
+#### 🖥️ What You See in Browser:
+
+Todo created via API, stored in database, and synced in UI
+
+<img src="../images/add-todo-backend.png" alt="Add Todo to Backend" width="700" height="auto">
+
+<img src="../images/add-todo-database.png" alt="Todo Added to Database" width="700" height="auto">
+
+Todo status toggled via API, persisted in database, and reflected in UI
+
+<img src="../images/toggle-todo-backend.png" alt="Toggle Todo in Backend" width="700" height="auto">
+
+<img src="../images/toggle-todo-database.png" alt="Toggle Todo status in database" width="700" height="auto">

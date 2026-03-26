@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { actions } from "../../redux/reducers/todoReducer";
+import { addTodo } from "../../redux/reducers/todoReducer";
 // import { addTodo } from "../../redux/actions/todoActions";
 import styles from "./ToDoForm.module.css";
 import {
@@ -28,7 +28,7 @@ function ToDoForm() {
     e.preventDefault();
     if (!todoText.trim()) return;
     //console.log("[LOG]: Todo - Add Action dispatched!");
-    dispatch(actions.add(todoText));
+    dispatch(addTodo(todoText));
     // dispatch(addTodo(todoText));
     setTodoText("");
   };

@@ -1,4 +1,4 @@
-// Import createSlice from Redux Toolkit
+// Import createSlice & createAsyncThunk from Redux Toolkit
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 // import { ADD_TODO, TOGGLE_TODO } from "../actions/todoActions";
@@ -8,6 +8,7 @@ const initialState = {
   todos: [],
 };
 
+// Get todos from backend
 export const getInitialState = createAsyncThunk(
   "todo/getInitialState",
   // async (_, thunkAPI) => {
@@ -23,43 +24,93 @@ export const getInitialState = createAsyncThunk(
   },
 );
 
+//Way-1
+// export const addTodo = createAsyncThunk("todo/addTodo", async (payload) => {
+//   const res = await fetch("http://localhost:5000/api/todos", {
+//     method: "POST",
+//     headers: {
+//       "content-type": "application/json",
+//     },
+//     body: JSON.stringify({
+//       text: payload,
+//     }),
+//   });
+//   const data = await res.json();
+//   return data;
+// });
+
+//Way-2
+// Add todo to backend
+export const addTodo = createAsyncThunk("todo/addTodo", async (payload) => {
+  console.log("Sending todo:", payload);
+  const res = await axios.post("http://localhost:5000/api/todos", {
+    text: payload,
+  });
+  console.log("Response from backend:", res.data);
+  return res.data;
+});
+
+// Toggle todo status in backend
+export const toggleTodo = createAsyncThunk("todo/toggleTodo", async (id) => {
+  console.log("Toggling todo with id:", id);
+  const res = await axios.put(`http://localhost:5000/api/todos/${id}`);
+  console.log("Toggle response:", res.data);
+  return res.data;
+});
+
 // Redux Toolkit Slice (Reducer + Actions)
 const todoSlice = createSlice({
-  name: "todo", // Slice name (used as action prefix)
+  name: "todo",
   initialState,
 
+  // Local reducers (not used with backend)
   reducers: {
     setInitialState: (state, action) => {
       state.todos = [...action.payload];
     },
-    // Add a new todo item
+
     add: (state, action) => {
       state.todos.push({
-        text: action.payload, // Todo text
-        completed: false, // Default status
+        text: action.payload,
+        completed: false,
       });
     },
 
-    // Toggle completion status of a todo by index
     toggle: (state, action) => {
-      const todo = state.todos[action.payload]; // Get todo by index
+      const todo = state.todos[action.payload];
       if (todo) {
-        todo.completed = !todo.completed; // Flip completed status
+        todo.completed = !todo.completed;
       }
     },
   },
+  // Handle async thunk results
   extraReducers: (builder) => {
-    builder.addCase(getInitialState.fulfilled, (state, action) => {
-      console.log("getInitialState is fulfilled!");
-      console.log(action.payload);
-      state.todos = [...action.payload.data];
-    });
+    builder
+      .addCase(getInitialState.fulfilled, (state, action) => {
+        console.log("getInitialState is fulfilled!");
+        console.log(action.payload);
+        state.todos = [...action.payload.data];
+      })
+      .addCase(addTodo.fulfilled, (state, action) => {
+        console.log("Added todo in reducer:", action.payload);
+        state.todos.push(action.payload);
+      })
+      .addCase(toggleTodo.fulfilled, (state, action) => {
+        console.log("Toggle updated in reducer:", action.payload);
+        const updatedTodo = action.payload;
+        const index = state.todos.findIndex(
+          (todo) => todo._id === updatedTodo._id,
+        );
+        if (index !== -1) {
+          state.todos[index] = updatedTodo;
+        }
+      });
   },
 });
 
 // Export reducer and actions from slice
 export const todoReducer = todoSlice.reducer;
-export const actions = todoSlice.actions;
+export const actions = todoSlice.actions; // not used in backend flow
 
 // Selector to access todos from Redux store
 export const todoSelector = (state) => state.todoReducer.todos;
