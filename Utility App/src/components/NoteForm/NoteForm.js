@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { actions } from "../../redux/reducers/noteReducer";
+import { addNote } from "../../redux/reducers/noteReducer";
 // import { addNote } from "../../redux/actions/noteActions";
 import styles from "./NoteForm.module.css";
 import {
@@ -18,7 +18,7 @@ function NoteForm() {
     if (message) {
       const timer = setTimeout(() => {
         dispatch(resetNotification());
-      }, 1000);
+      }, 20000);
 
       return () => clearTimeout(timer);
     }
@@ -27,7 +27,7 @@ function NoteForm() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!noteText.trim()) return;
-    dispatch(actions.add(noteText));
+    dispatch(addNote(noteText));
     // dispatch(addNote(noteText));
     setNoteText("");
   };

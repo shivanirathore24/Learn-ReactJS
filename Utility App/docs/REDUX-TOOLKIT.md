@@ -1890,3 +1890,5 @@ Refactored TodoForm to support new notification structure and improve behavior.
 <img src="../images/note-notification1.png" alt="Add Note Notification" width="700" height="auto">
 
 <img src="../images/note-notification2.png" alt="Delete Note Notification" width="700" height="auto">
+
+---

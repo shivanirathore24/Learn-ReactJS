@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { addTodo } from "./todoReducer";
-import { actions as noteActions } from "./noteReducer";
+import { addNote, deleteNote } from "./noteReducer";
 
 const initialState = {
   message: "",
@@ -25,13 +25,13 @@ const notificationSlice = createSlice({
       })
 
       // NOTE ADD
-      .addCase(noteActions.add, (state) => {
+      .addCase(addNote.fulfilled, (state) => {
         state.message = "Note is created!";
         state.type = "success";
       })
 
       // NOTE DELETE
-      .addCase(noteActions.delete, (state) => {
+      .addCase(deleteNote.fulfilled, (state) => {
         state.message = "Note is deleted!";
         state.type = "danger";
       });

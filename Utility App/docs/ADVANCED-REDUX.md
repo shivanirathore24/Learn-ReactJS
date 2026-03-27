@@ -1335,3 +1335,330 @@ Todo status toggled via API, persisted in database, and reflected in UI
 <img src="../images/toggle-todo-backend.png" alt="Toggle Todo in Backend" width="700" height="auto">
 
 <img src="../images/toggle-todo-database.png" alt="Toggle Todo status in database" width="700" height="auto">
+
+## Notes API Integration
+
+Shifted from local Redux updates → backend-driven updates using async thunks, ensuring data persistence and proper API synchronization.
+
+### redux/reducers/noteReducer.js
+
+```jsx
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
+
+const initialState = {
+  notes: [],
+};
+
+// Fetch notes from backend
+export const getNotes = createAsyncThunk("note/getNotes", async () => {
+  const res = await axios.get("http://localhost:5000/api/notes");
+  return res.data;
+});
+
+// Add note to backend
+export const addNote = createAsyncThunk("note/addNote", async (payload) => {
+  const res = await axios.post("http://localhost:5000/api/notes", {
+    text: payload,
+  });
+  return res.data;
+});
+
+// Delete note from backend
+export const deleteNote = createAsyncThunk("note/deleteNote", async (id) => {
+  await axios.delete(`http://localhost:5000/api/notes/${id}`);
+  return id;
+});
+
+const noteSlice = createSlice({
+  name: "note",
+  initialState,
+
+  // Local reducers (kept for learning, not used with backend)
+  reducers: {
+    add: (state, action) => {
+      state.notes.push({
+        text: action.payload,
+        createdOn: new Date(),
+      });
+    },
+    delete: (state, action) => {
+      state.notes.splice(action.payload, 1);
+    },
+  },
+
+  // Handle API results
+  extraReducers: (builder) => {
+    builder
+      .addCase(getNotes.fulfilled, (state, action) => {
+        state.notes = action.payload;
+      })
+      .addCase(addNote.fulfilled, (state, action) => {
+        state.notes.push(action.payload);
+      })
+      .addCase(deleteNote.fulfilled, (state, action) => {
+        state.notes = state.notes.filter((note) => note._id !== action.payload);
+      });
+  },
+});
+
+export const noteReducer = noteSlice.reducer;
+export const actions = noteSlice.actions; // not used in backend flow
+export const noteSelector = (state) => state.noteReducer.notes;
+```
+
+Integrated backend API calls into Redux using async thunks, replacing local state updates with server-driven updates.
+
+- Added `getNotes` thunk to fetch notes
+  - Sends a GET request to backend
+  - Returns list of notes from database
+  - Populates Redux state on load
+- Added `addNote` thunk to handle note creation
+  - Sends a POST request with `{ text }`
+  - Backend returns created note with `_id`
+  - Added to state via `extraReducers`
+- Added `deleteNote` thunk to remove note
+  - Sends DELETE request using note `_id`
+  - Removes note from state after success
+- Extended `extraReducers` to handle async lifecycle
+  - `getNotes.fulfilled` → replaces entire notes list
+  - `addNote.fulfilled` → pushes new note
+  - `deleteNote.fulfilled` → filters note by \_id
+- Switched from index-based logic → `_id`
+  - Required for backend consistency
+  - Prevents wrong deletions
+- Kept local reducers (`add, delete`) for reference
+  - Useful for learning
+  - Not used in backend flow
+
+### redux/reducers/notificationReducer.js
+
+```diff
+ import { createSlice } from "@reduxjs/toolkit";
+ import { addTodo } from "./todoReducer";
+-import { actions as noteActions } from "./noteReducer";
++import { addNote, deleteNote } from "./noteReducer";
+
+ const initialState = {
+   message: "",
+   type: "",
+ };
+
+ const notificationSlice = createSlice({
+   name: "notification",
+   initialState,
+   reducers: {
+     reset: (state) => {
+       state.message = "";
+       state.type = "";
+     },
+   },
+   extraReducers: (builder) => {
+     builder
+       // TODO ADD
+       .addCase(addTodo.fulfilled, (state) => {
+         state.message = "Todo is created!";
+         state.type = "success";
+       })
+
+       // NOTE ADD
+-      .addCase(noteActions.add, (state) => {
++      .addCase(addNote.fulfilled, (state) => {
+         state.message = "Note is created!";
+         state.type = "success";
+       })
+
+       // NOTE DELETE
+-      .addCase(noteActions.delete, (state) => {
++      .addCase(deleteNote.fulfilled, (state) => {
+         state.message = "Note is deleted!";
+         state.type = "danger";
+       });
+   },
+ });
+
+ export const notificationReducer = notificationSlice.reducer;
+ export const resetNotification = notificationSlice.actions.reset;
+
+ export const notificationSelector = (state) => state.notificationReducer;
+```
+
+Replaced synchronous note actions with async thunk lifecycle handling.
+
+- Updated imports
+  - Removed `noteActions`
+  - Added `addNote` and `deleteNote` thunks
+- Switched to async lifecycle
+  - `noteActions.add` → `addNote.fulfilled`
+  - `noteActions.delete` → `deleteNote.fulfilled`
+- Aligned notification logic
+  - Now triggers only after successful backend response
+  - Matches async flow used in `addTodo`
+
+Notifications are now consistent with backend-driven state updates.
+
+### components/NoteForm.js
+
+```diff
+ import { useState, useEffect } from "react";
+ import { useDispatch, useSelector } from "react-redux";
+-import { actions } from "../../redux/reducers/noteReducer";
++import { addNote } from "../../redux/reducers/noteReducer";
+ import styles from "./NoteForm.module.css";
+ import {
+   notificationSelector,
+   resetNotification,
+ } from "../../redux/reducers/notificationReducer";
+
+ function NoteForm() {
+   const [noteText, setNoteText] = useState("");
+   const dispatch = useDispatch();
+   const notification = useSelector(notificationSelector);
+   const { message, type } = notification;
+
+   useEffect(() => {
+     if (message) {
+       const timer = setTimeout(() => {
+         dispatch(resetNotification());
+       }, 1000);
+
+       return () => clearTimeout(timer);
+     }
+   }, [message, dispatch]);
+
+   const handleSubmit = (e) => {
+     e.preventDefault();
+     if (!noteText.trim()) return;
+
+-    dispatch(actions.add(noteText));
++    dispatch(addNote(noteText));
+
+     setNoteText("");
+   };
+
+   return (
+     <div className={styles["form-container"]}>
+       {message && (
+         <div className={`alert alert-${type}`} role="alert">
+           {message}
+         </div>
+       )}
+       <form onSubmit={handleSubmit} className={styles.form}>
+         <textarea
+           placeholder="Write your note..."
+           value={noteText}
+           onChange={(e) => setNoteText(e.target.value)}
+         />
+         <button type="submit">Add Note</button>
+       </form>
+     </div>
+   );
+ }
+
+ export default NoteForm;
+```
+
+Replaced local note creation with backend API integration.
+
+- Removed local reducer usage
+  - No longer using `actions.add`
+- Integrated async thunk
+  - `addNote` sends POST request
+  - Redux updates after API success
+- Ensures persistence
+  - Notes are stored in database
+  - Data remains after refresh
+
+### components/NoteList.js
+
+```diff
+ import { useSelector, useDispatch } from "react-redux";
+-import { actions } from "../../redux/reducers/noteReducer";
++import { getNotes, deleteNote } from "../../redux/reducers/noteReducer";
+ import { noteSelector } from "../../redux/reducers/noteReducer";
++import { useEffect } from "react";
+ import styles from "./NoteList.module.css";
+
+ function NoteList() {
+   const notes = useSelector(noteSelector);
+   const dispatch = useDispatch();
+
++  useEffect(() => {
++    dispatch(getNotes());
++  }, [dispatch]);
+
+   return (
+     <div className={styles["list-container"]}>
+       <ul>
+-        {notes.map((note, index) => (
+-          <li key={index}>
++        {notes.map((note) => (
++          <li key={note._id}>
+             <span className={styles["note-content"]}>
+               {note.text}
+             </span>
+
+             <span className={styles["note-date"]}>
+-              {note.createdOn.toLocaleDateString()}
++              {new Date(note.createdOn).toLocaleDateString()}
+             </span>
+
+             <button
+               className={styles["delete-btn"]}
+-              onClick={() => dispatch(actions.delete(index))}
++              onClick={() => dispatch(deleteNote(note._id))}
+             >
+               Delete
+             </button>
+           </li>
+         ))}
+       </ul>
+     </div>
+   );
+ }
+
+ export default NoteList;
+```
+
+Replaced local state handling with backend-driven flow.
+
+- Fetch notes on component mount
+  - Uses `getNotes` thunk inside `useEffect`
+  - Ensures data loads from database
+- Updated delete logic
+  - Replaced index with `_id`
+  - Calls backend API via deleteNote
+- Fixed date handling
+  - Backend sends string → converted using `new Date()`
+
+UI now reflects real database data instead of local state.
+
+#### 🖥️ What You See in Browser:
+
+Note created via API, stored in database, and synced in UI
+
+<img src="../images/add-note-backend.png" alt="Add Note to Backend" width="700" height="auto">
+
+<img src="../images/add-note-database.png" alt="Note Added to Database" width="700" height="auto">
+
+Note deleted via API, removed from database, and reflected in UI
+
+<img src="../images/delete-note-backend.png" alt="Delete Note to Backend" width="700" height="auto">
+
+<img src="../images/delete-note-database.png" alt="Note Added to Database" width="700" height="auto">
+
+## Summarizing it
+
+Let’s summarize what we have learned in this Lecture:
+
+- Learned about logging in projects.
+- Learned what middlewares are?
+- Learned how to call an API.
+- Learned how to manage API data.
+- Learned about createAsyncThunk.
+
+### Some References:
+
+[createAsyncThunk](https://redux-toolkit.js.org/api/createAsyncThunk)
+
+[Axios](https://axios-http.com/docs/intro)

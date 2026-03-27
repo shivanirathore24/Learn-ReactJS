@@ -1,45 +1,72 @@
-// Import createSlice from Redux Toolkit
-const { createSlice } = require("@reduxjs/toolkit");
+// Import createSlice & createAsyncThunk from Redux Toolkit
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
 //import { ADD_NOTE, DELETE_NOTE } from "../actions/noteActions";
 
-// Initial state containing default notes
+// Initial state
 const initialState = {
-  notes: [
-    {
-      text: "Revise core React concepts including components, props, state management, hooks like useState and useEffect, and understand component lifecycle for better application structure.",
-      createdOn: new Date(),
-    },
-    {
-      text: "Prepare detailed notes for Redux covering store, actions, reducers, dispatch flow, and middleware, along with practical examples for better understanding.",
-      createdOn: new Date(),
-    },
-  ],
+  notes: [],
 };
+
+// Fetch notes from backend
+export const getNotes = createAsyncThunk("note/getNotes", async () => {
+  const res = await axios.get("http://localhost:5000/api/notes"); // ✅ CHANGED
+  return res.data; // axios gives data directly
+});
+
+// Add note to backend
+export const addNote = createAsyncThunk("note/addNote", async (payload) => {
+  const res = await axios.post("http://localhost:5000/api/notes", {
+    text: payload,
+  });
+
+  return res.data;
+});
+
+// Delete note from backend
+export const deleteNote = createAsyncThunk("note/deleteNote", async (id) => {
+  await axios.delete(`http://localhost:5000/api/notes/${id}`); // ✅ CHANGED
+  return id; // return deleted id
+});
 
 // Redux Toolkit Slice (Reducer + Actions)
 const noteSlice = createSlice({
-  name: "note", // Slice name (used as action prefix)
+  name: "note",
   initialState,
 
+  // Local reducers (not used with backend)
   reducers: {
-    // Add a new note with current timestamp
     add: (state, action) => {
       state.notes.push({
-        text: action.payload, // Note content
-        createdOn: new Date(), // Auto-generate creation time
+        text: action.payload,
+        createdOn: new Date(),
       });
     },
-
-    // Delete a note by index
     delete: (state, action) => {
       state.notes.splice(action.payload, 1);
     },
+  },
+  // Handle async thunk results
+  extraReducers: (builder) => {
+    builder
+      .addCase(getNotes.fulfilled, (state, action) => {
+        console.log("getNotes fulfilled:", action.payload);
+        state.notes = action.payload;
+      })
+      .addCase(addNote.fulfilled, (state, action) => {
+        console.log("addNote fulfilled:", action.payload);
+        state.notes.push(action.payload);
+      })
+      .addCase(deleteNote.fulfilled, (state, action) => {
+        console.log("deleteNote fulfilled:", action.payload);
+        state.notes = state.notes.filter((note) => note._id !== action.payload);
+      });
   },
 });
 
 // Export reducer and actions from slice
 export const noteReducer = noteSlice.reducer;
-export const actions = noteSlice.actions;
+export const actions = noteSlice.actions; // (not used now)
 
 // Export reducer and actions from slice
 export const noteSelector = (state) => state.noteReducer.notes;
